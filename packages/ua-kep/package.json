@@ -1,0 +1,14 @@
+{
+  "name": "@vilnoedo/ua-kep",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "main": "./index.ts",
+  "types": "./index.ts",
+  "dependencies": {
+    "@documenso/lib": "*",
+    "@documenso/prisma": "*",
+    "hono": "^4.10.4",
+    "zod": "^3.25.76"
+  }
+}

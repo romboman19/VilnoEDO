@@ -1,6 +1,7 @@
 import { tsRestHonoApp } from '@documenso/api/hono';
 import { auth } from '@documenso/auth/server';
 import { csc } from '@documenso/ee/server-only/signing/csc/hono';
+import { uaKep } from '@vilnoedo/ua-kep';
 import { jobsClient } from '@documenso/lib/jobs/client';
 import { LicenseClient } from '@documenso/lib/server-only/license/license-client';
 import { createRateLimitMiddleware } from '@documenso/lib/server-only/rate-limit/rate-limit-middleware';
@@ -113,6 +114,9 @@ app.route('/api/ai', aiRoute);
 
 // CSC OAuth routes (mounted from @documenso/ee).
 app.route('/api/csc', csc);
+
+// Ukrainian KEP bootstrap routes.
+app.route('/api/ua-kep', uaKep);
 
 // API servers.
 app.route('/api/v1', tsRestHonoApp);

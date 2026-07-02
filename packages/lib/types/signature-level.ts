@@ -9,11 +9,13 @@ import { z } from 'zod';
  *   Cloud Signature Consortium (CSC) Trust Service Provider.
  * - `QES` — Qualified Electronic Signature; the eIDAS-qualified variant of
  *   AES, also recipient-bound through a CSC TSP.
+ * - `UA_KEP` — Ukrainian recipient-bound signing flow for КЕП/УЕП-style
+ *   providers integrated into VilnoEDO.
  *
  * Stored as free-form TEXT on `Envelope.signatureLevel` so the legal-tier
  * taxonomy can expand without a DB enum migration. Validation lives here.
  */
-export const ZSignatureLevelSchema = z.enum(['SES', 'AES', 'QES']);
+export const ZSignatureLevelSchema = z.enum(['SES', 'AES', 'QES', 'UA_KEP']);
 
 export const SignatureLevel = ZSignatureLevelSchema.enum;
 
@@ -31,3 +33,6 @@ export type TSignatureLevel = z.infer<typeof ZSignatureLevelSchema>;
  */
 export const isTspEnvelope = (envelope: { signatureLevel: string }): boolean =>
   envelope.signatureLevel === SignatureLevel.AES || envelope.signatureLevel === SignatureLevel.QES;
+
+export const isUaKepEnvelope = (envelope: { signatureLevel: string }): boolean =>
+  envelope.signatureLevel === SignatureLevel.UA_KEP;

@@ -656,6 +656,7 @@ model Recipient {
 
   cscCredential CscCredential?
   cscSession    CscSession?
+  uaKepSession  UaKepSession?
 
   @@index([token])
   @@index([email])
@@ -762,6 +763,36 @@ model CscCredential {
 /// to at most one in-flight session — re-clicking Sign UPSERTs the row.
 /// Cleaned up transitively when the Recipient is deleted.
 /// @zod.import(["import { ZCscSessionItemsSchema } from '@documenso/lib/types/csc-session';"])
+model UaKepSession {
+  id String @id @default(cuid())
+
+  /// Denormalised envelope id for ergonomic lookups.
+  envelopeId String
+
+  /// Which Ukrainian signing method the recipient selected.
+  signingMethod String
+
+  /// Pinned signing time so hash generation and signature embedding stay stable.
+  signingTime DateTime
+
+  /// Contract between prep and complete steps.
+  /// Array of `{ envelopeItemId, documentDataId, hashB64, ordinal }`.
+  /// @zod.import(["import { ZUaKepSessionItemsSchema } from '@vilnoedo/ua-kep';"])
+  itemsJson Json /// [TUaKepSessionItems] @zod.custom.use(ZUaKepSessionItemsSchema)
+
+  /// Populated after browser-side signing to persist signer certificate metadata.
+  /// @zod.import(["import { ZUaKepSignerInfoSchema } from '@vilnoedo/ua-kep/types/session';"])
+  signerInfo Json? /// [unknown] @zod.custom.use(ZUaKepSignerInfoSchema)
+
+  status String @default("prepared")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  recipientId Int       @unique
+  recipient   Recipient @relation(fields: [recipientId], references: [id], onDelete: Cascade)
+}
+
 model CscSession {
   id String @id @default(cuid())
 
