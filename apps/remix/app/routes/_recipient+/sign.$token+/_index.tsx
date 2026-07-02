@@ -25,7 +25,7 @@ import { getRecipientsForAssistant } from '@documenso/lib/server-only/recipient/
 import { getTeamSettings } from '@documenso/lib/server-only/team/get-team-settings';
 import { getUserByEmail } from '@documenso/lib/server-only/user/get-user-by-email';
 import { DocumentAccessAuth } from '@documenso/lib/types/document-auth';
-import { isTspEnvelope } from '@documenso/lib/types/signature-level';
+import { isTspEnvelope, isUaKepEnvelope } from '@documenso/lib/types/signature-level';
 import { extractDocumentAuthMethods } from '@documenso/lib/utils/document-auth';
 import { isRecipientExpired } from '@documenso/lib/utils/recipients';
 import { prisma } from '@documenso/prisma';
@@ -44,6 +44,7 @@ import { DocumentSigningAuthPageView } from '~/components/general/document-signi
 import { DocumentSigningAuthProvider } from '~/components/general/document-signing/document-signing-auth-provider';
 import { DocumentSigningPageViewV1 } from '~/components/general/document-signing/document-signing-page-view-v1';
 import { DocumentSigningPageViewV2 } from '~/components/general/document-signing/document-signing-page-view-v2';
+import { UaKepSigningPanel } from '~/components/general/document-signing/ua-kep-signing-panel';
 import { DocumentSigningProvider } from '~/components/general/document-signing/document-signing-provider';
 import { EnvelopeSigningProvider } from '~/components/general/document-signing/envelope-signing-provider';
 import { RecipientBranding } from '~/components/general/recipient-branding';
@@ -479,6 +480,12 @@ const SigningPageV1 = ({ data }: { data: Awaited<ReturnType<typeof handleV1Loade
         {sessionData?.user && <AuthenticatedHeader />}
 
         <div className="mt-8 mb-8 px-4 md:mt-12 md:mb-12 md:px-8">
+          {isUaKepEnvelope(document) ? (
+            <div className="mx-auto w-full max-w-3xl">
+              <UaKepSigningPanel recipientId={recipient.id} envelopeId={document.id.toString()} />
+            </div>
+          ) : null}
+
           <DocumentSigningPageViewV1
             recipient={recipientWithFields}
             document={document}
@@ -579,6 +586,11 @@ const SigningPageV2 = ({ data }: { data: Awaited<ReturnType<typeof handleV2Loade
           envelopeItems={envelope.envelopeItems}
           token={recipient.token}
         >
+          {isUaKepEnvelope(envelope) ? (
+            <div className="mx-auto mt-8 w-full max-w-3xl px-4 md:px-8">
+              <UaKepSigningPanel recipientId={recipient.id} envelopeId={envelope.id} />
+            </div>
+          ) : null}
           <DocumentSigningPageViewV2 />
         </EnvelopeRenderProvider>
       </DocumentSigningAuthProvider>
