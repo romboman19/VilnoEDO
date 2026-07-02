@@ -1,237 +1,148 @@
-<img src="https://github.com/documenso/documenso/assets/13398220/a643571f-0239-46a6-a73e-6bef38d1228b" alt="Documenso Logo">
+# VilnoEDO (ВільноЕДО)
 
-<p align="center" style="margin-top: 20px">
-  <p align="center">
-  The Open Source DocuSign Alternative.
-  <br>
-    <a href="https://documenso.com"><strong>Learn more »</strong></a>
-    <br />
-    <br />
-    <a href="https://documen.so/discord">Discord</a>
-    ·
-    <a href="https://documenso.com">Website</a>
-    ·
-    <a href="https://docs.documenso.com">Documentation</a>
-    ·
-    <a href="https://github.com/documenso/documenso/issues">Issues</a>
-    ·
-    <a href="https://documen.so/live">Upcoming Releases</a>
-    ·
-    <a href="https://documen.so/roadmap">Roadmap</a>
-  </p>
-</p>
+**VilnoEDO** — українсько-орієнтований форк Documenso для електронного документообігу та підпису документів з урахуванням місцевих реалій, мови, юридичних вимог і сценаріїв використання.
 
-<p align="center">
-   <a href="https://documen.so/discord"><img src="https://img.shields.io/badge/Discord-documen.so/discord-%235865F2" alt="Join Documenso on Discord"></a>
-   <a href="https://github.com/documenso/documenso/stargazers"><img src="https://img.shields.io/github/stars/documenso/documenso" alt="Github Stars"></a>
-   <a href="https://github.com/documenso/documenso/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-AGPLv3-purple" alt="License"></a>
-   <a href="https://github.com/documenso/documenso/pulse"><img src="https://img.shields.io/github/commit-activity/m/documenso/documenso" alt="Commits-per-month"></a>
-   <a href="https://vscode.dev/redirect?url=vscode://ms-vscode-remote.remote-containers/cloneInVolume?url=https://github.com/documenso/documenso">
-   <img alt="open in devcontainer" src="https://img.shields.io/static/v1?label=Dev%20Containers&message=Enabled&color=blue&logo=visualstudiocode" />
-   </a>
-   <a href="CODE_OF_CONDUCT.md"><img src="https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg" alt="Contributor Covenant"></a>
-</p>
+Проєкт задуманий як основа для **self-hosted заміни Вчасно ЕДО**, де ключова увага приділяється:
+- українській мові як основній
+- КЕП / УЕП та локальним сценаріям підпису
+- роботі бізнесу в Україні
+- контролю над власною інфраструктурою і даними
 
-<div align="center">
-  <img src="https://github.com/documenso/documenso/assets/13398220/d96ed533-6f34-4a97-be9b-442bdb189c69" style="width: 80%;" />
-</div>
+---
 
-## About Documenso
+## Навіщо існує VilnoEDO
 
-Signing documents digitally should be fast and easy and should be the best practice for every document signed worldwide. This is technically quite easy today, but it also introduces a new party to every signature: The signing tool providers. While this is not a problem in itself, it should make us think about how we want these providers of trust to work. Documenso aims to be the world's most trusted document-signing tool. This trust is built by empowering you to self-host Documenso and review how it works under the hood.
+Більшість відкритих систем підпису документів орієнтовані на глобальний або західний ринок. Для України цього недостатньо.
 
-Join us in creating the next generation of open trust infrastructure.
+Потрібен продукт, який з коробки враховує:
+- українську локалізацію інтерфейсу
+- місцеву термінологію документів і процесів
+- інтеграцію з українськими способами підпису
+- сценарії для ФОП, ТОВ, магазинів, сервісного бізнесу та внутрішнього документообігу
+- можливість self-hosted розгортання без залежності від стороннього SaaS
 
-## Recognition
+Саме це і є метою VilnoEDO.
 
-<p align="center">
-  <a href="https://www.producthunt.com/posts/documenso?utm_source=badge-top-post-badge&utm_medium=badge&utm_souce=badge-documenso" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/top-post-badge.svg?post_id=395047&theme=light&period=daily" alt="Documenso - The&#0032;open&#0032;source&#0032;DocuSign&#0032;alternative | Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" /></a>
-  <a href="https://www.producthunt.com/posts/documenso?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-documenso" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=395047&theme=light" alt="Documenso - The&#0032;Open&#0032;Source&#0032;DocuSign&#0032;Alternative&#0046; | Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" /></a>
-</p>
+---
 
-## Community and Next Steps 🎯
+## Що буде в основі продукту
 
-- Try Documenso by self-hosting it or signing up at [documenso.com](https://documenso.com).
-- Tell us what you think in the [Discussions](https://github.com/documenso/documenso/discussions).
-- Join the [Discord server](https://documen.so/discord) for any questions and getting to know other community members.
-- ⭐ the repository to help us raise awareness.
-- Open detailed [issues](https://github.com/documenso/documenso/issues) to report bugs or propose features.
+VilnoEDO стартує від кодової бази **Documenso**, але розвивається як окремий український продукт.
 
-## Contributing
+Планується зберегти сильні сторони базового ядра:
+- керування документами
+- маршрути підписання
+- ролі підписантів
+- кабінет користувача
+- шаблони документів
+- історію дій
+- self-hosted модель розгортання
 
-> **Note**: We no longer accept external pull requests, aside from a small group of trusted contributors we reach out to directly. The best way to contribute is through detailed issues. Read [Why We're Pausing External Pull Requests](https://documenso.com/blog/why-we-re-pausing-external-pull-requests) for the reasoning.
+І паралельно додати український прикладний шар:
+- українська локалізація як основна
+- адаптована термінологія
+- інтеграція з локальними механізмами підпису
+- окремий підписний сервіс для українських методів
+- сценарії під КЕП / УЕП та реальний бізнесовий документообіг
 
-- Documenso stays open source. You can read, audit, run, and fork the code.
-- To report issues or propose changes, see our [contribution guide](https://github.com/documenso/documenso/blob/main/CONTRIBUTING.md).
+---
 
-## Contact us
+## Архітектурна ідея
 
-Contact us if you are interested in our Enterprise plan for large organizations that need extra flexibility and control.
+VilnoEDO не повинен змішувати весь документообіг і всю криптологіку в одному місці.
 
-<a href="https://cal.com/timurercan/enterprise-customers?utm_source=banner&utm_campaign=oss"><img alt="Book us with Cal.com" src="https://cal.com/book-with-cal-dark.svg" /></a>
+Тому базова ідея така:
 
-## Tech Stack
+### 1. VilnoEDO App
+Відповідає за:
+- документи
+- кабінет
+- маршрути підписання
+- ролі користувачів
+- інтерфейс
+- статуси
+- історію подій
 
-<p align="left">
-  <a href="https://www.typescriptlang.org"><img src="https://shields.io/badge/TypeScript-3178C6?logo=TypeScript&logoColor=FFF&style=flat-square" alt="TypeScript"></a>
-  <a href="https://prisma.io"><img width="122" height="20" src="http://made-with.prisma.io/indigo.svg" alt="Made with Prisma" /></a>
-  <a href="https://tailwindcss.com/"><img src="https://img.shields.io/badge/tailwindcss-0F172A?&logo=tailwindcss" alt="Tailwind CSS"></a>
-  <a href=""><img src="" alt=""></a>
-  <a href=""><img src="" alt=""></a>
-  <a href=""><img src="" alt=""></a>
-  <a href=""><img src="" alt=""></a>
-  <a href=""><img src="" alt=""></a>
-</p>
+### 2. VilnoCheck-SignService
+Окремий сервіс підпису, який відповідає за:
+- КЕП / УЕП
+- токени
+- файлові ключі
+- хмарні сценарії підпису
+- роботу з сертифікатами
+- сесії підписання
+- повернення результату підпису в VilnoEDO
 
-- [TypeScript](https://www.typescriptlang.org/) - Language
-- [React Router v7](https://reactrouter.com/) - Framework
-- [Hono](https://hono.dev/) - Server
-- [Prisma](https://www.prisma.io/) - ORM
-- [Tailwind CSS](https://tailwindcss.com/) - CSS
-- [shadcn/ui](https://ui.shadcn.com/) + [Radix UI](https://www.radix-ui.com/) - Component Library
-- [react-email](https://react.email/) - Email Templates
-- [Lingui](https://lingui.dev/) - Internationalization
-- [tRPC](https://trpc.io/) - API
-- [@libpdf/core](https://www.npmjs.com/package/@libpdf/core) - PDF Signatures
-- [pdf.js](https://mozilla.github.io/pdf.js/) - Viewing PDFs
-- [@cantoo/pdf-lib](https://github.com/cantoo-scribe/pdf-lib) - PDF manipulation
-- [Stripe](https://stripe.com/) - Payments
-- [Biome](https://biomejs.dev/) - Linting & Formatting
-- [Playwright](https://playwright.dev/) - E2E Testing
+Це дозволяє:
+- не ламати криптологією весь основний продукт
+- окремо розвивати український signing core
+- легше підтримувати і тестувати юридично чутливу частину
 
-<!-- - Support for [opensignpdf (requires Java on server)](https://github.com/open-pdf-sign) is currently planned. -->
+---
 
-## Local Development
+## Поточний статус
 
-### Requirements
+Зараз репозиторій є **стартовою точкою форка** Documenso під новий продукт VilnoEDO.
 
-To run Documenso locally, you will need
+На найближчому етапі плануються:
+1. брендування під VilnoEDO
+2. українська локалізація як first-class напрям
+3. аудит місць інтеграції з signing flow
+4. проектування зв'язки з `VilnoCheck-SignService`
+5. визначення першого практичного релізу для українського ринку
 
-- Node.js (v22 or above)
-- Postgres SQL Database
-- Docker (optional)
+---
 
-### Developer Quickstart
+## Робочий напрям v1
 
-> **Note**: This is a quickstart for developers. It assumes that you have both [docker](https://docs.docker.com/get-docker/) and [docker-compose](https://docs.docker.com/compose/) installed on your machine.
+Перший реліз має бути не "все й одразу", а практичний мінімум:
+- створення і завантаження документів
+- запрошення на підпис
+- український інтерфейс
+- базові ролі користувачів
+- щонайменше 1–2 реальні способи підпису для України
+- збереження підписаного результату та історії дій
 
-Want to get up and running quickly? Follow these steps:
+---
 
-1. [Fork this repository](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/about-forks) to your GitHub account.
+## Розгортання локально
 
-After forking the repository, clone it to your local device by using the following command:
+Поки що проєкт використовує базовий dev flow Documenso.
 
-```sh
-git clone https://github.com/<your-username>/documenso
+### Вимоги
+- Node.js 22+
+- PostgreSQL
+- Docker / Docker Compose (бажано для швидкого старту)
+
+### Швидкий старт
+```bash
+git clone https://github.com/romboman19/VilnoEDO.git
+cd VilnoEDO
+cp .env.example .env
+npm install
+npm run dx
+npm run dev
 ```
 
-2. Set up your `.env` file using the recommendations in the `.env.example` file. Alternatively, just run `cp .env.example .env` to get started with our handpicked defaults.
+### Доступ після запуску
+- застосунок: `http://localhost:3000`
+- локальна пошта для dev: `http://localhost:9000`
 
-3. Run `npm run dx` in the root directory
+> Далі процес розгортання буде адаптований саме під VilnoEDO, коли стабілізується власна архітектура і список залежностей.
 
-   - This will spin up a postgres database and inbucket mailserver in a docker container.
+---
 
-4. Run `npm run dev` in the root directory
+## Найближчі кроки
 
-5. Want it even faster? Just use
+- [ ] підготувати власний branding VilnoEDO
+- [ ] визначити модулі, які залишаються від upstream майже без змін
+- [ ] визначити модулі, де буде глибока українська переробка
+- [ ] описати API-контракт між VilnoEDO та VilnoCheck-SignService
+- [ ] обрати перший сценарій підпису для proof-of-concept
+- [ ] підготувати roadmap першого релізу
 
-```sh
-npm run d
-```
+---
 
-#### Access Points for Your Application
+## Важливе зауваження
 
-1. **App** - http://localhost:3000
-2. **Incoming Mail Access** - http://localhost:9000
-3. **Database Connection Details**
-
-   - **Port**: 54320
-   - **Connection**: Use your favorite database client to connect using the provided port.
-
-4. **S3 Storage Dashboard** - http://localhost:9001
-
-## Developer Setup
-
-### Manual Setup
-
-Follow the [manual setup guide](https://docs.documenso.com/docs/developers/local-development/manual) to configure Documenso on your local machine.
-
-### Run in Gitpod
-
-- Click below to launch a ready-to-use Gitpod workspace in your browser.
-
-[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/documenso/documenso)
-
-### Run in DevContainer
-
-We support DevContainers for VSCode. [Click here to get started.](https://vscode.dev/redirect?url=vscode://ms-vscode-remote.remote-containers/cloneInVolume?url=https://github.com/documenso/documenso)
-
-### Video walkthrough
-
-If you're a visual learner and prefer to watch a video walkthrough of setting up Documenso locally, check out this video:
-
-[![Watch the video](https://img.youtube.com/vi/Y0ppIQrEnZs/hqdefault.jpg)](https://youtu.be/Y0ppIQrEnZs)
-
-## Docker
-
-We provide official Docker images on [DockerHub](https://hub.docker.com/r/documenso/documenso) and [GitHub Container Registry](https://ghcr.io/documenso/documenso).
-
-For setup instructions, see the [Docker Deployment](https://docs.documenso.com/docs/self-hosting/deployment/docker) and [Docker Compose](https://docs.documenso.com/docs/self-hosting/deployment/docker-compose) guides.
-
-## Self Hosting
-
-We support a variety of deployment methods including Docker, Docker Compose, Railway, Kubernetes, and manual deployment.
-
-For full instructions, requirements, and configuration details, see the [Self Hosting documentation](https://docs.documenso.com/docs/self-hosting).
-
-### One-Click Deploys
-
-#### Railway
-
-[![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/deploy/DjrRRX?referralCode=EZR3s0&utm_medium=integration&utm_source=template&utm_campaign=generic)
-
-#### Render
-
-[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/documenso/documenso)
-
-#### Koyeb
-
-[![Deploy to Koyeb](https://www.koyeb.com/static/images/deploy/button.svg)](https://app.koyeb.com/deploy?type=git&repository=github.com/documenso/documenso&branch=main&name=documenso-app&builder=dockerfile&dockerfile=/docker/Dockerfile)
-
-#### Elestio
-
-[![Deploy on Elestio](https://elest.io/images/logos/deploy-to-elestio-btn.png)](https://elest.io/open-source/documenso)
-
-## Security
-
-If you believe you have found a security vulnerability in Documenso, please report it through our [Security Policy](https://github.com/documenso/documenso/security/policy). We prioritize private reports via [GitHub Security Advisories](https://github.com/documenso/documenso/security/advisories/new). See [SECURITY.md](./SECURITY.md) for scope and details.
-
-## Troubleshooting
-
-For troubleshooting self-hosted deployments, see the [Troubleshooting guide](https://docs.documenso.com/docs/self-hosting/maintenance/troubleshooting) and [Tips & Common Pitfalls](https://docs.documenso.com/docs/self-hosting/getting-started/tips).
-
-### I'm not receiving any emails when using the developer quickstart.
-
-When using the developer quickstart, an [Inbucket](https://inbucket.org/) server will be spun up in a docker container that will store all outgoing emails locally for you to view.
-
-The Web UI can be found at http://localhost:9000, while the SMTP port will be on localhost:2500.
-
-### I can't see environment variables in my package scripts.
-
-Wrap your package script with the `with:env` script like such:
-
-```
-npm run with:env -- npm run myscript
-```
-
-The same can be done when using `npx` for one of the bin scripts:
-
-```
-npm run with:env -- npx myscript
-```
-
-This will load environment variables from your `.env` and `.env.local` files.
-
-## Repo Activity
-
-![Repository Activity](https://repobeats.axiom.co/api/embed/622a2e9aa709696f7226304b5b7178a5741b3868.svg)
+Цей репозиторій стартує від Documenso, але ціль — не просто локалізувати чужий продукт, а побудувати **окремий український EDO-продукт** з власною логікою, термінологією та інтеграціями.
