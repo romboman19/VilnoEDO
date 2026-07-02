@@ -777,12 +777,10 @@ model UaKepSession {
 
   /// Contract between prep and complete steps.
   /// Array of `{ envelopeItemId, documentDataId, hashB64, ordinal }`.
-  /// @zod.import(["import { ZUaKepSessionItemsSchema } from '@vilnoedo/ua-kep';"])
-  itemsJson Json /// [TUaKepSessionItems] @zod.custom.use(ZUaKepSessionItemsSchema)
+  itemsJson Json
 
   /// Populated after browser-side signing to persist signer certificate metadata.
-  /// @zod.import(["import { ZUaKepSignerInfoSchema } from '@vilnoedo/ua-kep/types/session';"])
-  signerInfo Json? /// [unknown] @zod.custom.use(ZUaKepSignerInfoSchema)
+  signerInfo Json?
 
   status String @default("prepared")
 
