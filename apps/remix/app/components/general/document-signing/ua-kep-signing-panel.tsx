@@ -6,7 +6,8 @@ import { Trans } from '@lingui/react/macro';
 import { useSigningMethod } from '@vilnoedo/ua-kep/client/hooks/use-signing-method';
 import { useUaKepSigning } from '@vilnoedo/ua-kep/client/hooks/use-ua-kep-signing';
 import { createIitSigner } from '@vilnoedo/ua-kep/client/iit-signer-factory';
-import { readJksKeyContainer } from '@vilnoedo/ua-kep/client/jks-reader';
+import { readJksContainer, type TJksKeyEntry, unlockJksKey } from '@vilnoedo/ua-kep/client/jks-reader';
+import { signPreparedHashes } from '@vilnoedo/ua-kep/client/sign-hashes';
 import { useState } from 'react';
 
 export type UaKepSigningPanelProps = {
@@ -25,35 +26,62 @@ export const UaKepSigningPanel = ({ recipientId, envelopeId, recipientToken }: U
   });
 
   const [selectedFileName, setSelectedFileName] = useState<string>('');
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [password, setPassword] = useState('');
   const [prepareState, setPrepareState] = useState<string>('');
-  const [keyAliases, setKeyAliases] = useState<string[]>([]);
+  const [jksEntries, setJksEntries] = useState<TJksKeyEntry[]>([]);
+  const [selectedKeyIndex, setSelectedKeyIndex] = useState(0);
+  const [preparedItems, setPreparedItems] = useState<
+    Array<{ envelopeItemId: string; documentDataId: string; hashB64: string; ordinal: number }>
+  >([]);
+  const [lastSignerInfo, setLastSignerInfo] = useState<{
+    subjCN?: string | null;
+    issuerCN?: string | null;
+    EDRPOUCode?: string | null;
+    serial?: string | null;
+  } | null>(null);
 
   const onFileSelected = async (file: File | null) => {
     if (!file) {
       return;
     }
 
-    const signer = await createIitSigner();
-    const keyInfo = await readJksKeyContainer({ signer, file });
+    const { sdk } = createIitSigner();
+    const keyInfo = await readJksContainer(sdk, file);
+    setSelectedFile(file);
     setSelectedFileName(keyInfo.fileName);
-    setKeyAliases(keyInfo.keyAliases);
+    setJksEntries(keyInfo.entries);
+    setSelectedKeyIndex(0);
   };
 
   const onPrepare = async () => {
     const prepared = await prepare();
+    setPreparedItems(prepared.items ?? []);
     setPrepareState(`${prepared.items?.length ?? 0} hash item(s) prepared`);
   };
 
   const onComplete = async () => {
+    if (!selectedFile) {
+      throw new Error('Select a JKS file first');
+    }
+
+    const { sdk } = createIitSigner();
+    const unlockedKey = await unlockJksKey(sdk, selectedFile, selectedKeyIndex, password);
+    setLastSignerInfo(unlockedKey.ownerInfo);
+
+    const signed = await signPreparedHashes(sdk, preparedItems);
+
     await complete({
       signerInfo: {
-        subjCN: selectedFileName || 'JKS signer',
+        subjCN: signed.signerInfo.subjCN,
+        issuerCN: signed.signerInfo.issuerCN,
+        edrpou: signed.signerInfo.edrpou,
+        serial: signed.signerInfo.serial,
       },
-      signatures: [],
+      signatures: signed.items,
     });
 
-    setPrepareState('UA KEP session marked as signed (stub flow)');
+    setPrepareState('UA KEP signing flow completed');
   };
 
   return (
@@ -78,8 +106,21 @@ export const UaKepSigningPanel = ({ recipientId, envelopeId, recipientToken }: U
             onChange={(event) => void onFileSelected(event.target.files?.[0] ?? null)}
           />
           {selectedFileName ? <p className="text-muted-foreground text-sm">{selectedFileName}</p> : null}
-          {keyAliases.length > 0 ? (
-            <p className="text-muted-foreground text-sm">aliases: {keyAliases.join(', ')}</p>
+          {jksEntries.length > 0 ? (
+            <div className="space-y-1 text-muted-foreground text-sm">
+              <p>available keys:</p>
+              <select
+                value={selectedKeyIndex}
+                onChange={(event) => setSelectedKeyIndex(Number(event.target.value))}
+                className="rounded-md border border-input bg-background px-3 py-2 text-sm"
+              >
+                {jksEntries.map((entry) => (
+                  <option key={`${entry.alias}-${entry.index}`} value={entry.index}>
+                    {entry.alias} {entry.subjectCN ? `— ${entry.subjectCN}` : ''}
+                  </option>
+                ))}
+              </select>
+            </div>
           ) : null}
         </div>
 
@@ -103,9 +144,9 @@ export const UaKepSigningPanel = ({ recipientId, envelopeId, recipientToken }: U
             type="button"
             variant="secondary"
             onClick={() => void onComplete()}
-            disabled={isCompleting || !lastPreparedSessionId}
+            disabled={isCompleting || !lastPreparedSessionId || !selectedFile || preparedItems.length === 0}
           >
-            <Trans>Завершити stub-підпис</Trans>
+            <Trans>Підписати і завершити</Trans>
           </Button>
         </div>
 
@@ -117,6 +158,11 @@ export const UaKepSigningPanel = ({ recipientId, envelopeId, recipientToken }: U
             <strong>session:</strong> {lastPreparedSessionId ?? '—'}
           </p>
           {prepareState ? <p>{prepareState}</p> : null}
+          {lastSignerInfo?.subjCN ? (
+            <p>
+              <strong>signer:</strong> {lastSignerInfo.subjCN}
+            </p>
+          ) : null}
         </div>
       </CardContent>
     </Card>
