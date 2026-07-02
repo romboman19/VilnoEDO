@@ -44,7 +44,7 @@ export const completeUaKepSigning = async ({
 
   const completionResult = await completeDocumentWithToken({
     token: recipientToken,
-    id: envelopeId,
+    id: envelopeId as Parameters<typeof completeDocumentWithToken>[0]['id'],
   });
 
   return {

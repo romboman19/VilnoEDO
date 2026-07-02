@@ -34,7 +34,7 @@ export const readJksContainer = async (sdk: DigitalSignature, file: File): Promi
 
   return {
     fileName: file.name,
-    entries: jksKeys.map((key, index) => ({
+    entries: jksKeys.map((key: any, index: number) => ({
       index,
       alias: key.alias,
       subjectCN: key.certificates?.[0]?.infoEx?.subjCN ?? null,
@@ -59,7 +59,7 @@ export const unlockJksKey = async (
 
   await sdk.setCA(null);
 
-  const certDataArrays = selected.certificates.map((cert) => cert.data).filter(Boolean);
+  const certDataArrays = selected.certificates.map((cert: any) => cert.data).filter(Boolean);
 
   const keyInfo = await sdk.readFileKey(
     selected.privateKey,

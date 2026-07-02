@@ -1,9 +1,8 @@
 import crypto from 'node:crypto';
 
 import type { PrismaClient } from '@documenso/prisma/client';
-
-import { upsertUaKepPreparedSession } from './session';
 import type { TUaKepSigningMethod } from '../types/signing-methods';
+import { upsertUaKepPreparedSession } from './session';
 
 export const prepareUaKepSigning = async ({
   prisma,
@@ -20,29 +19,27 @@ export const prepareUaKepSigning = async ({
 }) => {
   const envelope = await prisma.envelope.findUnique({
     where: { id: envelopeId },
-    include: {
-      envelopeItems: {
-        include: {
-          documentData: true,
-        },
-        orderBy: {
-          createdAt: 'asc',
-        },
-      },
-    },
+    select: { id: true },
   });
 
   if (!envelope) {
     throw new Error('Envelope not found');
   }
 
-  const itemsJson = envelope.envelopeItems
-    .filter((item) => item.documentData)
-    .map((item, index) => {
-      const hashB64 = crypto
-        .createHash('sha256')
-        .update(item.documentData.data)
-        .digest('base64');
+  const envelopeItems = await prisma.envelopeItem.findMany({
+    where: { envelopeId },
+    include: {
+      documentData: true,
+    },
+    orderBy: {
+      id: 'asc',
+    },
+  });
+
+  const itemsJson = envelopeItems
+    .filter((item: any) => item.documentData)
+    .map((item: any, index: number) => {
+      const hashB64 = crypto.createHash('sha256').update(item.documentData.data).digest('base64');
 
       return {
         envelopeItemId: item.id,

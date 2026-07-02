@@ -73,10 +73,10 @@ export const UaKepSigningPanel = ({ recipientId, envelopeId, recipientToken }: U
 
     await complete({
       signerInfo: {
-        subjCN: signed.signerInfo.subjCN,
-        issuerCN: signed.signerInfo.issuerCN,
-        edrpou: signed.signerInfo.edrpou,
-        serial: signed.signerInfo.serial,
+        ...(signed.signerInfo.subjCN ? { subjCN: signed.signerInfo.subjCN } : {}),
+        ...(signed.signerInfo.issuerCN ? { issuerCN: signed.signerInfo.issuerCN } : {}),
+        ...(signed.signerInfo.edrpou ? { edrpou: signed.signerInfo.edrpou } : {}),
+        ...(signed.signerInfo.serial ? { serial: signed.signerInfo.serial } : {}),
       },
       signatures: signed.items,
     });
