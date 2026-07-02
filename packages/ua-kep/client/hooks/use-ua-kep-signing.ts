@@ -5,10 +5,11 @@ import type { TUaKepSigningMethod } from '../../types/signing-methods';
 type TUseUaKepSigningOptions = {
   recipientId: number;
   envelopeId: string;
+  recipientToken: string;
   signingMethod: TUaKepSigningMethod;
 };
 
-export const useUaKepSigning = ({ recipientId, envelopeId, signingMethod }: TUseUaKepSigningOptions) => {
+export const useUaKepSigning = ({ recipientId, envelopeId, recipientToken, signingMethod }: TUseUaKepSigningOptions) => {
   const [isPreparing, setIsPreparing] = useState(false);
   const [isCompleting, setIsCompleting] = useState(false);
   const [lastPreparedSessionId, setLastPreparedSessionId] = useState<string | null>(null);
@@ -22,7 +23,7 @@ export const useUaKepSigning = ({ recipientId, envelopeId, signingMethod }: TUse
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ recipientId, envelopeId, signingMethod }),
+        body: JSON.stringify({ recipientId, envelopeId, recipientToken, signingMethod }),
       });
 
       if (!response.ok) {

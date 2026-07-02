@@ -9,11 +9,13 @@ export const prepareUaKepSigning = async ({
   prisma,
   recipientId,
   envelopeId,
+  recipientToken,
   signingMethod,
 }: {
   prisma: PrismaClient;
   recipientId: number;
   envelopeId: string;
+  recipientToken: string;
   signingMethod: TUaKepSigningMethod;
 }) => {
   const envelope = await prisma.envelope.findUnique({
@@ -64,6 +66,7 @@ export const prepareUaKepSigning = async ({
   return {
     sessionId: session.id,
     signingTime: session.signingTime,
+    recipientToken,
     items: itemsJson,
   };
 };

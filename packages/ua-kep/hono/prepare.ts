@@ -8,6 +8,7 @@ import { ZUaKepSigningMethodSchema } from '../types/signing-methods';
 const ZPrepareRequestSchema = z.object({
   recipientId: z.number().int().positive(),
   envelopeId: z.string().min(1),
+  recipientToken: z.string().min(1),
   signingMethod: ZUaKepSigningMethodSchema,
 });
 
@@ -19,6 +20,7 @@ export const prepareRoute = new Hono().post('/', async (c) => {
     prisma,
     recipientId: input.recipientId,
     envelopeId: input.envelopeId,
+    recipientToken: input.recipientToken,
     signingMethod: input.signingMethod,
   });
 

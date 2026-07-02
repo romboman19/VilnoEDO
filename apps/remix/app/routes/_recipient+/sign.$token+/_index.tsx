@@ -482,7 +482,7 @@ const SigningPageV1 = ({ data }: { data: Awaited<ReturnType<typeof handleV1Loade
         <div className="mt-8 mb-8 px-4 md:mt-12 md:mb-12 md:px-8">
           {isUaKepEnvelope(document) ? (
             <div className="mx-auto w-full max-w-3xl">
-              <UaKepSigningPanel recipientId={recipient.id} envelopeId={document.id.toString()} />
+              <UaKepSigningPanel recipientId={recipient.id} envelopeId={document.id.toString()} recipientToken={recipient.token} />
             </div>
           ) : null}
 
@@ -588,7 +588,7 @@ const SigningPageV2 = ({ data }: { data: Awaited<ReturnType<typeof handleV2Loade
         >
           {isUaKepEnvelope(envelope) ? (
             <div className="mx-auto mt-8 w-full max-w-3xl px-4 md:px-8">
-              <UaKepSigningPanel recipientId={recipient.id} envelopeId={envelope.id} />
+              <UaKepSigningPanel recipientId={recipient.id} envelopeId={envelope.id} recipientToken={recipient.token} />
             </div>
           ) : null}
           <DocumentSigningPageViewV2 />

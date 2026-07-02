@@ -12,13 +12,15 @@ import { useUaKepSigning } from '@vilnoedo/ua-kep/client/hooks/use-ua-kep-signin
 export type UaKepSigningPanelProps = {
   recipientId: number;
   envelopeId: string;
+  recipientToken: string;
 };
 
-export const UaKepSigningPanel = ({ recipientId, envelopeId }: UaKepSigningPanelProps) => {
+export const UaKepSigningPanel = ({ recipientId, envelopeId, recipientToken }: UaKepSigningPanelProps) => {
   const { signingMethod } = useSigningMethod('privatbank-jks');
   const { isPreparing, isCompleting, prepare, complete, lastPreparedSessionId } = useUaKepSigning({
     recipientId,
     envelopeId,
+    recipientToken,
     signingMethod,
   });
 
