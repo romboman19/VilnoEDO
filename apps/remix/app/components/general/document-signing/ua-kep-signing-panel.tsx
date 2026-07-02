@@ -3,11 +3,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@docu
 import { Input } from '@documenso/ui/primitives/input';
 import { Label } from '@documenso/ui/primitives/label';
 import { Trans } from '@lingui/react/macro';
-import { useState } from 'react';
-
-import { readJksKeyContainer } from '@vilnoedo/ua-kep/client/jks-reader';
 import { useSigningMethod } from '@vilnoedo/ua-kep/client/hooks/use-signing-method';
 import { useUaKepSigning } from '@vilnoedo/ua-kep/client/hooks/use-ua-kep-signing';
+import { createIitSigner } from '@vilnoedo/ua-kep/client/iit-signer-factory';
+import { readJksKeyContainer } from '@vilnoedo/ua-kep/client/jks-reader';
+import { useState } from 'react';
 
 export type UaKepSigningPanelProps = {
   recipientId: number;
@@ -27,12 +27,17 @@ export const UaKepSigningPanel = ({ recipientId, envelopeId, recipientToken }: U
   const [selectedFileName, setSelectedFileName] = useState<string>('');
   const [password, setPassword] = useState('');
   const [prepareState, setPrepareState] = useState<string>('');
+  const [keyAliases, setKeyAliases] = useState<string[]>([]);
 
   const onFileSelected = async (file: File | null) => {
-    if (!file) return;
+    if (!file) {
+      return;
+    }
 
-    const keyInfo = await readJksKeyContainer(file);
+    const signer = await createIitSigner();
+    const keyInfo = await readJksKeyContainer({ signer, file });
     setSelectedFileName(keyInfo.fileName);
+    setKeyAliases(keyInfo.keyAliases);
   };
 
   const onPrepare = async () => {
@@ -66,27 +71,45 @@ export const UaKepSigningPanel = ({ recipientId, envelopeId, recipientToken }: U
           <Label htmlFor="ua-kep-jks-file">
             <Trans>Файл ключа JKS</Trans>
           </Label>
-          <Input id="ua-kep-jks-file" type="file" accept=".jks" onChange={(event) => void onFileSelected(event.target.files?.[0] ?? null)} />
+          <Input
+            id="ua-kep-jks-file"
+            type="file"
+            accept=".jks"
+            onChange={(event) => void onFileSelected(event.target.files?.[0] ?? null)}
+          />
           {selectedFileName ? <p className="text-muted-foreground text-sm">{selectedFileName}</p> : null}
+          {keyAliases.length > 0 ? (
+            <p className="text-muted-foreground text-sm">aliases: {keyAliases.join(', ')}</p>
+          ) : null}
         </div>
 
         <div className="space-y-2">
           <Label htmlFor="ua-kep-password">
             <Trans>Пароль ключа</Trans>
           </Label>
-          <Input id="ua-kep-password" type="password" value={password} onChange={(event) => setPassword(event.target.value)} />
+          <Input
+            id="ua-kep-password"
+            type="password"
+            value={password}
+            onChange={(event) => setPassword(event.target.value)}
+          />
         </div>
 
         <div className="flex flex-wrap gap-2">
           <Button type="button" onClick={() => void onPrepare()} disabled={isPreparing}>
             <Trans>Підготувати підпис</Trans>
           </Button>
-          <Button type="button" variant="secondary" onClick={() => void onComplete()} disabled={isCompleting || !lastPreparedSessionId}>
+          <Button
+            type="button"
+            variant="secondary"
+            onClick={() => void onComplete()}
+            disabled={isCompleting || !lastPreparedSessionId}
+          >
             <Trans>Завершити stub-підпис</Trans>
           </Button>
         </div>
 
-        <div className="text-muted-foreground space-y-1 text-sm">
+        <div className="space-y-1 text-muted-foreground text-sm">
           <p>
             <strong>method:</strong> {signingMethod}
           </p>
