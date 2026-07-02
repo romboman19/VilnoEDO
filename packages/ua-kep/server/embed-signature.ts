@@ -1,3 +1,4 @@
+import { completeDocumentWithToken } from '@documenso/lib/server-only/document/complete-document-with-token';
 import type { PrismaClient } from '@documenso/prisma/client';
 
 import { markUaKepSessionSigned } from './session';
@@ -5,12 +6,14 @@ import { markUaKepSessionSigned } from './session';
 export const completeUaKepSigning = async ({
   prisma,
   recipientId,
+  recipientToken,
   envelopeId,
   signerInfo,
   signatures,
 }: {
   prisma: PrismaClient;
   recipientId: number;
+  recipientToken: string;
   envelopeId: string;
   signerInfo?: {
     subjCN?: string;
@@ -39,10 +42,16 @@ export const completeUaKepSigning = async ({
     signerInfo,
   });
 
+  const completionResult = await completeDocumentWithToken({
+    token: recipientToken,
+    id: envelopeId,
+  });
+
   return {
     ok: true,
     sessionId: session.id,
     signaturesAccepted: signatures.length,
     status: 'signed',
+    completionResult,
   };
 };

@@ -57,6 +57,7 @@ export const useUaKepSigning = ({ recipientId, envelopeId, recipientToken, signi
         },
         body: JSON.stringify({
           recipientId,
+          recipientToken,
           envelopeId,
           signerInfo: payload.signerInfo,
           signatures: payload.signatures,

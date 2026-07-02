@@ -6,6 +6,7 @@ import { completeUaKepSigning } from '../server/embed-signature';
 
 const ZCompleteRequestSchema = z.object({
   recipientId: z.number().int().positive(),
+  recipientToken: z.string().min(1),
   envelopeId: z.string().min(1),
   signerInfo: z
     .object({
@@ -30,6 +31,7 @@ export const completeRoute = new Hono().post('/', async (c) => {
   const result = await completeUaKepSigning({
     prisma,
     recipientId: input.recipientId,
+    recipientToken: input.recipientToken,
     envelopeId: input.envelopeId,
     signerInfo: input.signerInfo,
     signatures: input.signatures,
