@@ -1,6 +1,11 @@
 import { z } from 'zod';
 
-export const ZUaKepSigningMethodSchema = z.enum(['privatbank-jks', 'iit-token', 'smartid']);
+export const ZUaKepSigningMethodSchema = z.enum([
+  'file-key',
+  'iit-token',
+  'privatbank-smartid',
+  'diia-signature',
+]);
 
 export const UaKepSigningMethod = ZUaKepSigningMethodSchema.enum;
 

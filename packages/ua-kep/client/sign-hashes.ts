@@ -1,3 +1,5 @@
+/// <reference path="../types/iit-sdk.d.ts" />
+
 import type { DigitalSignature } from '@it-enterprise/digital-signature';
 
 import type { TUaKepSessionItems } from '../types/session';
