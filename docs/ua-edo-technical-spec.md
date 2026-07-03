@@ -900,11 +900,11 @@ NEXT_PRIVATE_DEFAULT_TIMEZONE=Europe/Kyiv
 
 ### Phase 0 — Stabilization and fork cleanup
 
-- [ ] Видалити/відключити license gates.
-- [ ] Прибрати billing із MVP-шляху.
+- [x] Видалити/відключити license gates. (free claim розблоковано міграцією `vilnoedo_unlock_free_claim`; enterprise-функції, що потребують зовнішньої інфраструктури, лишаються за license client)
+- [x] Прибрати billing із MVP-шляху. (billing вимкнений за замовчуванням через `NEXT_PUBLIC_FEATURE_BILLING_ENABLED`; Stripe-код неактивний без env)
 - [ ] Перевірити AGPL/trademark attribution.
 - [ ] Налаштувати branding VilnoEDO.
-- [ ] Вимкнути telemetry або зробити opt-in.
+- [x] Вимкнути telemetry або зробити opt-in. (server telemetry і PostHog надсилають дані лише якщо задані `NEXT_PRIVATE_TELEMETRY_KEY`/`NEXT_PUBLIC_POSTHOG_KEY`; за замовчуванням ключів немає)
 - [ ] Описати self-hosting quickstart.
 
 ### Phase 1 — UA_KEP core model
