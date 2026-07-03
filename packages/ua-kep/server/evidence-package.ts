@@ -8,6 +8,8 @@ type TEvidencePackagePrismaClient = Pick<
   'uaKepEvidencePackage' | 'uaKepSignatureArtifact' | 'uaKepTrustMaterialSnapshot' | 'uaKepValidationReport'
 >;
 
+type TEvidencePackageReadPrismaClient = Pick<PrismaClient, 'recipient' | 'uaKepEvidencePackage'>;
+
 type TCreateEvidencePackageInput = {
   session: {
     id: string;
@@ -18,6 +20,13 @@ type TCreateEvidencePackageInput = {
     signedAt: Date | null;
   };
   trustMaterialSnapshotId?: string | null;
+};
+
+type TGetEvidencePackageManifestInput = {
+  evidencePackageId: string;
+  envelopeId: string;
+  recipientId: number;
+  recipientToken: string;
 };
 
 type TCanonicalJson =
@@ -258,4 +267,51 @@ export const createUaKepEvidencePackage = async ({
   return {
     evidencePackage,
   };
+};
+
+export const getUaKepEvidencePackageManifest = async ({
+  prisma,
+  input,
+}: {
+  prisma: TEvidencePackageReadPrismaClient;
+  input: TGetEvidencePackageManifestInput;
+}) => {
+  const recipient = await prisma.recipient.findFirst({
+    where: {
+      id: input.recipientId,
+      token: input.recipientToken,
+      envelopeId: input.envelopeId,
+    },
+    select: {
+      id: true,
+      envelopeId: true,
+    },
+  });
+
+  if (!recipient) {
+    return null;
+  }
+
+  return prisma.uaKepEvidencePackage.findFirst({
+    where: {
+      id: input.evidencePackageId,
+      envelopeId: recipient.envelopeId,
+      recipientId: recipient.id,
+    },
+    select: {
+      id: true,
+      envelopeId: true,
+      recipientId: true,
+      uaKepSessionId: true,
+      trustMaterialSnapshotId: true,
+      packageType: true,
+      packageVersion: true,
+      packageSha256: true,
+      manifestJson: true,
+      artifactCount: true,
+      validationReportCount: true,
+      createdAt: true,
+      updatedAt: true,
+    },
+  });
 };
