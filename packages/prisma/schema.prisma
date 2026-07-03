@@ -485,6 +485,7 @@ model Envelope {
   documentMeta   DocumentMeta @relation(fields: [documentMetaId], references: [id])
 
   envelopeAttachments EnvelopeAttachment[]
+  uaKepSignatureArtifacts UaKepSignatureArtifact[]
 
   @@index([type])
   @@index([status])
@@ -508,6 +509,7 @@ model EnvelopeItem {
   envelope   Envelope @relation(fields: [envelopeId], references: [id], onDelete: Cascade)
 
   field Field[]
+  uaKepSignatureArtifacts UaKepSignatureArtifact[]
 
   @@unique([documentDataId])
   @@index([envelopeId])
@@ -657,6 +659,7 @@ model Recipient {
   cscCredential CscCredential?
   cscSession    CscSession?
   uaKepSession  UaKepSession?
+  uaKepSignatureArtifacts UaKepSignatureArtifact[]
 
   @@index([token])
   @@index([email])
@@ -799,9 +802,48 @@ model UaKepSession {
 
   recipientId Int       @unique
   recipient   Recipient @relation(fields: [recipientId], references: [id], onDelete: Cascade)
+  signatureArtifacts UaKepSignatureArtifact[]
 
   @@index([expiresAt])
   @@index([status])
+}
+
+/// Detached CAdES artifacts accepted from the browser-side UA KEP flow.
+/// The bytes stay base64 encoded for the MVP; later phases can move them to
+/// object storage while keeping this row as the evidence index.
+model UaKepSignatureArtifact {
+  id String @id @default(cuid())
+
+  envelopeId String
+  envelope   Envelope @relation(fields: [envelopeId], references: [id], onDelete: Cascade)
+
+  recipientId Int
+  recipient   Recipient @relation(fields: [recipientId], references: [id], onDelete: Cascade)
+
+  uaKepSessionId String
+  uaKepSession   UaKepSession @relation(fields: [uaKepSessionId], references: [id], onDelete: Cascade)
+
+  envelopeItemId String
+  envelopeItem   EnvelopeItem @relation(fields: [envelopeItemId], references: [id], onDelete: Cascade)
+
+  documentDataId String
+  signingMethod String
+  artifactType String @default("CADES_DETACHED")
+  signatureBase64 String
+  signatureSha256 String
+  documentHashB64 String
+  signerInfo Json?
+  verificationStatus String @default("pending")
+  validationReport Json?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([uaKepSessionId, envelopeItemId])
+  @@index([envelopeId])
+  @@index([recipientId])
+  @@index([envelopeItemId])
+  @@index([verificationStatus])
 }
 
 model CscSession {

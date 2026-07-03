@@ -2,6 +2,7 @@ import { completeDocumentWithToken } from '@documenso/lib/server-only/document/c
 import type { PrismaClient } from '@documenso/prisma/client';
 
 import { ZUaKepSessionItemsSchema } from '../types/session';
+import { persistUaKepSignatureArtifacts } from './artifacts';
 import { markUaKepSessionSigned, verifyUaKepPreparedSession } from './session';
 
 export const completeUaKepSigning = async ({
@@ -86,10 +87,22 @@ export const completeUaKepSigning = async ({
     throw new Error('Missing UA KEP signature items');
   }
 
-  await markUaKepSessionSigned({
-    prisma,
-    recipientId,
-    signerInfo,
+  const persistedArtifacts = await prisma.$transaction(async (tx) => {
+    await markUaKepSessionSigned({
+      prisma: tx,
+      recipientId,
+      signerInfo,
+    });
+
+    return persistUaKepSignatureArtifacts({
+      prisma: tx,
+      input: {
+        session,
+        preparedItems,
+        signatures,
+        signerInfo,
+      },
+    });
   });
 
   const completionResult = await completeDocumentWithToken({
@@ -101,6 +114,7 @@ export const completeUaKepSigning = async ({
     ok: true,
     sessionId: session.id,
     signaturesAccepted: signatures.length,
+    signatureArtifactsStored: persistedArtifacts.count,
     status: 'signed',
     completionResult,
   };
