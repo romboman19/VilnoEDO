@@ -129,6 +129,7 @@ const readLimitedResponse = async (response: IncomingMessage, signal: AbortSigna
   const contentLengthValue = Array.isArray(contentLength) ? contentLength[0] : contentLength;
 
   if (contentLengthValue && Number.parseInt(contentLengthValue, 10) > PKI_PROXY_MAX_RESPONSE_BYTES) {
+    response.destroy(new Error('PKI upstream response is too large.'));
     throw new Error('PKI upstream response is too large.');
   }
 
@@ -158,8 +159,25 @@ const readLimitedResponse = async (response: IncomingMessage, signal: AbortSigna
 };
 
 const createPinnedLookup = (vettedAddress: VettedProxyAddress): NonNullable<RequestOptions['lookup']> =>
-  ((_, __, callback: (error: NodeJS.ErrnoException | null, address: string, family: number) => void) => {
-    callback(null, vettedAddress.address, vettedAddress.family);
+  ((_: string, options: unknown, callback?: unknown) => {
+    const lookupOptions =
+      typeof options === 'function' || options === null ? undefined : (options as { all?: boolean });
+    const resolvedCallback = (typeof options === 'function' ? options : callback) as
+      | ((error: Error | null, address: string, family: number) => void)
+      | ((error: Error | null, addresses: VettedProxyAddress[]) => void);
+
+    if (lookupOptions?.all) {
+      (resolvedCallback as (error: Error | null, addresses: VettedProxyAddress[]) => void)(null, [
+        vettedAddress,
+      ]);
+      return;
+    }
+
+    (resolvedCallback as (error: Error | null, address: string, family: number) => void)(
+      null,
+      vettedAddress.address,
+      vettedAddress.family,
+    );
   }) as NonNullable<RequestOptions['lookup']>;
 
 const requestUpstreamResponse = ({
@@ -269,10 +287,12 @@ export const handleUaKepPkiProxy = async (c: Context) => {
       const upstreamStatusCode = upstreamResponse.statusCode ?? 0;
 
       if (REDIRECT_STATUSES.has(upstreamStatusCode)) {
+        upstreamResponse.destroy();
         return c.text('PKI upstream redirects are not allowed.', 502);
       }
 
       if (upstreamStatusCode < 200 || upstreamStatusCode >= 300) {
+        upstreamResponse.destroy();
         return c.text(`PKI upstream error: ${upstreamStatusCode}`, 502);
       }
 
