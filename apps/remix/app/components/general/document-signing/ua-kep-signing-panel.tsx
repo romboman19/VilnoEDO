@@ -17,7 +17,7 @@ export type UaKepSigningPanelProps = {
 };
 
 export const UaKepSigningPanel = ({ recipientId, envelopeId, recipientToken }: UaKepSigningPanelProps) => {
-  const { signingMethod } = useSigningMethod('privatbank-jks');
+  const { signingMethod } = useSigningMethod('file-key');
   const { isPreparing, isCompleting, prepare, complete, lastPreparedSessionId } = useUaKepSigning({
     recipientId,
     envelopeId,
@@ -91,7 +91,7 @@ export const UaKepSigningPanel = ({ recipientId, envelopeId, recipientToken }: U
           <Trans>Український КЕП</Trans>
         </CardTitle>
         <CardDescription>
-          <Trans>Початковий signing panel для інтеграції JKS / токен / cloud flow у штатну архітектуру VilnoEDO.</Trans>
+          <Trans>Початковий signing panel для інтеграції файлового ключа, токена або cloud flow у штатну архітектуру VilnoEDO.</Trans>
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
