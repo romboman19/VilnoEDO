@@ -3,6 +3,7 @@ import type { PrismaClient } from '@documenso/prisma/client';
 
 import { ZUaKepSessionItemsSchema } from '../types/session';
 import { persistUaKepSignatureArtifacts } from './artifacts';
+import { createUaKepEvidencePackage } from './evidence-package';
 import { createPendingUaKepValidationReports } from './validation';
 import { markUaKepSessionSigned, verifyUaKepPreparedSession } from './session';
 
@@ -89,7 +90,7 @@ export const completeUaKepSigning = async ({
   }
 
   const persistenceResult = await prisma.$transaction(async (tx) => {
-    await markUaKepSessionSigned({
+    const signedSession = await markUaKepSessionSigned({
       prisma: tx,
       recipientId,
       signerInfo,
@@ -98,7 +99,7 @@ export const completeUaKepSigning = async ({
     const persistedArtifacts = await persistUaKepSignatureArtifacts({
       prisma: tx,
       input: {
-        session,
+        session: signedSession,
         preparedItems,
         signatures,
         signerInfo,
@@ -108,14 +109,23 @@ export const completeUaKepSigning = async ({
     const validationReports = await createPendingUaKepValidationReports({
       prisma: tx,
       input: {
-        session,
+        session: signedSession,
         artifacts: persistedArtifacts.artifacts,
+      },
+    });
+
+    const { evidencePackage } = await createUaKepEvidencePackage({
+      prisma: tx,
+      input: {
+        session: signedSession,
+        trustMaterialSnapshotId: validationReports.trustMaterialSnapshotId,
       },
     });
 
     return {
       persistedArtifacts,
       validationReports,
+      evidencePackage,
     };
   });
 
@@ -131,6 +141,8 @@ export const completeUaKepSigning = async ({
     signatureArtifactsStored: persistenceResult.persistedArtifacts.count,
     validationReportsCreated: persistenceResult.validationReports.count,
     trustMaterialSnapshotId: persistenceResult.validationReports.trustMaterialSnapshotId,
+    evidencePackageId: persistenceResult.evidencePackage.id,
+    evidencePackageSha256: persistenceResult.evidencePackage.packageSha256,
     status: 'signed',
     completionResult,
   };
