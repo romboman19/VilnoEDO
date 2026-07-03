@@ -7,6 +7,8 @@ import type { TUaKepSigningMethod } from '../types/signing-methods';
 
 export const UA_KEP_SESSION_TTL_MS = 15 * 60 * 1000;
 
+type TUaKepSessionPrismaClient = Pick<PrismaClient, 'uaKepSession'>;
+
 type TSignerInfo = {
   subjCN?: string;
   issuerCN?: string;
@@ -119,6 +121,9 @@ export const upsertUaKepPreparedSession = async ({
       status: 'prepared',
       signerInfo: null,
       signedAt: null,
+      signatureArtifacts: {
+        deleteMany: {},
+      },
     },
   });
 
@@ -134,7 +139,7 @@ export const markUaKepSessionSigned = async ({
   recipientId,
   signerInfo,
 }: {
-  prisma: PrismaClient;
+  prisma: TUaKepSessionPrismaClient;
   recipientId: number;
   signerInfo?: TSignerInfo | null;
 }) => {
