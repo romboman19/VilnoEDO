@@ -1,5 +1,5 @@
-import dns from 'node:dns/promises';
-import net from 'node:net';
+import { lookup } from 'node:dns/promises';
+import { isIP } from 'node:net';
 
 import type { Context } from 'hono';
 
@@ -47,7 +47,7 @@ const isPrivateIpv6 = (address: string) => {
 };
 
 const isPrivateIpAddress = (address: string) => {
-  const family = net.isIP(address);
+  const family = isIP(address);
 
   if (family === 4) {
     return isPrivateIpv4(address);
@@ -68,8 +68,8 @@ const isPrivateIpAddress = (address: string) => {
 
 const assertPublicProxyTarget = async (url: URL) => {
   const hostname = url.hostname.toLowerCase();
-  const literalAddressFamily = net.isIP(hostname);
-  const addresses = literalAddressFamily ? [{ address: hostname }] : await dns.lookup(hostname, { all: true, verbatim: true });
+  const literalAddressFamily = isIP(hostname);
+  const addresses = literalAddressFamily ? [{ address: hostname }] : await lookup(hostname, { all: true, verbatim: true });
 
   if (addresses.length === 0) {
     throw new Error('PKI proxy target did not resolve.');
