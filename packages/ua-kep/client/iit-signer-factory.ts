@@ -1,3 +1,5 @@
+/// <reference path="../types/iit-sdk.d.ts" />
+
 import { DigitalSignature, Models } from '@it-enterprise/digital-signature';
 
 const { DigitalSignatureSettings, DefaultCertificatesProvider } = Models;
