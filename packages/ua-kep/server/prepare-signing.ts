@@ -1,5 +1,6 @@
 import crypto from 'node:crypto';
 
+import { getFileServerSide } from '@documenso/lib/universal/upload/get-file.server';
 import type { PrismaClient } from '@documenso/prisma/client';
 import type { TUaKepSigningMethod } from '../types/signing-methods';
 import { upsertUaKepPreparedSession } from './session';
@@ -58,10 +59,18 @@ export const prepareUaKepSigning = async ({
     },
   });
 
-  const itemsJson = envelopeItems
-    .filter((item: any) => item.documentData)
-    .map((item: any, index: number) => {
-      const hashB64 = crypto.createHash('sha256').update(item.documentData.data).digest('base64');
+  const itemsWithData = envelopeItems.filter((item) => item.documentData);
+
+  // Hash the exact document bytes the recipient signs, not the raw storage
+  // column (which may hold base64 text or an S3 key).
+  const itemsJson = await Promise.all(
+    itemsWithData.map(async (item, index) => {
+      const documentBytes = await getFileServerSide({
+        type: item.documentData.type,
+        data: item.documentData.data,
+      });
+
+      const hashB64 = crypto.createHash('sha256').update(documentBytes).digest('base64');
 
       return {
         envelopeItemId: item.id,
@@ -69,7 +78,8 @@ export const prepareUaKepSigning = async ({
         hashB64,
         ordinal: index,
       };
-    });
+    }),
+  );
 
   const { session, sessionToken, callbackNonce } = await upsertUaKepPreparedSession({
     prisma,
