@@ -1,4 +1,5 @@
 import { completeDocumentWithToken } from '@documenso/lib/server-only/document/complete-document-with-token';
+import { getFileServerSide } from '@documenso/lib/universal/upload/get-file.server';
 import type { PrismaClient } from '@documenso/prisma/client';
 
 import { ZUaKepSessionItemsSchema } from '../types/session';
@@ -6,6 +7,11 @@ import { persistUaKepSignatureArtifacts } from './artifacts';
 import { getCaRegistry } from './ca-registry';
 import { createUaKepEvidencePackage } from './evidence-package';
 import { markUaKepSessionSigned, verifyUaKepPreparedSession } from './session';
+import {
+  isSignServiceConfigured,
+  type TRemoteVerificationResult,
+  verifyDetachedSignatureRemote,
+} from './sign-service-client';
 import { collectRegistryIssuerCns, runUaKepStructuralValidation } from './structural-validation';
 import { createUaKepValidationReports } from './validation';
 
@@ -112,8 +118,57 @@ export const completeUaKepSigning = async ({
     throw new Error(`UA KEP signature rejected by structural validation: ${failureCodes}`);
   }
 
+  // Second stage: full cryptographic verification through VilnoCheck-SignService
+  // (DSTU-4145, chain, trust material). Runs whenever the service is
+  // configured; any invalid or unverifiable signature rejects the completion.
+  const cryptoResults = new Map<string, TRemoteVerificationResult>();
+
+  if (isSignServiceConfigured()) {
+    const envelopeItems = await prisma.envelopeItem.findMany({
+      where: {
+        id: {
+          in: signatures.map((signature) => signature.envelopeItemId),
+        },
+      },
+      include: {
+        documentData: true,
+      },
+    });
+
+    const envelopeItemsById = new Map(envelopeItems.map((item) => [item.id, item]));
+
+    for (const signature of signatures) {
+      const envelopeItem = envelopeItemsById.get(signature.envelopeItemId);
+
+      if (!envelopeItem) {
+        throw new Error('UA KEP envelope item not found for cryptographic verification');
+      }
+
+      const documentBytes = await getFileServerSide({
+        type: envelopeItem.documentData.type,
+        data: envelopeItem.documentData.data,
+      });
+
+      const result = await verifyDetachedSignatureRemote({
+        documentBytes,
+        signatureBase64: signature.signatureB64,
+      });
+
+      if (!result.valid) {
+        throw new Error(
+          `UA KEP signature rejected by cryptographic verification: ${result.error ?? 'invalid signature'}`,
+        );
+      }
+
+      cryptoResults.set(signature.envelopeItemId, result);
+    }
+  }
+
   const verificationStatusByEnvelopeItemId = new Map(
-    verdicts.map((verdict) => [verdict.envelopeItemId, 'passed_structural']),
+    verdicts.map((verdict) => [
+      verdict.envelopeItemId,
+      cryptoResults.has(verdict.envelopeItemId) ? 'passed_cryptographic' : 'passed_structural',
+    ]),
   );
 
   const persistenceResult = await prisma.$transaction(async (tx) => {
@@ -140,6 +195,7 @@ export const completeUaKepSigning = async ({
         session: signedSession,
         artifacts: persistedArtifacts.artifacts,
         verdicts,
+        cryptoResults,
         validationTime,
       },
     });

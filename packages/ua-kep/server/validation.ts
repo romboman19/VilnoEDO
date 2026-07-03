@@ -2,10 +2,14 @@ import type { PrismaClient } from '@documenso/prisma/client';
 import type { Prisma } from '@prisma/client';
 
 import type { TUaKepPersistedArtifact } from './artifacts';
+import type { TRemoteVerificationResult } from './sign-service-client';
+import { toLegalClass } from './sign-service-client';
 import type { TStructuralVerdict } from './structural-validation';
 import { UA_KEP_STRUCTURAL_VALIDATOR_ID } from './structural-validation';
 
 type TValidationPrismaClient = Pick<PrismaClient, 'uaKepTrustMaterialSnapshot' | 'uaKepValidationReport'>;
+
+const UA_KEP_CRYPTO_VALIDATOR_ID = 'vilnocheck-sign-service';
 
 type TCreateReportsInput = {
   session: {
@@ -13,6 +17,7 @@ type TCreateReportsInput = {
   };
   artifacts: TUaKepPersistedArtifact[];
   verdicts: TStructuralVerdict[];
+  cryptoResults?: Map<string, TRemoteVerificationResult>;
   validationTime: Date;
 };
 
@@ -66,6 +71,7 @@ export const createUaKepValidationReports = async ({
     data: input.artifacts.map((artifact) => {
       const verdict = verdictsByEnvelopeItemId.get(artifact.envelopeItemId);
       const parsed = verdict?.parsed ?? null;
+      const crypto = input.cryptoResults?.get(artifact.envelopeItemId) ?? null;
 
       const enrichedSignerInfo = {
         ...(toJsonObject(artifact.signerInfo) ?? {}),
@@ -78,19 +84,35 @@ export const createUaKepValidationReports = async ({
               certNotAfter: parsed.signerCertificate.notAfter.toISOString(),
             }
           : {}),
+        ...(crypto
+          ? {
+              legalClass: toLegalClass(crypto.signatureClass),
+              cryptoSignerCn: crypto.signerCN,
+              cryptoIssuerCn: crypto.issuer,
+              cryptoCertSerial: crypto.certSerial,
+            }
+          : {}),
       };
+
+      // The delegation warning only applies while crypto verification has not
+      // actually run for this artifact.
+      const warnings = (verdict?.warnings ?? []).filter(
+        (warning) => !(crypto && warning.code === 'CRYPTOGRAPHIC_VALIDATION_DELEGATED'),
+      );
+
+      const status = crypto ? (crypto.valid ? 'passed' : 'failed') : (verdict?.status ?? 'pending');
 
       return {
         artifactId: artifact.id,
         trustMaterialSnapshotId: trustMaterialSnapshot.id,
-        status: verdict?.status ?? 'pending',
-        validator: UA_KEP_STRUCTURAL_VALIDATOR_ID,
-        validationKind: 'CADES_DETACHED_STRUCTURAL',
+        status,
+        validator: crypto ? UA_KEP_CRYPTO_VALIDATOR_ID : UA_KEP_STRUCTURAL_VALIDATOR_ID,
+        validationKind: crypto ? 'CADES_DETACHED_CRYPTO' : 'CADES_DETACHED_STRUCTURAL',
         checkedAt: input.validationTime,
         certificateStatus: verdict?.certificateStatus ?? null,
         signerInfo: toJsonObject(enrichedSignerInfo),
         validationErrors: verdict ? toJsonArray(verdict.errors) : undefined,
-        validationWarnings: verdict ? toJsonArray(verdict.warnings) : undefined,
+        validationWarnings: toJsonArray(warnings),
         rawReport: {
           envelopeId: artifact.envelopeId,
           recipientId: artifact.recipientId,
@@ -110,6 +132,21 @@ export const createUaKepValidationReports = async ({
                 signingTime: parsed.signingTime?.toISOString() ?? null,
                 certificateCount: parsed.certificateCount,
               }
+            : null,
+          crypto: crypto
+            ? JSON.parse(
+                JSON.stringify({
+                  valid: crypto.valid,
+                  skipped: crypto.skipped,
+                  signatureClass: crypto.signatureClass,
+                  legalClass: toLegalClass(crypto.signatureClass),
+                  signerCN: crypto.signerCN,
+                  signingTime: crypto.signingTime,
+                  certSerial: crypto.certSerial,
+                  issuer: crypto.issuer,
+                  validationReport: crypto.validationReport,
+                }),
+              )
             : null,
         },
       };
