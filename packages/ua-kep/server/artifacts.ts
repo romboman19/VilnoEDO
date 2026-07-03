@@ -41,6 +41,7 @@ type TPersistArtifactsInput = {
   preparedItems: TUaKepSessionItems;
   signatures: TSignatureInput[];
   signerInfo?: TSignerInfo | null;
+  verificationStatusByEnvelopeItemId?: Map<string, string>;
 };
 
 const hashSignatureBytes = (signatureBase64: string) => {
@@ -96,6 +97,7 @@ export const persistUaKepSignatureArtifacts = async ({
       signatureBase64: signature.signatureB64,
       signatureSha256: hashSignatureBytes(signature.signatureB64),
       documentHashB64: item.hashB64,
+      verificationStatus: input.verificationStatusByEnvelopeItemId?.get(item.envelopeItemId) ?? 'pending',
       ...(signerInfo ? { signerInfo } : {}),
     };
   });

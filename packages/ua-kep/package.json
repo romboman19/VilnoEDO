@@ -13,7 +13,9 @@
     "@documenso/lib": "*",
     "@documenso/prisma": "*",
     "@it-enterprise/digital-signature": "^1.3.17",
+    "asn1js": "^3.0.10",
     "fflate": "^0.8.2",
+    "pkijs": "^3.4.0",
     "hono": "^4.10.4",
     "zod": "^3.25.76"
   },

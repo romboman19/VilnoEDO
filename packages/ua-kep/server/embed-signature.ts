@@ -3,9 +3,11 @@ import type { PrismaClient } from '@documenso/prisma/client';
 
 import { ZUaKepSessionItemsSchema } from '../types/session';
 import { persistUaKepSignatureArtifacts } from './artifacts';
+import { getCaRegistry } from './ca-registry';
 import { createUaKepEvidencePackage } from './evidence-package';
-import { createPendingUaKepValidationReports } from './validation';
 import { markUaKepSessionSigned, verifyUaKepPreparedSession } from './session';
+import { collectRegistryIssuerCns, runUaKepStructuralValidation } from './structural-validation';
+import { createUaKepValidationReports } from './validation';
 
 export const completeUaKepSigning = async ({
   prisma,
@@ -89,6 +91,31 @@ export const completeUaKepSigning = async ({
     throw new Error('Missing UA KEP signature items');
   }
 
+  // Fail closed: structural validation must pass before anything is persisted
+  // or the recipient is marked signed. Registry read failures also reject.
+  const validationTime = new Date();
+  const caRegistry = await getCaRegistry();
+  const registryIssuerCns = collectRegistryIssuerCns(caRegistry);
+
+  const verdicts = runUaKepStructuralValidation({
+    preparedItems,
+    signatures,
+    registryIssuerCns,
+    validationTime,
+  });
+
+  const failedVerdicts = verdicts.filter((verdict) => verdict.status === 'failed');
+
+  if (failedVerdicts.length > 0) {
+    const failureCodes = failedVerdicts.flatMap((verdict) => verdict.errors.map((error) => error.code)).join(', ');
+
+    throw new Error(`UA KEP signature rejected by structural validation: ${failureCodes}`);
+  }
+
+  const verificationStatusByEnvelopeItemId = new Map(
+    verdicts.map((verdict) => [verdict.envelopeItemId, 'passed_structural']),
+  );
+
   const persistenceResult = await prisma.$transaction(async (tx) => {
     const signedSession = await markUaKepSessionSigned({
       prisma: tx,
@@ -103,14 +130,17 @@ export const completeUaKepSigning = async ({
         preparedItems,
         signatures,
         signerInfo,
+        verificationStatusByEnvelopeItemId,
       },
     });
 
-    const validationReports = await createPendingUaKepValidationReports({
+    const validationReports = await createUaKepValidationReports({
       prisma: tx,
       input: {
         session: signedSession,
         artifacts: persistedArtifacts.artifacts,
+        verdicts,
+        validationTime,
       },
     });
 
