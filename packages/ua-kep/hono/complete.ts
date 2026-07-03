@@ -8,6 +8,8 @@ const ZCompleteRequestSchema = z.object({
   recipientId: z.number().int().positive(),
   recipientToken: z.string().min(1),
   envelopeId: z.string().min(1),
+  sessionToken: z.string().min(1),
+  callbackNonce: z.string().min(1),
   signerInfo: z
     .object({
       subjCN: z.string().optional(),
@@ -21,7 +23,7 @@ const ZCompleteRequestSchema = z.object({
       envelopeItemId: z.string().min(1),
       signatureB64: z.string().min(1),
     }),
-  ),
+  ).min(1),
 });
 
 export const completeRoute = new Hono().post('/', async (c) => {
@@ -33,6 +35,8 @@ export const completeRoute = new Hono().post('/', async (c) => {
     recipientId: input.recipientId,
     recipientToken: input.recipientToken,
     envelopeId: input.envelopeId,
+    sessionToken: input.sessionToken,
+    callbackNonce: input.callbackNonce,
     signerInfo: input.signerInfo,
     signatures: input.signatures,
   });

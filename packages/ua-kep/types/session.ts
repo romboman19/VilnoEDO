@@ -25,9 +25,13 @@ export const ZUaKepSessionSchema = z.object({
   envelopeId: z.string(),
   signingMethod: ZUaKepSigningMethodSchema,
   signingTime: z.date(),
+  sessionTokenHash: z.string(),
+  callbackNonce: z.string(),
+  expiresAt: z.date(),
   itemsJson: ZUaKepSessionItemsSchema,
   signerInfo: ZUaKepSignerInfoSchema.nullish(),
   status: ZUaKepSessionStatusSchema,
+  signedAt: z.date().nullish(),
   recipientId: z.number().int(),
 });
 

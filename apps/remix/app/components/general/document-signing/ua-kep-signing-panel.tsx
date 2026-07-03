@@ -18,7 +18,15 @@ export type UaKepSigningPanelProps = {
 
 export const UaKepSigningPanel = ({ recipientId, envelopeId, recipientToken }: UaKepSigningPanelProps) => {
   const { signingMethod } = useSigningMethod('file-key');
-  const { isPreparing, isCompleting, prepare, complete, lastPreparedSessionId } = useUaKepSigning({
+  const {
+    isPreparing,
+    isCompleting,
+    prepare,
+    complete,
+    lastPreparedSessionId,
+    lastPreparedSessionToken,
+    lastPreparedCallbackNonce,
+  } = useUaKepSigning({
     recipientId,
     envelopeId,
     recipientToken,
@@ -82,6 +90,7 @@ export const UaKepSigningPanel = ({ recipientId, envelopeId, recipientToken }: U
     });
 
     setPrepareState('UA KEP signing flow completed');
+    setPreparedItems([]);
   };
 
   return (
@@ -144,7 +153,14 @@ export const UaKepSigningPanel = ({ recipientId, envelopeId, recipientToken }: U
             type="button"
             variant="secondary"
             onClick={() => void onComplete()}
-            disabled={isCompleting || !lastPreparedSessionId || !selectedFile || preparedItems.length === 0}
+            disabled={
+              isCompleting ||
+              !lastPreparedSessionId ||
+              !lastPreparedSessionToken ||
+              !lastPreparedCallbackNonce ||
+              !selectedFile ||
+              preparedItems.length === 0
+            }
           >
             <Trans>Підписати і завершити</Trans>
           </Button>
