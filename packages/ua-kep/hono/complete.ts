@@ -18,28 +18,42 @@ const ZCompleteRequestSchema = z.object({
       serial: z.string().optional(),
     })
     .nullish(),
-  signatures: z.array(
-    z.object({
-      envelopeItemId: z.string().min(1),
-      signatureB64: z.string().min(1),
-    }),
-  ).min(1),
+  signatures: z
+    .array(
+      z.object({
+        envelopeItemId: z.string().min(1),
+        signatureB64: z.string().min(1),
+      }),
+    )
+    .min(1),
 });
 
 export const completeRoute = new Hono().post('/', async (c) => {
   const body = await c.req.json();
-  const input = ZCompleteRequestSchema.parse(body);
+  const input = ZCompleteRequestSchema.safeParse(body);
 
-  const result = await completeUaKepSigning({
-    prisma,
-    recipientId: input.recipientId,
-    recipientToken: input.recipientToken,
-    envelopeId: input.envelopeId,
-    sessionToken: input.sessionToken,
-    callbackNonce: input.callbackNonce,
-    signerInfo: input.signerInfo,
-    signatures: input.signatures,
-  });
+  if (!input.success) {
+    return c.json({ ok: false, error: 'Invalid request' }, 400);
+  }
 
-  return c.json(result);
+  try {
+    const result = await completeUaKepSigning({
+      prisma,
+      recipientId: input.data.recipientId,
+      recipientToken: input.data.recipientToken,
+      envelopeId: input.data.envelopeId,
+      sessionToken: input.data.sessionToken,
+      callbackNonce: input.data.callbackNonce,
+      signerInfo: input.data.signerInfo,
+      signatures: input.data.signatures,
+    });
+
+    return c.json(result);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'UA KEP signing completion failed';
+
+    // Session, binding and validation rejections are client-addressable
+    // failures — surface the reason instead of a bare 500.
+    return c.json({ ok: false, error: message }, 422);
+  }
 });
