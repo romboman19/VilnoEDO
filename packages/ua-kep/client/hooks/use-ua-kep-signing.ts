@@ -13,6 +13,8 @@ export const useUaKepSigning = ({ recipientId, envelopeId, recipientToken, signi
   const [isPreparing, setIsPreparing] = useState(false);
   const [isCompleting, setIsCompleting] = useState(false);
   const [lastPreparedSessionId, setLastPreparedSessionId] = useState<string | null>(null);
+  const [lastPreparedSessionToken, setLastPreparedSessionToken] = useState<string | null>(null);
+  const [lastPreparedCallbackNonce, setLastPreparedCallbackNonce] = useState<string | null>(null);
 
   const prepare = async () => {
     setIsPreparing(true);
@@ -32,6 +34,8 @@ export const useUaKepSigning = ({ recipientId, envelopeId, recipientToken, signi
 
       const data = await response.json();
       setLastPreparedSessionId(data.sessionId ?? null);
+      setLastPreparedSessionToken(data.sessionToken ?? null);
+      setLastPreparedCallbackNonce(data.callbackNonce ?? null);
       return data;
     } finally {
       setIsPreparing(false);
@@ -46,10 +50,19 @@ export const useUaKepSigning = ({ recipientId, envelopeId, recipientToken, signi
       serial?: string;
     } | null;
     signatures: Array<{ envelopeItemId: string; signatureB64: string }>;
+    sessionToken?: string;
+    callbackNonce?: string;
   }) => {
     setIsCompleting(true);
 
     try {
+      const sessionToken = payload.sessionToken ?? lastPreparedSessionToken;
+      const callbackNonce = payload.callbackNonce ?? lastPreparedCallbackNonce;
+
+      if (!sessionToken || !callbackNonce) {
+        throw new Error('UA KEP session was not prepared');
+      }
+
       const response = await fetch('/api/ua-kep/complete', {
         method: 'POST',
         headers: {
@@ -59,6 +72,8 @@ export const useUaKepSigning = ({ recipientId, envelopeId, recipientToken, signi
           recipientId,
           recipientToken,
           envelopeId,
+          sessionToken,
+          callbackNonce,
           signerInfo: payload.signerInfo,
           signatures: payload.signatures,
         }),
@@ -78,6 +93,8 @@ export const useUaKepSigning = ({ recipientId, envelopeId, recipientToken, signi
     isPreparing,
     isCompleting,
     lastPreparedSessionId,
+    lastPreparedSessionToken,
+    lastPreparedCallbackNonce,
     prepare,
     complete,
   };

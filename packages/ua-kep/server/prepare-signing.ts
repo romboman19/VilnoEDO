@@ -17,6 +17,8 @@ export const prepareUaKepSigning = async ({
   recipientToken: string;
   signingMethod: TUaKepSigningMethod;
 }) => {
+  const now = new Date();
+
   const envelope = await prisma.envelope.findUnique({
     where: { id: envelopeId },
     select: { id: true },
@@ -24,6 +26,26 @@ export const prepareUaKepSigning = async ({
 
   if (!envelope) {
     throw new Error('Envelope not found');
+  }
+
+  const recipient = await prisma.recipient.findFirst({
+    where: {
+      id: recipientId,
+      envelopeId,
+      token: recipientToken,
+    },
+    select: {
+      id: true,
+      expiresAt: true,
+    },
+  });
+
+  if (!recipient) {
+    throw new Error('Recipient not found for UA KEP signing');
+  }
+
+  if (recipient.expiresAt && recipient.expiresAt <= now) {
+    throw new Error('Recipient signing link expired');
   }
 
   const envelopeItems = await prisma.envelopeItem.findMany({
@@ -49,19 +71,23 @@ export const prepareUaKepSigning = async ({
       };
     });
 
-  const session = await upsertUaKepPreparedSession({
+  const { session, sessionToken, callbackNonce } = await upsertUaKepPreparedSession({
     prisma,
     input: {
       recipientId,
       envelopeId,
       signingMethod,
       itemsJson,
-      signingTime: new Date(),
+      signingTime: now,
+      now,
     },
   });
 
   return {
     sessionId: session.id,
+    sessionToken,
+    callbackNonce,
+    expiresAt: session.expiresAt,
     signingTime: session.signingTime,
     recipientToken,
     items: itemsJson,

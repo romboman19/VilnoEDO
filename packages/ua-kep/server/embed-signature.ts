@@ -1,13 +1,16 @@
 import { completeDocumentWithToken } from '@documenso/lib/server-only/document/complete-document-with-token';
 import type { PrismaClient } from '@documenso/prisma/client';
 
-import { markUaKepSessionSigned } from './session';
+import { ZUaKepSessionItemsSchema } from '../types/session';
+import { markUaKepSessionSigned, verifyUaKepPreparedSession } from './session';
 
 export const completeUaKepSigning = async ({
   prisma,
   recipientId,
   recipientToken,
   envelopeId,
+  sessionToken,
+  callbackNonce,
   signerInfo,
   signatures,
 }: {
@@ -15,6 +18,8 @@ export const completeUaKepSigning = async ({
   recipientId: number;
   recipientToken: string;
   envelopeId: string;
+  sessionToken: string;
+  callbackNonce: string;
   signerInfo?: {
     subjCN?: string;
     issuerCN?: string;
@@ -26,14 +31,59 @@ export const completeUaKepSigning = async ({
     signatureB64: string;
   }>;
 }) => {
-  const session = await prisma.uaKepSession.findUnique({ where: { recipientId } });
+  const session = await prisma.uaKepSession.findUnique({
+    where: { recipientId },
+    include: {
+      recipient: {
+        select: {
+          token: true,
+          envelopeId: true,
+          expiresAt: true,
+        },
+      },
+    },
+  });
 
   if (!session) {
     throw new Error('UA KEP session not found');
   }
 
-  if (session.envelopeId !== envelopeId) {
-    throw new Error('Envelope mismatch');
+  if (session.recipient.token !== recipientToken || session.recipient.envelopeId !== envelopeId) {
+    throw new Error('Recipient mismatch');
+  }
+
+  const now = new Date();
+
+  if (session.recipient.expiresAt && session.recipient.expiresAt <= now) {
+    throw new Error('Recipient signing link expired');
+  }
+
+  verifyUaKepPreparedSession({
+    session,
+    envelopeId,
+    sessionToken,
+    callbackNonce,
+    now,
+  });
+
+  const preparedItems = ZUaKepSessionItemsSchema.parse(session.itemsJson);
+  const preparedEnvelopeItemIds = new Set(preparedItems.map((item) => item.envelopeItemId));
+  const signedEnvelopeItemIds = new Set<string>();
+
+  for (const signature of signatures) {
+    if (!preparedEnvelopeItemIds.has(signature.envelopeItemId)) {
+      throw new Error('UA KEP signature item mismatch');
+    }
+
+    if (signedEnvelopeItemIds.has(signature.envelopeItemId)) {
+      throw new Error('Duplicate UA KEP signature item');
+    }
+
+    signedEnvelopeItemIds.add(signature.envelopeItemId);
+  }
+
+  if (signedEnvelopeItemIds.size !== preparedEnvelopeItemIds.size) {
+    throw new Error('Missing UA KEP signature items');
   }
 
   await markUaKepSessionSigned({
