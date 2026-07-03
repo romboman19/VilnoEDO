@@ -36,3 +36,12 @@ export const isTspEnvelope = (envelope: { signatureLevel: string }): boolean =>
 
 export const isUaKepEnvelope = (envelope: { signatureLevel: string }): boolean =>
   envelope.signatureLevel === SignatureLevel.UA_KEP;
+
+/**
+ * Recipient-bound crypto envelopes require signer-specific external crypto
+ * flows instead of the instance-held SES seal. This intentionally groups CSC
+ * (`AES`/`QES`) and Ukrainian KEP/UEP (`UA_KEP`) without treating all of them
+ * as the same provider implementation.
+ */
+export const isRecipientBoundCryptoEnvelope = (envelope: { signatureLevel: string }): boolean =>
+  isTspEnvelope(envelope) || isUaKepEnvelope(envelope);
