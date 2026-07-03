@@ -935,11 +935,11 @@ NEXT_PRIVATE_DEFAULT_TIMEZONE=Europe/Kyiv
 
 ### Phase 4 — Evidence package
 
-- [ ] Manifest generator.
+- [x] Manifest generator.
 - [ ] Validation report PDF.
-- [ ] Audit log export.
-- [ ] ZIP builder.
-- [ ] Download endpoint.
+- [x] Audit log export.
+- [x] ZIP builder.
+- [x] Download endpoint.
 - [ ] Hash verification tests.
 
 ### Phase 5 — Production deployment

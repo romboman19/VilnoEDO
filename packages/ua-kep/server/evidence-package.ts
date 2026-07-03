@@ -91,7 +91,7 @@ const toCanonicalJson = (value: unknown): TCanonicalJson => {
   return null;
 };
 
-const canonicalStringify = (value: unknown) => {
+export const canonicalStringify = (value: unknown) => {
   return JSON.stringify(toCanonicalJson(value));
 };
 
