@@ -1,10 +1,10 @@
 # Технічне завдання: VilnoEDO — вільна українська система ЕДО
 
-**Статус:** Draft v0.1  
-**Дата:** 2026-07-03  
-**Репозиторій:** `romboman19/VilnoEDO`  
-**Пов'язаний сервіс:** `romboman19/VilnoCheck-SignService`  
-**Базова платформа:** fork Documenso  
+**Статус:** Draft v0.1
+**Дата:** 2026-07-03
+**Репозиторій:** `romboman19/VilnoEDO`
+**Пов'язаний сервіс:** `romboman19/VilnoCheck-SignService`
+**Базова платформа:** fork Documenso
 **Ціль:** self-hosted open-source аналог українського ЕДО з підтримкою КЕП/УЕП, без штучних paywall-обмежень платних функцій.
 
 > Документ є технічним ТЗ для розробки. Він не є юридичним висновком. Перед production-використанням потрібна окрема юридична перевірка відповідності Закону України «Про електронні документи та електронний документообіг», Закону України «Про електронну ідентифікацію та електронні довірчі послуги», профілям КЕП/УЕП, правилам КНЕДП, CAdES/PAdES/XAdES та вимогам архівного зберігання.
@@ -293,6 +293,11 @@ export const isRecipientBoundCryptoEnvelope = (envelope: { signatureLevel: strin
    - extension point;
    - реалізація можлива лише після підтвердження доступних API та правових умов.
 
+Сумісність реалізації:
+
+- canonical MVP IDs: `file-key`, `iit-token`, `privatbank-smartid`, `diia-signature`;
+- старі prototype IDs на кшталт `privatbank-jks` і `smartid` мають бути або замінені в коді до використання цього контракту, або прийматися лише як тимчасові aliases з нормалізацією до canonical IDs вище.
+
 ---
 
 ## 9. Дані та Prisma-моделі
@@ -309,7 +314,8 @@ model UaKepSession {
   envelopeId      String
   recipientId     Int      @unique
   signingMethod   String
-  signingTime     DateTime
+  preparedAt       DateTime @default(now())
+  signedAt         DateTime?
   status          String   @default("prepared")
   itemsJson       Json
   signerInfo      Json?
@@ -431,9 +437,17 @@ model UaEvidencePackage {
 5. Усі payloads мають мати `requestId`, `sessionId`, `nonce`, `createdAt`.
 6. Усі критичні запити логуються в audit log.
 
-### 10.2. VilnoEDO: створення signing session
+### 10.2. VilnoEDO: підготовка signing session
+
+Поточний MVP route:
+
+`POST /api/ua-kep/prepare`
+
+Майбутній compatibility alias:
 
 `POST /api/ua-kep/sessions`
+
+Клієнти не повинні залежати від `/sessions`, доки цей alias реально не змонтовано в app.
 
 Request:
 
@@ -441,9 +455,8 @@ Request:
 {
   "envelopeId": "env_123",
   "recipientId": 123,
-  "method": "iit-token",
-  "formats": ["CADES_DETACHED"],
-  "expiresInSeconds": 900
+  "recipientToken": "...",
+  "signingMethod": "iit-token"
 }
 ```
 
@@ -453,16 +466,14 @@ Response:
 {
   "ok": true,
   "sessionId": "uakep_session_123",
-  "signingUrl": "https://sign.example.com/session/<token>",
+  "preparedAt": "2026-07-03T11:45:00.000Z",
   "expiresAt": "2026-07-03T12:00:00.000Z",
   "items": [
     {
       "envelopeItemId": "item_1",
       "documentDataId": "docdata_1",
-      "fileName": "contract.pdf",
-      "mimeType": "application/pdf",
-      "sha256": "...",
-      "payloadUrl": "..."
+      "hashB64": "...",
+      "ordinal": 0
     }
   ]
 }
@@ -502,7 +513,12 @@ Request:
 {
   "sessionToken": "...",
   "format": "CADES_DETACHED",
-  "signatureBase64": "...",
+  "signatures": [
+    {
+      "envelopeItemId": "item_1",
+      "signatureBase64": "..."
+    }
+  ],
   "client": {
     "userAgent": "...",
     "platform": "...",
@@ -539,6 +555,7 @@ Response:
   },
   "artifacts": [
     {
+      "envelopeItemId": "item_1",
       "format": "CADES_DETACHED",
       "fileName": "contract.p7s",
       "sha256": "...",
@@ -550,7 +567,15 @@ Response:
 
 ### 10.5. Callback у VilnoEDO
 
+Поточний MVP route:
+
+`POST /api/ua-kep/complete`
+
+Майбутній compatibility alias:
+
 `POST /api/ua-kep/sessions/:sessionId/complete`
+
+Клієнти не повинні залежати від `/sessions/:sessionId/complete`, доки не змонтовано session-token auth і nonce validation.
 
 Request:
 
@@ -559,8 +584,21 @@ Request:
   "requestId": "...",
   "sessionId": "...",
   "recipientId": 123,
+  "recipientToken": "...",
   "envelopeId": "...",
-  "artifacts": [...],
+  "signerInfo": {
+    "subjCN": "...",
+    "issuerCN": "...",
+    "edrpou": "...",
+    "serial": "..."
+  },
+  "signatures": [
+    {
+      "envelopeItemId": "item_1",
+      "signatureB64": "...",
+      "format": "CADES_DETACHED"
+    }
+  ],
   "validation": {...},
   "nonce": "..."
 }
@@ -773,9 +811,16 @@ services:
 NEXT_PRIVATE_DATABASE_URL=
 NEXT_PRIVATE_DIRECT_DATABASE_URL=
 NEXT_PUBLIC_WEBAPP_URL=
-NEXT_PRIVATE_APP_SECRET=
-NEXT_PRIVATE_STORAGE_ENDPOINT=
-NEXT_PRIVATE_STORAGE_BUCKET=
+NEXTAUTH_SECRET=
+NEXT_PRIVATE_ENCRYPTION_KEY=
+NEXT_PRIVATE_ENCRYPTION_SECONDARY_KEY=
+NEXT_PUBLIC_UPLOAD_TRANSPORT=s3
+NEXT_PRIVATE_UPLOAD_ENDPOINT=
+NEXT_PRIVATE_UPLOAD_FORCE_PATH_STYLE=true
+NEXT_PRIVATE_UPLOAD_REGION=
+NEXT_PRIVATE_UPLOAD_BUCKET=
+NEXT_PRIVATE_UPLOAD_ACCESS_KEY_ID=
+NEXT_PRIVATE_UPLOAD_SECRET_ACCESS_KEY=
 NEXT_PRIVATE_SIGN_SERVICE_URL=
 NEXT_PRIVATE_SIGN_SERVICE_SECRET=
 NEXT_PRIVATE_UA_KEP_ENABLED=true
