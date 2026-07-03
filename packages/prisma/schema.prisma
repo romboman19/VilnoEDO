@@ -803,6 +803,7 @@ model UaKepSession {
   recipientId Int       @unique
   recipient   Recipient @relation(fields: [recipientId], references: [id], onDelete: Cascade)
   signatureArtifacts UaKepSignatureArtifact[]
+  trustMaterialSnapshots UaKepTrustMaterialSnapshot[]
 
   @@index([expiresAt])
   @@index([status])
@@ -835,6 +836,7 @@ model UaKepSignatureArtifact {
   signerInfo Json?
   verificationStatus String @default("pending")
   validationReport Json?
+  structuredValidationReport UaKepValidationReport?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -844,6 +846,63 @@ model UaKepSignatureArtifact {
   @@index([recipientId])
   @@index([envelopeItemId])
   @@index([verificationStatus])
+}
+
+/// Snapshot of the trust material context used or declared for UA KEP
+/// validation. Early MVP rows can record declared CA bundle inputs before the
+/// full validator starts producing cryptographic verdicts.
+model UaKepTrustMaterialSnapshot {
+  id String @id @default(cuid())
+
+  uaKepSessionId String?
+  uaKepSession   UaKepSession? @relation(fields: [uaKepSessionId], references: [id], onDelete: Cascade)
+
+  source String
+  status String @default("declared")
+  caRegistryUrl String?
+  caBundleUrl String?
+  caRegistrySha256 String?
+  caBundleSha256 String?
+  rawSnapshot Json?
+
+  capturedAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  validationReports UaKepValidationReport[]
+
+  @@index([uaKepSessionId])
+  @@index([capturedAt])
+  @@index([status])
+}
+
+/// Structured validation report for one accepted UA KEP signature artifact.
+/// A pending row is created at completion time; later validator integration can
+/// update the same row with the final certificate and signature verdict.
+model UaKepValidationReport {
+  id String @id @default(cuid())
+
+  artifactId String @unique
+  artifact   UaKepSignatureArtifact @relation(fields: [artifactId], references: [id], onDelete: Cascade)
+
+  trustMaterialSnapshotId String?
+  trustMaterialSnapshot   UaKepTrustMaterialSnapshot? @relation(fields: [trustMaterialSnapshotId], references: [id], onDelete: SetNull)
+
+  status String @default("pending")
+  validator String
+  validationKind String @default("CADES_DETACHED")
+  checkedAt DateTime?
+  signerInfo Json?
+  certificateStatus String?
+  validationErrors Json?
+  validationWarnings Json?
+  rawReport Json?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([trustMaterialSnapshotId])
+  @@index([status])
+  @@index([createdAt])
 }
 
 model CscSession {

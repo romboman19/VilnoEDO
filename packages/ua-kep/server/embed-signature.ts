@@ -3,6 +3,7 @@ import type { PrismaClient } from '@documenso/prisma/client';
 
 import { ZUaKepSessionItemsSchema } from '../types/session';
 import { persistUaKepSignatureArtifacts } from './artifacts';
+import { createPendingUaKepValidationReports } from './validation';
 import { markUaKepSessionSigned, verifyUaKepPreparedSession } from './session';
 
 export const completeUaKepSigning = async ({
@@ -87,14 +88,14 @@ export const completeUaKepSigning = async ({
     throw new Error('Missing UA KEP signature items');
   }
 
-  const persistedArtifacts = await prisma.$transaction(async (tx) => {
+  const persistenceResult = await prisma.$transaction(async (tx) => {
     await markUaKepSessionSigned({
       prisma: tx,
       recipientId,
       signerInfo,
     });
 
-    return persistUaKepSignatureArtifacts({
+    const persistedArtifacts = await persistUaKepSignatureArtifacts({
       prisma: tx,
       input: {
         session,
@@ -103,6 +104,19 @@ export const completeUaKepSigning = async ({
         signerInfo,
       },
     });
+
+    const validationReports = await createPendingUaKepValidationReports({
+      prisma: tx,
+      input: {
+        session,
+        artifacts: persistedArtifacts.artifacts,
+      },
+    });
+
+    return {
+      persistedArtifacts,
+      validationReports,
+    };
   });
 
   const completionResult = await completeDocumentWithToken({
@@ -114,7 +128,9 @@ export const completeUaKepSigning = async ({
     ok: true,
     sessionId: session.id,
     signaturesAccepted: signatures.length,
-    signatureArtifactsStored: persistedArtifacts.count,
+    signatureArtifactsStored: persistenceResult.persistedArtifacts.count,
+    validationReportsCreated: persistenceResult.validationReports.count,
+    trustMaterialSnapshotId: persistenceResult.validationReports.trustMaterialSnapshotId,
     status: 'signed',
     completionResult,
   };

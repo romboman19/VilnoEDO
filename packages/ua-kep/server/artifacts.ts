@@ -6,6 +6,19 @@ import type { TUaKepSessionItems } from '../types/session';
 
 type TArtifactPrismaClient = Pick<PrismaClient, 'uaKepSignatureArtifact'>;
 
+export type TUaKepPersistedArtifact = {
+  id: string;
+  envelopeId: string;
+  recipientId: number;
+  uaKepSessionId: string;
+  envelopeItemId: string;
+  documentDataId: string;
+  signingMethod: string;
+  signatureSha256: string;
+  documentHashB64: string;
+  signerInfo: unknown;
+};
+
 type TSignerInfo = {
   subjCN?: string;
   issuerCN?: string;
@@ -93,7 +106,33 @@ export const persistUaKepSignatureArtifacts = async ({
     },
   });
 
-  return prisma.uaKepSignatureArtifact.createMany({
+  const result = await prisma.uaKepSignatureArtifact.createMany({
     data,
   });
+
+  const artifacts = await prisma.uaKepSignatureArtifact.findMany({
+    where: {
+      uaKepSessionId: input.session.id,
+    },
+    select: {
+      id: true,
+      envelopeId: true,
+      recipientId: true,
+      uaKepSessionId: true,
+      envelopeItemId: true,
+      documentDataId: true,
+      signingMethod: true,
+      signatureSha256: true,
+      documentHashB64: true,
+      signerInfo: true,
+    },
+    orderBy: {
+      envelopeItemId: 'asc',
+    },
+  });
+
+  return {
+    count: result.count,
+    artifacts,
+  };
 };
