@@ -486,6 +486,7 @@ model Envelope {
 
   envelopeAttachments EnvelopeAttachment[]
   uaKepSignatureArtifacts UaKepSignatureArtifact[]
+  uaKepEvidencePackages UaKepEvidencePackage[]
 
   @@index([type])
   @@index([status])
@@ -660,6 +661,7 @@ model Recipient {
   cscSession    CscSession?
   uaKepSession  UaKepSession?
   uaKepSignatureArtifacts UaKepSignatureArtifact[]
+  uaKepEvidencePackages UaKepEvidencePackage[]
 
   @@index([token])
   @@index([email])
@@ -804,6 +806,7 @@ model UaKepSession {
   recipient   Recipient @relation(fields: [recipientId], references: [id], onDelete: Cascade)
   signatureArtifacts UaKepSignatureArtifact[]
   trustMaterialSnapshots UaKepTrustMaterialSnapshot[]
+  evidencePackage UaKepEvidencePackage?
 
   @@index([expiresAt])
   @@index([status])
@@ -869,6 +872,7 @@ model UaKepTrustMaterialSnapshot {
   updatedAt DateTime @updatedAt
 
   validationReports UaKepValidationReport[]
+  evidencePackages UaKepEvidencePackage[]
 
   @@index([uaKepSessionId])
   @@index([capturedAt])
@@ -902,6 +906,41 @@ model UaKepValidationReport {
 
   @@index([trustMaterialSnapshotId])
   @@index([status])
+  @@index([createdAt])
+}
+
+/// Stable evidence index for one completed UA KEP signing session.
+/// The initial MVP stores a canonical JSON manifest and its SHA-256 digest in
+/// the database; later phases can export the same manifest plus binaries as ZIP.
+model UaKepEvidencePackage {
+  id String @id @default(cuid())
+
+  envelopeId String
+  envelope   Envelope @relation(fields: [envelopeId], references: [id], onDelete: Cascade)
+
+  recipientId Int
+  recipient   Recipient @relation(fields: [recipientId], references: [id], onDelete: Cascade)
+
+  uaKepSessionId String @unique
+  uaKepSession   UaKepSession @relation(fields: [uaKepSessionId], references: [id], onDelete: Cascade)
+
+  trustMaterialSnapshotId String?
+  trustMaterialSnapshot   UaKepTrustMaterialSnapshot? @relation(fields: [trustMaterialSnapshotId], references: [id], onDelete: SetNull)
+
+  packageType String @default("UA_KEP_EVIDENCE")
+  packageVersion Int @default(1)
+  packageSha256 String
+  manifestJson Json
+  artifactCount Int
+  validationReportCount Int
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([envelopeId])
+  @@index([recipientId])
+  @@index([trustMaterialSnapshotId])
+  @@index([packageSha256])
   @@index([createdAt])
 }
 
