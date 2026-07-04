@@ -5,10 +5,20 @@ import { Label } from '@documenso/ui/primitives/label';
 import { Trans } from '@lingui/react/macro';
 import { useSigningMethod } from '@vilnoedo/ua-kep/client/hooks/use-signing-method';
 import { type TUaKepSigningStatus, useUaKepSigning } from '@vilnoedo/ua-kep/client/hooks/use-ua-kep-signing';
-import { createIitSigner } from '@vilnoedo/ua-kep/client/iit-signer-factory';
-import { readJksContainer, type TJksKeyEntry, unlockJksKey } from '@vilnoedo/ua-kep/client/jks-reader';
-import { signPreparedHashes } from '@vilnoedo/ua-kep/client/sign-hashes';
+import type { TJksKeyEntry } from '@vilnoedo/ua-kep/client/jks-reader';
 import { useEffect, useState } from 'react';
+
+// The IIT signing SDK is browser-only and must never be evaluated during SSR.
+// Load it lazily, only when the direct in-browser JKS fallback is actually used.
+const loadIitClient = async () => {
+  const [{ createIitSigner }, { readJksContainer, unlockJksKey }, { signPreparedHashes }] = await Promise.all([
+    import('@vilnoedo/ua-kep/client/iit-signer-factory'),
+    import('@vilnoedo/ua-kep/client/jks-reader'),
+    import('@vilnoedo/ua-kep/client/sign-hashes'),
+  ]);
+
+  return { createIitSigner, readJksContainer, unlockJksKey, signPreparedHashes };
+};
 
 export type UaKepSigningPanelProps = {
   recipientId: number;
@@ -159,6 +169,7 @@ export const UaKepSigningPanel = ({ recipientId, envelopeId, recipientToken }: U
 
     setErrorMessage('');
 
+    const { createIitSigner, readJksContainer } = await loadIitClient();
     const { sdk } = createIitSigner();
     const keyInfo = await readJksContainer(sdk, file);
     setSelectedFile(file);
@@ -188,6 +199,7 @@ export const UaKepSigningPanel = ({ recipientId, envelopeId, recipientToken }: U
     setErrorMessage('');
 
     try {
+      const { createIitSigner, unlockJksKey, signPreparedHashes } = await loadIitClient();
       const { sdk } = createIitSigner();
 
       await unlockJksKey(sdk, selectedFile, selectedKeyIndex, password);
