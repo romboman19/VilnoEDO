@@ -106,10 +106,12 @@ export const UaKepSigningPanel = ({ recipientId, envelopeId, recipientToken }: U
   const {
     isPreparing,
     isCompleting,
+    isStartingSignService,
     prepare,
     complete,
     fetchStatus,
     getEvidenceUrl,
+    startSignServiceRedirect,
     lastPreparedSessionId,
     lastPreparedSessionToken,
     lastPreparedCallbackNonce,
@@ -139,6 +141,16 @@ export const UaKepSigningPanel = ({ recipientId, envelopeId, recipientToken }: U
         // Status is a progressive enhancement; the signing form still works.
       });
   }, [fetchStatus]);
+
+  const onSignWithSignService = async () => {
+    setErrorMessage('');
+
+    try {
+      await startSignServiceRedirect();
+    } catch (error) {
+      setErrorMessage(error instanceof Error ? error.message : 'Не вдалося перейти до підписання в SignService');
+    }
+  };
 
   const onFileSelected = async (file: File | null) => {
     if (!file) {
@@ -223,6 +235,25 @@ export const UaKepSigningPanel = ({ recipientId, envelopeId, recipientToken }: U
           <UaKepSigningResult status={signingStatus} getEvidenceUrl={getEvidenceUrl} />
         ) : (
           <>
+            <div className="space-y-2 rounded-md border border-blue-300 bg-white/60 p-3">
+              <p className="font-medium text-sm">
+                <Trans>Підписати через VilnoCheck-SignService</Trans>
+              </p>
+              <p className="text-muted-foreground text-sm">
+                <Trans>
+                  Ви перейдете на захищений сервіс підпису, де підпишете документ КЕП (файловий ключ, токен або
+                  SmartID). Ключ і пароль не передаються у VilnoEDO.
+                </Trans>
+              </p>
+              <Button type="button" onClick={() => void onSignWithSignService()} disabled={isStartingSignService}>
+                <Trans>Підписати КЕП</Trans>
+              </Button>
+            </div>
+
+            <div className="text-center text-muted-foreground text-xs">
+              <Trans>або файловим ключем безпосередньо тут</Trans>
+            </div>
+
             <div className="space-y-2">
               <Label htmlFor="ua-kep-jks-file">
                 <Trans>Файл ключа JKS</Trans>

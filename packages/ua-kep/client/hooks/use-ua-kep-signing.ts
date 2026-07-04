@@ -176,9 +176,40 @@ export const useUaKepSigning = ({
     [recipientId, recipientToken, envelopeId],
   );
 
+  const [isStartingSignService, setIsStartingSignService] = useState(false);
+
+  // Hand the document to VilnoCheck-SignService and redirect the user to sign
+  // there. The signed result returns via the authenticated HMAC callback.
+  const startSignServiceRedirect = async () => {
+    setIsStartingSignService(true);
+
+    try {
+      const response = await fetch('/api/ua-kep/sign-service/start', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ recipientId, envelopeId, recipientToken, signingMethod }),
+      });
+
+      if (!response.ok) {
+        throw new Error(await readErrorMessage(response, 'Не вдалося почати підписання в SignService'));
+      }
+
+      const data = await response.json();
+
+      if (!data.signingUrl) {
+        throw new Error('SignService не повернув посилання для підпису');
+      }
+
+      window.location.href = data.signingUrl;
+    } finally {
+      setIsStartingSignService(false);
+    }
+  };
+
   return {
     isPreparing,
     isCompleting,
+    isStartingSignService,
     lastPreparedSessionId,
     lastPreparedSessionToken,
     lastPreparedCallbackNonce,
@@ -186,5 +217,6 @@ export const useUaKepSigning = ({
     complete,
     fetchStatus,
     getEvidenceUrl,
+    startSignServiceRedirect,
   };
 };
