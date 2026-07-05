@@ -1,4 +1,5 @@
 import { extractPostHogConfig } from '@documenso/lib/constants/feature-flags';
+import { APP_I18N_OPTIONS } from '@documenso/lib/constants/i18n';
 import { dynamicActivate } from '@documenso/lib/utils/i18n';
 import { i18n } from '@lingui/core';
 import { detect, fromHtmlTag } from '@lingui/detect-locale';
@@ -27,7 +28,7 @@ function PosthogInit() {
 }
 
 async function main() {
-  const locale = detect(fromHtmlTag('lang')) || 'en';
+  const locale = detect(fromHtmlTag('lang')) || APP_I18N_OPTIONS.fallbackLang;
 
   await dynamicActivate(locale);
 

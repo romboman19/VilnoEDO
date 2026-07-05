@@ -1,4 +1,5 @@
 import { DEFAULT_DOCUMENT_DATE_FORMAT } from '@documenso/lib/constants/date-formats';
+import { APP_I18N_OPTIONS } from '@documenso/lib/constants/i18n';
 import { DEFAULT_DOCUMENT_TIME_ZONE } from '@documenso/lib/constants/time-zones';
 import { ZDocumentEmailSettingsSchema } from '@documenso/lib/types/document-email';
 import { Button } from '@documenso/ui/primitives/button';
@@ -58,7 +59,7 @@ export const ConfigureDocumentView = ({
         dateFormat: defaultValues?.meta?.dateFormat || DEFAULT_DOCUMENT_DATE_FORMAT,
         timezone: defaultValues?.meta?.timezone || DEFAULT_DOCUMENT_TIME_ZONE,
         redirectUrl: defaultValues?.meta?.redirectUrl || '',
-        language: defaultValues?.meta?.language || 'en',
+        language: defaultValues?.meta?.language || APP_I18N_OPTIONS.fallbackLang,
         signatureTypes: defaultValues?.meta?.signatureTypes || [],
         signingOrder: defaultValues?.meta?.signingOrder || DocumentSigningOrder.PARALLEL,
         allowDictateNextSigner: defaultValues?.meta?.allowDictateNextSigner || false,
