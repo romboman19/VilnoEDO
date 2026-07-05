@@ -35,6 +35,7 @@ export const SignFieldSignatureDialog = createCallable<SignFieldSignatureDialogP
         ? [
             createUaKepSignatureTab({
               uaKepSigning,
+              onSignatureApply: (value) => call.end(value),
               onSignatureComplete: setLocalSignature,
             }),
           ]

@@ -28,6 +28,7 @@ import type { EnvelopeIdOptions } from '../../utils/envelope';
 import { mapSecondaryIdToDocumentId, unsafeBuildEnvelopeIdQuery } from '../../utils/envelope';
 import { assertRecipientNotExpired } from '../../utils/recipients';
 import { getIsRecipientsTurnToSign } from '../recipient/get-is-recipient-turn';
+import { createUaKepSignatureAppearanceImage } from '../ua-kep/signature-appearance';
 import { triggerWebhook } from '../webhooks/trigger/trigger-webhook';
 import { isRecipientAuthorized } from './is-recipient-authorized';
 
@@ -182,22 +183,29 @@ export const completeDocumentWithToken = async ({
   const requiresUaKepSignature =
     isUaKepEnvelope(envelope) && fields.some((field) => field.type === FieldType.SIGNATURE);
 
-  if (requiresUaKepSignature) {
-    const uaKepSession = await prisma.uaKepSession.findUnique({
-      where: {
-        recipientId: recipient.id,
-      },
-      select: {
-        status: true,
-        signedAt: true,
-      },
-    });
+  const uaKepSession = requiresUaKepSignature
+    ? await prisma.uaKepSession.findUnique({
+        where: {
+          recipientId: recipient.id,
+        },
+        select: {
+          status: true,
+          signedAt: true,
+          signingMethod: true,
+          signerInfo: true,
+          evidencePackage: {
+            select: {
+              packageSha256: true,
+            },
+          },
+        },
+      })
+    : null;
 
-    if (!uaKepSession || uaKepSession.status !== 'signed' || !uaKepSession.signedAt) {
-      throw new AppError(AppErrorCode.INVALID_BODY, {
-        message: 'UA KEP signing is required before completing this document',
-      });
-    }
+  if (requiresUaKepSignature && (!uaKepSession || uaKepSession.status !== 'signed' || !uaKepSession.signedAt)) {
+    throw new AppError(AppErrorCode.INVALID_BODY, {
+      message: 'UA KEP signing is required before completing this document',
+    });
   }
 
   // This should be scoped to the current recipient.
@@ -229,6 +237,92 @@ export const completeDocumentWithToken = async ({
   if (!recipientEmail) {
     throw new AppError(AppErrorCode.INVALID_BODY, {
       message: 'Recipient email is required',
+    });
+  }
+
+  const uninsertedUaKepSignatureFields =
+    uaKepSession?.status === 'signed'
+      ? fields.filter((field) => field.type === FieldType.SIGNATURE && !field.inserted)
+      : [];
+
+  if (uninsertedUaKepSignatureFields.length > 0) {
+    const signatureImageAsBase64 = await createUaKepSignatureAppearanceImage({
+      manifestSha256: uaKepSession?.evidencePackage?.packageSha256 ?? null,
+      signedAt: uaKepSession?.signedAt ?? null,
+      signerInfo: uaKepSession?.signerInfo,
+      signingMethod: uaKepSession?.signingMethod ?? null,
+      timeZone: envelope.documentMeta?.timezone,
+    });
+
+    await prisma.$transaction(async (tx) => {
+      await tx.field.updateMany({
+        where: {
+          id: {
+            in: uninsertedUaKepSignatureFields.map((field) => field.id),
+          },
+        },
+        data: {
+          customText: '',
+          inserted: true,
+        },
+      });
+
+      for (const field of uninsertedUaKepSignatureFields) {
+        await tx.signature.upsert({
+          where: {
+            fieldId: field.id,
+          },
+          create: {
+            fieldId: field.id,
+            recipientId: field.recipientId,
+            signatureImageAsBase64,
+            typedSignature: null,
+          },
+          update: {
+            signatureImageAsBase64,
+            typedSignature: null,
+          },
+        });
+      }
+
+      await tx.documentAuditLog.createMany({
+        data: uninsertedUaKepSignatureFields.map((field) =>
+          createDocumentAuditLogData({
+            type: DOCUMENT_AUDIT_LOG_TYPE.DOCUMENT_FIELD_INSERTED,
+            envelopeId: envelope.id,
+            user: {
+              email: recipientEmail,
+              name: recipientName,
+            },
+            requestMetadata,
+            data: {
+              recipientEmail,
+              recipientId: recipient.id,
+              recipientName,
+              recipientRole: recipient.role,
+              fieldId: field.secondaryId,
+              field: {
+                type: FieldType.SIGNATURE,
+                data: signatureImageAsBase64,
+              },
+            },
+          }),
+        ),
+      });
+    });
+
+    const insertedUaKepSignatureFieldIds = new Set(uninsertedUaKepSignatureFields.map((field) => field.id));
+
+    fields = fields.map((field) => {
+      if (insertedUaKepSignatureFieldIds.has(field.id)) {
+        return {
+          ...field,
+          customText: '',
+          inserted: true,
+        };
+      }
+
+      return field;
     });
   }
 

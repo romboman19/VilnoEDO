@@ -92,17 +92,6 @@ export const DocumentSigningSignatureField = ({
     return 'signed-text';
   }, [field.inserted, signature?.signatureImageAsBase64]);
 
-  const externalTabs =
-    uaKepSigning && uaKepSignatureEnabled !== false
-      ? [
-          createUaKepSignatureTab({
-            uaKepSigning,
-            hasValue: Boolean(localSignature),
-            onSignatureComplete: setLocalSignature,
-          }),
-        ]
-      : undefined;
-
   const onPreSign = () => {
     if (!providedSignature) {
       setShowSignatureModal(true);
@@ -180,6 +169,29 @@ export const DocumentSigningSignatureField = ({
       });
     }
   };
+
+  const onUaKepSignatureApply = async (value: string) => {
+    setLocalSignature(value);
+    setShowSignatureModal(false);
+    setProvidedSignature(value);
+
+    await executeActionAuthProcedure({
+      onReauthFormSubmit: async (authOptions) => await onSign(authOptions, value),
+      actionTarget: field.type,
+    });
+  };
+
+  const externalTabs =
+    uaKepSigning && uaKepSignatureEnabled !== false
+      ? [
+          createUaKepSignatureTab({
+            uaKepSigning,
+            hasValue: Boolean(localSignature),
+            onSignatureApply: onUaKepSignatureApply,
+            onSignatureComplete: setLocalSignature,
+          }),
+        ]
+      : undefined;
 
   const onRemove = async () => {
     try {

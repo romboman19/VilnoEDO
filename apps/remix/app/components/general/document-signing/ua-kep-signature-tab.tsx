@@ -33,6 +33,7 @@ export type UaKepSigningContext = {
 
 type UaKepSignatureTabProps = UaKepSigningContext & {
   onSignatureComplete: (value: string) => void;
+  onSignatureApply?: (value: string) => void | Promise<void>;
 };
 
 type UaKepSigningMode = 'file-key' | 'hardware-key' | 'cloud';
@@ -372,7 +373,7 @@ const UaKepSigningResult = ({
   status,
 }: {
   getEvidenceUrl: (evidencePackageId: string, kind: 'manifest' | 'archive' | 'pades') => string;
-  onUseSignature: () => void;
+  onUseSignature: () => void | Promise<void>;
   status: TUaKepSigningStatus;
 }) => {
   const signerCn = getSignerCommonName(status.signerInfo);
@@ -390,8 +391,8 @@ const UaKepSigningResult = ({
       </div>
 
       <div className="flex flex-wrap gap-2">
-        <Button type="button" size="sm" onClick={onUseSignature}>
-          <Trans>Insert into signature field</Trans>
+        <Button type="button" size="sm" onClick={() => void onUseSignature()}>
+          <Trans>Use signature</Trans>
         </Button>
 
         {evidencePackageId && hasPades ? (
@@ -416,6 +417,7 @@ const UaKepSigningResult = ({
 
 const UaKepSignatureTab = ({
   envelopeId,
+  onSignatureApply,
   onSignatureComplete,
   recipientId,
   recipientToken,
@@ -563,6 +565,8 @@ const UaKepSignatureTab = ({
       if (signatureImage) {
         onSignatureComplete(signatureImage);
       }
+
+      return signatureImage;
     },
     [fetchEvidenceManifest, onSignatureComplete],
   );
@@ -729,7 +733,11 @@ const UaKepSignatureTab = ({
 
       const status = await fetchStatus();
       setSigningStatus(status);
-      await applySignatureFromStatus(status);
+      const signatureImage = await applySignatureFromStatus(status);
+
+      if (signatureImage) {
+        await onSignatureApply?.(signatureImage);
+      }
     } catch (error) {
       setErrorMessage(getErrorMessage(error, 'Failed to complete signing'));
     } finally {
@@ -911,7 +919,13 @@ const UaKepSignatureTab = ({
         <UaKepSigningResult
           status={signingStatus}
           getEvidenceUrl={getEvidenceUrl}
-          onUseSignature={() => void applySignatureFromStatus(signingStatus)}
+          onUseSignature={async () => {
+            const signatureImage = await applySignatureFromStatus(signingStatus);
+
+            if (signatureImage) {
+              await onSignatureApply?.(signatureImage);
+            }
+          }}
         />
       ) : null}
 
@@ -1200,10 +1214,12 @@ const UaKepSignatureTab = ({
 
 export const createUaKepSignatureTab = ({
   hasValue,
+  onSignatureApply,
   onSignatureComplete,
   uaKepSigning,
 }: {
   hasValue?: boolean;
+  onSignatureApply?: (value: string) => void | Promise<void>;
   onSignatureComplete: (value: string) => void;
   uaKepSigning: UaKepSigningContext;
 }): SignaturePadExternalTab => ({
@@ -1215,6 +1231,12 @@ export const createUaKepSignatureTab = ({
       <Trans>QES/AES</Trans>
     </>
   ),
-  content: <UaKepSignatureTab {...uaKepSigning} onSignatureComplete={onSignatureComplete} />,
+  content: (
+    <UaKepSignatureTab
+      {...uaKepSigning}
+      onSignatureApply={onSignatureApply}
+      onSignatureComplete={onSignatureComplete}
+    />
+  ),
   onSelect: () => onSignatureComplete(''),
 });
