@@ -490,17 +490,7 @@ export default function EmbedPlaygroundPage() {
               style={{ width: '100%', padding: '4px', fontSize: '12px' }}
             >
               <option value="">Default (en)</option>
-              <option value="de">German (de)</option>
               <option value="en">English (en)</option>
-              <option value="es">Spanish (es)</option>
-              <option value="fr">French (fr)</option>
-              <option value="it">Italian (it)</option>
-              <option value="ja">Japanese (ja)</option>
-              <option value="ko">Korean (ko)</option>
-              <option value="nl">Dutch (nl)</option>
-              <option value="pl">Polish (pl)</option>
-              <option value="pt-BR">Portuguese - Brazil (pt-BR)</option>
-              <option value="zh">Chinese (zh)</option>
             </select>
           </div>
 

@@ -23,49 +23,9 @@ type SupportedLanguage = {
 };
 
 export const SUPPORTED_LANGUAGES: Record<string, SupportedLanguage> = {
-  de: {
-    short: 'de',
-    full: msg`German`,
-  },
   en: {
     short: 'en',
     full: msg`English`,
-  },
-  fr: {
-    short: 'fr',
-    full: msg`French`,
-  },
-  es: {
-    short: 'es',
-    full: msg`Spanish`,
-  },
-  it: {
-    short: 'it',
-    full: msg`Italian`,
-  },
-  nl: {
-    short: 'nl',
-    full: msg`Dutch`,
-  },
-  pl: {
-    short: 'pl',
-    full: msg`Polish`,
-  },
-  'pt-BR': {
-    short: 'pt-BR',
-    full: msg`Portuguese (Brazil)`,
-  },
-  ja: {
-    short: 'ja',
-    full: msg`Japanese`,
-  },
-  ko: {
-    short: 'ko',
-    full: msg`Korean`,
-  },
-  zh: {
-    short: 'zh',
-    full: msg`Chinese`,
   },
 } satisfies Record<SupportedLanguageCodes, SupportedLanguage>;
 
