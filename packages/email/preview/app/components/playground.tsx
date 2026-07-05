@@ -13,6 +13,7 @@ const GROUP_ORDER = ['Documents', 'Recipients', 'Organisations', 'Teams', 'Accou
 
 const LANGUAGE_LABELS: Record<string, string> = {
   en: 'English',
+  uk: 'Ukrainian',
 };
 
 const DEFAULT_COLORS = {

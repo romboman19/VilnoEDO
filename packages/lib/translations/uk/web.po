@@ -1,36 +1,36 @@
 msgid ""
 msgstr ""
-"POT-Creation-Date: 2024-07-24 13:01+1000\n"
+"POT-Creation-Date: 2026-07-05 21:10+0300\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: @lingui/cli\n"
-"Language: en\n"
+"Language: uk\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : 2);\n"
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
-"Plural-Forms: \n"
 
 #: apps/remix/app/components/embed/authoring/configure-document-upload.tsx
 msgid ".PDF documents accepted (max {APP_DOCUMENT_UPLOAD_SIZE_LIMIT}MB)"
-msgstr ".PDF documents accepted (max {APP_DOCUMENT_UPLOAD_SIZE_LIMIT}MB)"
+msgstr ".PDF документи приймаються (макс. {APP_DOCUMENT_UPLOAD_SIZE_LIMIT} МБ)"
 
 #. placeholder {0}: invalidEmails[0].value
 #: apps/remix/app/components/general/default-recipients-multiselect-combobox.tsx
 msgid "\"{0}\" is not a valid email address."
-msgstr "\"{0}\" is not a valid email address."
+msgstr "\"{0}\" не є дійсною email-адресою."
 
 #. placeholder {0}: field.customText
 #. placeholder {1}: timezone || ''
 #: apps/remix/app/components/general/document-signing/document-signing-date-field.tsx
 msgid "\"{0}\" will appear on the document as it has a timezone of \"{1}\"."
-msgstr "\"{0}\" will appear on the document as it has a timezone of \"{1}\"."
+msgstr "\"{0}\" відображатиметься в документі, оскільки має часовий пояс \"{1}\"."
 
 #: packages/email/template-components/template-document-super-delete.tsx
 msgid "\"{documentName}\" has been deleted by an admin."
-msgstr "\"{documentName}\" has been deleted by an admin."
+msgstr "Адміністратор видалив \"{documentName}\"."
 
 #: packages/email/template-components/template-document-pending.tsx
 msgid "“{documentName}” has been signed"
@@ -985,7 +985,7 @@ msgstr "A field was updated"
 
 #: apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
 msgid "A means to print or download documents for your records"
-msgstr "A means to print or download documents for your records"
+msgstr "Можливість роздрукувати або завантажити документи для власного архіву"
 
 #: packages/email/templates/organisation-join.tsx
 msgid "A member has joined your organisation on Documenso"
@@ -1121,7 +1121,7 @@ msgstr "Access enabled"
 #: apps/remix/app/components/general/org-menu-switcher.tsx
 #: apps/remix/app/routes/_unauthenticated+/organisation.sso.confirmation.$token.tsx
 msgid "Account"
-msgstr "Account"
+msgstr "Обліковий запис"
 
 #: apps/remix/app/routes/_internal+/[__htmltopdf]+/certificate.tsx
 #: packages/lib/server-only/pdf/generate-certificate-pdf.ts
@@ -1212,7 +1212,7 @@ msgstr "Action"
 #: apps/remix/app/routes/_authenticated+/o.$orgUrl.settings.email-domains.$id.tsx
 #: apps/remix/app/routes/_authenticated+/t.$teamUrl+/settings.webhooks._index.tsx
 msgid "Actions"
-msgstr "Actions"
+msgstr "Дії"
 
 #: apps/remix/app/components/tables/organisation-email-domains-table.tsx
 #: apps/remix/app/routes/_authenticated+/admin+/email-domains._index.tsx
@@ -1247,7 +1247,7 @@ msgstr "Active Subscriptions"
 #: apps/remix/app/components/general/document/document-attachments-popover.tsx
 #: apps/remix/app/components/general/document/embedded-editor-attachment-popover.tsx
 msgid "Add"
-msgstr "Add"
+msgstr "Додати"
 
 #: apps/remix/app/components/general/envelope-editor/envelope-editor-recipient-form.tsx
 #: packages/ui/primitives/document-flow/add-signers.tsx
@@ -1485,7 +1485,7 @@ msgstr "Additional brand information to display at the bottom of emails"
 #: packages/lib/constants/organisations-translations.ts
 #: packages/lib/constants/teams-translations.ts
 msgid "Admin"
-msgstr "Admin"
+msgstr "Адміністратор"
 
 #: apps/remix/app/routes/_authenticated+/admin+/documents.$id.tsx
 #: apps/remix/app/routes/_authenticated+/admin+/email-domains.$id.tsx
@@ -1651,7 +1651,7 @@ msgstr "Allowed Email Domains"
 #: packages/ui/primitives/document-flow/add-settings.tsx
 #: packages/ui/primitives/template-flow/add-template-settings.tsx
 msgid "Allowed Signature Types"
-msgstr "Allowed Signature Types"
+msgstr "Дозволені типи підпису"
 
 #: apps/remix/app/components/tables/admin-claims-table.tsx
 msgid "Allowed teams"
@@ -2027,7 +2027,7 @@ msgstr "API requests have been temporarily paused"
 #: apps/remix/app/routes/_authenticated+/t.$teamUrl+/settings.tokens.tsx
 #: apps/remix/app/routes/_authenticated+/t.$teamUrl+/settings.tokens.tsx
 msgid "API Tokens"
-msgstr "API Tokens"
+msgstr "API-токени"
 
 #: apps/remix/app/components/general/organisations/organisation-quota-banner.tsx
 msgid "API usage is approaching fair use limits"
@@ -2039,7 +2039,7 @@ msgstr "App Version"
 
 #: apps/remix/app/components/general/document-signing/csc-recipient-signing-in-progress-page.tsx
 msgid "Applying your signature"
-msgstr "Applying your signature"
+msgstr "Застосування вашого підпису"
 
 #: apps/remix/app/components/general/organisations/organisation-quota-banner.tsx
 msgid "Approaching fair use limit"
@@ -2300,7 +2300,7 @@ msgstr "Awaiting email confirmation"
 #: apps/remix/app/components/embed/authoring/configure-fields-view.tsx
 #: apps/remix/app/components/general/direct-template/direct-template-signing-form.tsx
 msgid "Back"
-msgstr "Back"
+msgstr "Назад"
 
 #: apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
 msgid "Back home"
@@ -2355,7 +2355,7 @@ msgstr "Before you get started, please confirm your email address by clicking th
 #: apps/remix/app/routes/_authenticated+/settings+/billing.tsx
 #: apps/remix/app/routes/_authenticated+/settings+/billing.tsx
 msgid "Billing"
-msgstr "Billing"
+msgstr "Оплата"
 
 #: apps/remix/app/components/forms/public-profile-form.tsx
 msgid "Bio"
@@ -2414,7 +2414,7 @@ msgstr "Brand Website"
 #: apps/remix/app/routes/_authenticated+/o.$orgUrl.settings._layout.tsx
 #: apps/remix/app/routes/_authenticated+/t.$teamUrl+/settings._layout.tsx
 msgid "Branding"
-msgstr "Branding"
+msgstr "Брендинг"
 
 #: apps/remix/app/components/general/admin-global-settings-section.tsx
 msgid "Branding company details"
@@ -2640,7 +2640,7 @@ msgstr "Can't find someone?"
 #: packages/ui/primitives/document-flow/send-document-action-dialog.tsx
 #: packages/ui/primitives/signature-pad/signature-pad-dialog.tsx
 msgid "Cancel"
-msgstr "Cancel"
+msgstr "Скасувати"
 
 #: apps/remix/app/components/dialogs/envelope-cancel-dialog.tsx
 msgid "Cancel document"
@@ -2817,7 +2817,7 @@ msgstr "Clear selection"
 
 #: packages/ui/primitives/signature-pad/signature-pad-draw.tsx
 msgid "Clear Signature"
-msgstr "Clear Signature"
+msgstr "Очистити підпис"
 
 #: apps/remix/app/components/tables/settings-public-profile-templates-table.tsx
 msgid "Click here to get started"
@@ -2891,11 +2891,11 @@ msgstr "Client secret is required"
 #: packages/ui/primitives/document-flow/missing-signature-field-dialog.tsx
 #: packages/ui/primitives/sheet.tsx
 msgid "Close"
-msgstr "Close"
+msgstr "Закрити"
 
 #: apps/remix/app/components/general/document-signing/ua-kep-signature-tab.tsx
 msgid "Cloud signature provider"
-msgstr "Cloud signature provider"
+msgstr "Провайдер хмарного підпису"
 
 #: apps/remix/app/components/general/document-signing/document-signing-page-view-v2.tsx
 msgid "Collapse sidebar"
@@ -2943,7 +2943,7 @@ msgstr "Complete the fields for the following signers."
 #: packages/email/template-components/template-document-self-signed.tsx
 #: packages/lib/constants/document.ts
 msgid "Completed"
-msgstr "Completed"
+msgstr "Завершено"
 
 #: apps/remix/app/routes/_authenticated+/admin+/documents.$id.tsx
 msgid "Completed At"
@@ -3123,7 +3123,7 @@ msgstr "Context"
 #: apps/remix/app/routes/_unauthenticated+/verify-email.$token.tsx
 #: packages/ui/primitives/document-flow/document-flow-root.tsx
 msgid "Continue"
-msgstr "Continue"
+msgstr "Продовжити"
 
 #: packages/email/template-components/template-document-invite.tsx
 #: packages/email/template-components/template-document-reminder.tsx
@@ -3137,7 +3137,7 @@ msgstr "Continue by assisting with the document."
 
 #: packages/email/template-components/template-document-completed.tsx
 msgid "Continue by downloading the document."
-msgstr "Continue by downloading the document."
+msgstr "Продовжте, завантаживши документ."
 
 #: packages/email/template-components/template-document-invite.tsx
 #: packages/email/template-components/template-document-reminder.tsx
@@ -3236,7 +3236,7 @@ msgstr "Copied to clipboard"
 #: apps/remix/app/components/general/document/document-recipient-link-copy-dialog.tsx
 #: packages/ui/primitives/document-flow/add-subject.tsx
 msgid "Copy"
-msgstr "Copy"
+msgstr "Копіювати"
 
 #: packages/ui/components/document/document-share-button.tsx
 msgid "Copy Link"
@@ -3284,7 +3284,7 @@ msgstr "Counter reset."
 #: apps/remix/app/components/dialogs/webhook-create-dialog.tsx
 #: apps/remix/app/routes/_profile+/_layout.tsx
 msgid "Create"
-msgstr "Create"
+msgstr "Створити"
 
 #: packages/email/template-components/template-document-self-signed.tsx
 msgid "Create a <0>free account</0> to access your signed documents at any time."
@@ -3632,7 +3632,7 @@ msgstr "Date"
 
 #: apps/remix/app/routes/_authenticated+/t.$teamUrl+/documents.$id.logs.tsx
 msgid "Date created"
-msgstr "Date created"
+msgstr "Дата створення"
 
 #: apps/remix/app/components/general/admin-global-settings-section.tsx
 msgid "Date format"
@@ -3672,11 +3672,11 @@ msgstr "Default border colour."
 
 #: apps/remix/app/components/forms/document-preferences-form.tsx
 msgid "Default Date Format"
-msgstr "Default Date Format"
+msgstr "Формат дати за замовчуванням"
 
 #: apps/remix/app/components/forms/document-preferences-form.tsx
 msgid "Default Document Language"
-msgstr "Default Document Language"
+msgstr "Мова документа за замовчуванням"
 
 #: apps/remix/app/components/forms/document-preferences-form.tsx
 msgid "Default Document Visibility"
@@ -3716,7 +3716,7 @@ msgstr "Default settings applied to this team. Inherited values come from the or
 
 #: apps/remix/app/components/forms/document-preferences-form.tsx
 msgid "Default Signature Settings"
-msgstr "Default Signature Settings"
+msgstr "Налаштування підпису за замовчуванням"
 
 #: apps/remix/app/components/forms/document-preferences-form.tsx
 msgid "Default Signing Reminders"
@@ -3724,7 +3724,7 @@ msgstr "Default Signing Reminders"
 
 #: apps/remix/app/components/forms/document-preferences-form.tsx
 msgid "Default Time Zone"
-msgstr "Default Time Zone"
+msgstr "Часовий пояс за замовчуванням"
 
 #: apps/remix/app/components/forms/editor/editor-field-radio-form.tsx
 #: packages/ui/primitives/document-flow/field-items-advanced-settings/radio-field.tsx
@@ -3786,7 +3786,7 @@ msgstr "delete"
 #: apps/remix/app/routes/_authenticated+/t.$teamUrl+/settings.tokens.tsx
 #: apps/remix/app/routes/_authenticated+/t.$teamUrl+/settings.webhooks._index.tsx
 msgid "Delete"
-msgstr "Delete"
+msgstr "Видалити"
 
 #. placeholder {0}: folder.name
 #. placeholder {0}: organisation.name
@@ -4158,7 +4158,7 @@ msgstr "Documenso will delete <0>all of your documents</0>, along with all of yo
 #: apps/remix/app/routes/_authenticated+/t.$teamUrl+/documents.$id.logs.tsx
 #: apps/remix/app/routes/_authenticated+/t.$teamUrl+/settings._layout.tsx
 msgid "Document"
-msgstr "Document"
+msgstr "Документ"
 
 #. placeholder {0}: envelope.title
 #. placeholder {1}: recipient.name
@@ -4341,7 +4341,7 @@ msgstr "Document hidden"
 #: apps/remix/app/routes/_authenticated+/admin+/documents.$id.tsx
 #: apps/remix/app/routes/_authenticated+/t.$teamUrl+/documents.$id.logs.tsx
 msgid "Document ID"
-msgstr "Document ID"
+msgstr "ID документа"
 
 #: apps/remix/app/components/general/document/document-page-view-information.tsx
 msgid "Document ID (Legacy)"
@@ -4459,7 +4459,7 @@ msgstr "Document signing process will be cancelled"
 
 #: apps/remix/app/routes/_authenticated+/t.$teamUrl+/documents.$id.logs.tsx
 msgid "Document status"
-msgstr "Document status"
+msgstr "Статус документа"
 
 #: apps/remix/app/components/general/admin-global-settings-section.tsx
 msgid "Document timezone"
@@ -4467,7 +4467,7 @@ msgstr "Document timezone"
 
 #: apps/remix/app/routes/_authenticated+/t.$teamUrl+/documents.$id.logs.tsx
 msgid "Document title"
-msgstr "Document title"
+msgstr "Назва документа"
 
 #: apps/remix/app/components/dialogs/envelope-item-edit-dialog.tsx
 #: apps/remix/app/components/dialogs/envelope-item-edit-dialog.tsx
@@ -4564,7 +4564,7 @@ msgstr "Documentation"
 #: apps/remix/app/routes/_authenticated+/t.$teamUrl+/documents.folders._index.tsx
 #: apps/remix/app/routes/_profile+/p.$url.tsx
 msgid "Documents"
-msgstr "Documents"
+msgstr "Документи"
 
 #: apps/remix/app/components/general/document-signing/document-signing-attachments-popover.tsx
 msgid "Documents and resources related to this envelope."
@@ -4668,51 +4668,51 @@ msgstr "Don't transfer (Delete all documents)"
 #: apps/remix/app/routes/_recipient+/sign.$token+/complete.tsx
 #: packages/email/template-components/template-document-completed.tsx
 msgid "Download"
-msgstr "Download"
+msgstr "Завантажити"
 
 #: apps/remix/app/components/general/document-signing/ua-kep-signature-tab.tsx
 msgid "Download archive"
-msgstr "Download archive"
+msgstr "Завантажити архів"
 
 #: apps/remix/app/components/general/document/document-audit-log-download-button.tsx
 #: apps/remix/app/routes/_authenticated+/admin+/documents.$id.tsx
 msgid "Download Audit Logs"
-msgstr "Download Audit Logs"
+msgstr "Завантажити журнал аудиту"
 
 #: apps/remix/app/components/general/document/document-certificate-download-button.tsx
 msgid "Download Certificate"
-msgstr "Download Certificate"
+msgstr "Завантажити сертифікат"
 
 #: apps/remix/app/components/dialogs/envelope-download-dialog.tsx
 #: apps/remix/app/routes/_authenticated+/t.$teamUrl+/documents.$id.logs.tsx
 msgid "Download evidence archive"
-msgstr "Download evidence archive"
+msgstr "Завантажити архів доказів"
 
 #: apps/remix/app/components/dialogs/envelope-download-dialog.tsx
 msgid "Download Files"
-msgstr "Download Files"
+msgstr "Завантажити файли"
 
 #: apps/remix/app/components/general/document-signing/document-signing-page-view-v2.tsx
 #: apps/remix/app/components/general/envelope-editor/envelope-editor.tsx
 #: apps/remix/app/components/general/envelope-editor/envelope-editor.tsx
 #: apps/remix/app/components/general/envelope-signing/envelope-signer-header.tsx
 msgid "Download PDF"
-msgstr "Download PDF"
+msgstr "Завантажити PDF"
 
 #: apps/remix/app/routes/_recipient+/sign.$token+/complete.tsx
 msgid "Download signature archive"
-msgstr "Download signature archive"
+msgstr "Завантажити архів підпису"
 
 #: apps/remix/app/components/dialogs/template-bulk-send-dialog.tsx
 msgid "Download Template CSV"
-msgstr "Download Template CSV"
+msgstr "Завантажити CSV-шаблон"
 
 #: apps/remix/app/components/general/document/document-status.tsx
 #: apps/remix/app/components/general/envelope-editor/envelope-editor-header.tsx
 #: apps/remix/app/components/general/template/template-page-view-documents-table.tsx
 #: packages/lib/constants/document.ts
 msgid "Draft"
-msgstr "Draft"
+msgstr "Чернетка"
 
 #: apps/remix/app/components/general/app-command-menu.tsx
 msgid "Draft documents"
@@ -4738,11 +4738,11 @@ msgstr "Drag and drop your document here"
 #: packages/ui/primitives/signature-pad/signature-pad.tsx
 msgctxt "Draw signature"
 msgid "Draw"
-msgstr "Draw"
+msgstr "Намалювати"
 
 #: apps/remix/app/components/general/admin-global-settings-section.tsx
 msgid "Draw signature"
-msgstr "Draw signature"
+msgstr "Намалювати підпис"
 
 #: apps/remix/app/components/dialogs/envelope-item-edit-dialog.tsx
 msgid "Drop PDF here or click to select"
@@ -4832,7 +4832,7 @@ msgstr "e.g. Resend (free plans)"
 #: apps/remix/app/routes/_authenticated+/t.$teamUrl+/settings.webhooks._index.tsx
 #: apps/remix/app/routes/_authenticated+/t.$teamUrl+/settings.webhooks.$id._index.tsx
 msgid "Edit"
-msgstr "Edit"
+msgstr "Редагувати"
 
 #: apps/remix/app/components/dialogs/email-transport-update-dialog.tsx
 msgid "Edit Email Transport"
@@ -4869,7 +4869,7 @@ msgstr "Electronic Delivery of Documents"
 
 #: apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
 msgid "Electronic Signature Disclosure"
-msgstr "Electronic Signature Disclosure"
+msgstr "Розкриття інформації про електронний підпис"
 
 #: apps/remix/app/components/dialogs/admin-user-create-dialog.tsx
 #: apps/remix/app/components/dialogs/ai-field-detection-dialog.tsx
@@ -5231,7 +5231,7 @@ msgstr "Endpoint (optional)"
 
 #: packages/lib/constants/i18n.ts
 msgid "English"
-msgstr "English"
+msgstr "Англійська"
 
 #: apps/remix/app/routes/embed+/v2+/authoring+/_layout.tsx
 msgid "Ensure that you are using the embedding token, not the API token"
@@ -5947,7 +5947,7 @@ msgstr "From name"
 #: apps/remix/app/components/general/document-signing/document-signing-name-field.tsx
 #: apps/remix/app/components/general/envelope-signing/envelope-signer-form.tsx
 msgid "Full Name"
-msgstr "Full Name"
+msgstr "Повне ім'я"
 
 #: apps/remix/app/components/embed/authoring/configure-document-advanced-settings.tsx
 #: apps/remix/app/components/general/direct-template/direct-template-page.tsx
@@ -5958,7 +5958,7 @@ msgstr "Full Name"
 #: apps/remix/app/routes/_authenticated+/o.$orgUrl.settings.general.tsx
 #: apps/remix/app/routes/_authenticated+/t.$teamUrl+/settings._layout.tsx
 msgid "General"
-msgstr "General"
+msgstr "Загальні"
 
 #: apps/remix/app/components/dialogs/organisation-email-domain-create-dialog.tsx
 msgid "Generate DKIM Records"
@@ -6081,7 +6081,7 @@ msgstr "Group Name"
 #: apps/remix/app/routes/_authenticated+/o.$orgUrl.settings._layout.tsx
 #: apps/remix/app/routes/_authenticated+/t.$teamUrl+/settings._layout.tsx
 msgid "Groups"
-msgstr "Groups"
+msgstr "Групи"
 
 #: apps/remix/app/components/general/document-signing/ua-kep-signature-tab.tsx
 msgid "Hardware key PIN"
@@ -6399,7 +6399,7 @@ msgstr "Inherit authentication method"
 #: apps/remix/app/components/forms/email-preferences-form.tsx
 #: apps/remix/app/components/forms/email-preferences-form.tsx
 msgid "Inherit from organisation"
-msgstr "Inherit from organisation"
+msgstr "Успадкувати від організації"
 
 #: apps/remix/app/components/general/teams/team-inherit-member-alert.tsx
 msgid "Inherit organisation members"
@@ -6619,7 +6619,7 @@ msgstr "Joined {0}"
 
 #: packages/lib/constants/document.ts
 msgid "KEP/UEP"
-msgstr "KEP/UEP"
+msgstr "КЕП/УЕП"
 
 #: apps/remix/app/routes/_authenticated+/admin+/teams.$id.tsx
 msgid "Key identifiers and relationships for this team."
@@ -6656,7 +6656,7 @@ msgstr "Label"
 #: packages/ui/primitives/document-flow/add-settings.tsx
 #: packages/ui/primitives/template-flow/add-template-settings.tsx
 msgid "Language"
-msgstr "Language"
+msgstr "Мова"
 
 #: apps/remix/app/components/general/period-selector.tsx
 msgid "Last 14 days"
@@ -6698,7 +6698,7 @@ msgstr "Last Signed"
 #: apps/remix/app/routes/_authenticated+/admin+/documents._index.tsx
 #: apps/remix/app/routes/_authenticated+/t.$teamUrl+/documents.$id.logs.tsx
 msgid "Last updated"
-msgstr "Last updated"
+msgstr "Останнє оновлення"
 
 #: apps/remix/app/routes/_internal+/[__htmltopdf]+/audit-log.tsx
 #: packages/lib/server-only/pdf/render-audit-logs.ts
@@ -7132,7 +7132,7 @@ msgstr "Maximum number of uploaded files per envelope allowed"
 #: packages/lib/constants/organisations-translations.ts
 #: packages/lib/constants/teams-translations.ts
 msgid "Member"
-msgstr "Member"
+msgstr "Учасник"
 
 #: apps/remix/app/components/forms/subscription-claim-form.tsx
 #: apps/remix/app/routes/_authenticated+/admin+/organisations.$id.tsx
@@ -7165,7 +7165,7 @@ msgstr "Member Since"
 #: apps/remix/app/routes/_authenticated+/o.$orgUrl.settings.groups.$id.tsx
 #: apps/remix/app/routes/_authenticated+/t.$teamUrl+/settings._layout.tsx
 msgid "Members"
-msgstr "Members"
+msgstr "Учасники"
 
 #: apps/remix/app/routes/_authenticated+/admin+/teams.$id.tsx
 msgid "Members that currently belong to this team."
@@ -7324,7 +7324,7 @@ msgstr "N/A"
 #: packages/ui/primitives/template-flow/add-template-placeholder-recipients.tsx
 #: packages/ui/primitives/template-flow/add-template-placeholder-recipients.tsx
 msgid "Name"
-msgstr "Name"
+msgstr "Ім'я"
 
 #: apps/remix/app/components/dialogs/sign-field-name-dialog.tsx
 msgid "Name is required"
@@ -7390,11 +7390,11 @@ msgstr "New Password"
 #: apps/remix/app/components/embed/multisign/multi-sign-document-signing-view.tsx
 #: packages/ui/primitives/signature-pad/signature-pad-dialog.tsx
 msgid "Next"
-msgstr "Next"
+msgstr "Далі"
 
 #: apps/remix/app/components/general/document-signing/document-signing-complete-dialog.tsx
 msgid "Next Field"
-msgstr "Next Field"
+msgstr "Наступне поле"
 
 #: apps/remix/app/components/general/document-signing/document-signing-complete-dialog.tsx
 msgid "Next Recipient Email"
@@ -7814,7 +7814,7 @@ msgstr "Or continue with"
 #: apps/remix/app/routes/_unauthenticated+/organisation.sso.confirmation.$token.tsx
 #: packages/ui/components/template/template-type-select.tsx
 msgid "Organisation"
-msgstr "Organisation"
+msgstr "Організація"
 
 #: packages/lib/server-only/organisation/delete-organisation-email.ts
 msgid "Organisation \"{organisationName}\" has been deleted"
@@ -7957,7 +7957,7 @@ msgstr "Organisation-level pending invites for this team's parent organisation."
 #: apps/remix/app/routes/_authenticated+/dashboard.tsx
 #: apps/remix/app/routes/_authenticated+/settings+/organisations.tsx
 msgid "Organisations"
-msgstr "Organisations"
+msgstr "Організації"
 
 #: apps/remix/app/routes/_authenticated+/admin+/users.$id.tsx
 msgid "Organisations that the user is a member of."
@@ -7986,7 +7986,7 @@ msgstr "Organize your documents and templates"
 #: apps/remix/app/components/dialogs/envelope-download-dialog.tsx
 msgctxt "Original document (adjective)"
 msgid "Original"
-msgstr "Original"
+msgstr "Оригінал"
 
 #: apps/remix/app/components/dialogs/template-use-dialog.tsx
 msgid "Otherwise, the document will be created as a draft."
@@ -8017,7 +8017,7 @@ msgstr "Override organisation settings"
 #: apps/remix/app/routes/_internal+/[__htmltopdf]+/audit-log.tsx
 #: packages/lib/server-only/pdf/render-audit-logs.ts
 msgid "Owner"
-msgstr "Owner"
+msgstr "Власник"
 
 #: apps/remix/app/components/general/admin-global-settings-section.tsx
 msgid "Owner document completed"
@@ -8107,7 +8107,7 @@ msgstr "Passkeys are not supported on this browser"
 #: apps/remix/app/components/general/document-signing/document-signing-auth-dialog.tsx
 #: apps/remix/app/components/general/document-signing/document-signing-auth-password.tsx
 msgid "Password"
-msgstr "Password"
+msgstr "Пароль"
 
 #: apps/remix/app/routes/_internal+/[__htmltopdf]+/certificate.tsx
 #: packages/lib/server-only/pdf/generate-certificate-pdf.ts
@@ -8171,7 +8171,7 @@ msgstr "PDF Document"
 #: packages/ui/components/document/document-read-only-fields.tsx
 #: packages/ui/components/document/envelope-recipient-field-tooltip.tsx
 msgid "Pending"
-msgstr "Pending"
+msgstr "Очікує"
 
 #: packages/email/templates/document-pending.tsx
 msgid "Pending Document"
@@ -8597,7 +8597,7 @@ msgstr "Processing document"
 #: apps/remix/app/routes/_authenticated+/settings+/profile.tsx
 #: apps/remix/app/routes/_profile+/_layout.tsx
 msgid "Profile"
-msgstr "Profile"
+msgstr "Профіль"
 
 #: apps/remix/app/routes/_authenticated+/t.$teamUrl+/settings.public-profile.tsx
 msgid "Profile is currently <0>hidden</0>."
@@ -8636,7 +8636,7 @@ msgstr "Public"
 #: apps/remix/app/routes/_authenticated+/t.$teamUrl+/settings.public-profile.tsx
 #: apps/remix/app/routes/_authenticated+/t.$teamUrl+/settings.public-profile.tsx
 msgid "Public Profile"
-msgstr "Public Profile"
+msgstr "Публічний профіль"
 
 #: apps/remix/app/components/forms/public-profile-form.tsx
 msgid "Public profile URL"
@@ -8785,7 +8785,7 @@ msgstr "Recent documents"
 #: apps/remix/app/components/tables/documents-table.tsx
 #: apps/remix/app/components/tables/inbox-table.tsx
 msgid "Recipient"
-msgstr "Recipient"
+msgstr "Отримувач"
 
 #. placeholder {0}: index + 1
 #. placeholder {0}: recipient.index + 1
@@ -8920,7 +8920,7 @@ msgstr "Recipient's signing provider authentication failed"
 #: apps/remix/app/routes/_internal+/[__htmltopdf]+/audit-log.tsx
 #: packages/lib/server-only/pdf/render-audit-logs.ts
 msgid "Recipients"
-msgstr "Recipients"
+msgstr "Отримувачі"
 
 #: apps/remix/app/routes/_authenticated+/admin+/stats.tsx
 msgid "Recipients metrics"
@@ -9020,7 +9020,7 @@ msgstr "Reject Document"
 #: packages/lib/constants/document.ts
 #: packages/lib/server-only/pdf/render-certificate.ts
 msgid "Rejected"
-msgstr "Rejected"
+msgstr "Відхилено"
 
 #: packages/email/template-components/template-document-rejection-confirmed.tsx
 msgid "Rejection Confirmed"
@@ -9098,7 +9098,7 @@ msgstr "Reminders"
 #: packages/ui/primitives/document-flow/add-fields.tsx
 #: packages/ui/primitives/document-flow/field-item.tsx
 msgid "Remove"
-msgstr "Remove"
+msgstr "Видалити"
 
 #: apps/remix/app/components/tables/organisation-email-domains-table.tsx
 #: apps/remix/app/routes/_authenticated+/o.$orgUrl.settings.email-domains.$id.tsx
@@ -9359,7 +9359,7 @@ msgstr "Retry"
 #: apps/remix/app/routes/_unauthenticated+/organisation.invite.$token.tsx
 #: apps/remix/app/routes/_unauthenticated+/team.verify.email.$token.tsx
 msgid "Return"
-msgstr "Return"
+msgstr "Повернутися"
 
 #: apps/remix/app/routes/_recipient+/sign.$token+/expired.tsx
 #: apps/remix/app/routes/_recipient+/sign.$token+/rejected.tsx
@@ -9433,7 +9433,7 @@ msgstr "Ring"
 #: apps/remix/app/routes/_authenticated+/admin+/organisations.$id.tsx
 #: apps/remix/app/routes/_authenticated+/admin+/teams.$id.tsx
 msgid "Role"
-msgstr "Role"
+msgstr "Роль"
 
 #: apps/remix/app/components/tables/admin-dashboard-users-table.tsx
 #: apps/remix/app/routes/_authenticated+/admin+/users.$id.tsx
@@ -9451,7 +9451,7 @@ msgstr "Rows per page"
 #: apps/remix/app/components/general/document-signing/document-signing-text-field.tsx
 #: packages/ui/primitives/document-flow/field-item-advanced-settings.tsx
 msgid "Save"
-msgstr "Save"
+msgstr "Зберегти"
 
 #: apps/remix/app/components/dialogs/envelope-save-as-template-dialog.tsx
 #: apps/remix/app/components/dialogs/envelope-save-as-template-dialog.tsx
@@ -9497,7 +9497,7 @@ msgstr "Sealing job started"
 #: apps/remix/app/routes/_authenticated+/t.$teamUrl+/settings.members.tsx
 #: apps/remix/app/routes/_authenticated+/t.$teamUrl+/settings.webhooks.$id._index.tsx
 msgid "Search"
-msgstr "Search"
+msgstr "Пошук"
 
 #: apps/remix/app/routes/_authenticated+/admin+/organisations._index.tsx
 msgid "Search and manage all organisations"
@@ -9572,7 +9572,7 @@ msgstr "Secret"
 #: apps/remix/app/routes/_authenticated+/settings+/security._index.tsx
 #: apps/remix/app/routes/_authenticated+/settings+/security._index.tsx
 msgid "Security"
-msgstr "Security"
+msgstr "Безпека"
 
 #: apps/remix/app/routes/_authenticated+/settings+/security.activity.tsx
 #: apps/remix/app/routes/_authenticated+/settings+/security.activity.tsx
@@ -9737,7 +9737,7 @@ msgstr "Select row"
 #: packages/ui/primitives/document-flow/add-settings.tsx
 #: packages/ui/primitives/template-flow/add-template-settings.tsx
 msgid "Select signature types"
-msgstr "Select signature types"
+msgstr "Виберіть типи підпису"
 
 #: apps/remix/app/components/forms/editor/editor-field-generic-field-forms.tsx
 #: packages/ui/primitives/document-flow/field-items-advanced-settings/date-field.tsx
@@ -9751,7 +9751,7 @@ msgstr "Select text align"
 
 #: apps/remix/app/components/dialogs/envelope-download-dialog.tsx
 msgid "Select the files you would like to download."
-msgstr "Select the files you would like to download."
+msgstr "Виберіть файли, які хочете завантажити."
 
 #: apps/remix/app/components/dialogs/organisation-group-create-dialog.tsx
 msgid "Select the members to add to this group"
@@ -9807,7 +9807,7 @@ msgstr "Selector"
 #: packages/ui/primitives/document-flow/send-document-action-dialog.tsx
 #: packages/ui/primitives/document-flow/send-document-action-dialog.tsx
 msgid "Send"
-msgstr "Send"
+msgstr "Надіслати"
 
 #: apps/remix/app/components/dialogs/email-transport-send-test-dialog.tsx
 msgid "Send a test email using this transport to verify the configuration."
@@ -9951,7 +9951,7 @@ msgstr "Set your password for Documenso"
 #: apps/remix/app/routes/_authenticated+/settings+/_layout.tsx
 #: apps/remix/app/routes/_authenticated+/t.$teamUrl+/settings.email.tsx
 msgid "Settings"
-msgstr "Settings"
+msgstr "Налаштування"
 
 #: apps/remix/app/components/general/document-signing/document-signing-auth-passkey.tsx
 msgid "Setup"
@@ -10022,12 +10022,12 @@ msgstr "Show usage with quotas"
 #: apps/remix/app/components/tables/inbox-table.tsx
 #: apps/remix/app/routes/_profile+/p.$url.tsx
 msgid "Sign"
-msgstr "Sign"
+msgstr "Підписати"
 
 #: packages/lib/constants/recipient-roles.ts
 msgctxt "Recipient role action verb"
 msgid "Sign"
-msgstr "Sign"
+msgstr "Підписати"
 
 #. placeholder {0}: recipient.name
 #. placeholder {1}: recipient.email
@@ -10052,7 +10052,7 @@ msgstr "Sign document"
 #: apps/remix/app/components/general/document-signing/document-signing-page-view-v2.tsx
 #: packages/email/template-components/template-document-reminder.tsx
 msgid "Sign Document"
-msgstr "Sign Document"
+msgstr "Підписати документ"
 
 #: apps/remix/app/routes/_recipient+/_layout.tsx
 msgid "Sign Document - Documenso"
@@ -10094,7 +10094,7 @@ msgstr "Sign Out"
 
 #: apps/remix/app/components/dialogs/sign-field-signature-dialog.tsx
 msgid "Sign Signature Field"
-msgstr "Sign Signature Field"
+msgstr "Підписати поле підпису"
 
 #: apps/remix/app/components/embed/embed-direct-template-client-page.tsx
 #: apps/remix/app/components/embed/embed-document-signing-page-v1.tsx
@@ -10124,7 +10124,7 @@ msgstr "Sign Up with OIDC"
 
 #: apps/remix/app/components/general/document-signing/ua-kep-signature-tab.tsx
 msgid "Sign with cloud signature"
-msgstr "Sign with cloud signature"
+msgstr "Підписати хмарним підписом"
 
 #: apps/remix/app/components/general/document-signing/ua-kep-signature-tab.tsx
 msgid "Sign with hardware key"
@@ -10155,32 +10155,32 @@ msgstr "Sign with QES/AES"
 #: packages/ui/primitives/signature-pad/signature-pad-dialog.tsx
 #: packages/ui/primitives/template-flow/add-template-fields.tsx
 msgid "Signature"
-msgstr "Signature"
+msgstr "Підпис"
 
 #: apps/remix/app/routes/_internal+/[__htmltopdf]+/certificate.tsx
 #: packages/lib/server-only/pdf/render-certificate.ts
 msgid "Signature ID"
-msgstr "Signature ID"
+msgstr "ID підпису"
 
 #: packages/ui/primitives/signature-pad/signature-pad-draw.tsx
 msgid "Signature is too small"
-msgstr "Signature is too small"
+msgstr "Підпис замалий"
 
 #: apps/remix/app/components/forms/profile.tsx
 msgid "Signature Pad cannot be empty."
-msgstr "Signature Pad cannot be empty."
+msgstr "Поле підпису не може бути порожнім."
 
 #: apps/remix/app/components/general/envelope-editor/envelope-editor-fields-page.tsx
 msgid "Signature Settings"
-msgstr "Signature Settings"
+msgstr "Налаштування підпису"
 
 #: packages/ui/components/document/document-signature-settings-tooltip.tsx
 msgid "Signature types"
-msgstr "Signature types"
+msgstr "Типи підпису"
 
 #: apps/remix/app/routes/_authenticated+/admin+/stats.tsx
 msgid "Signatures Collected"
-msgstr "Signatures Collected"
+msgstr "Зібрані підписи"
 
 #: apps/remix/app/components/general/document/document-page-view-recipients.tsx
 #: apps/remix/app/routes/_internal+/[__htmltopdf]+/certificate.tsx
@@ -10188,24 +10188,24 @@ msgstr "Signatures Collected"
 #: packages/ui/components/document/document-read-only-fields.tsx
 #: packages/ui/components/document/envelope-recipient-field-tooltip.tsx
 msgid "Signed"
-msgstr "Signed"
+msgstr "Підписано"
 
 #: packages/lib/constants/recipient-roles.ts
 msgctxt "Recipient role actioned"
 msgid "Signed"
-msgstr "Signed"
+msgstr "Підписано"
 
 #: apps/remix/app/components/dialogs/envelope-download-dialog.tsx
 #: apps/remix/app/components/dialogs/envelope-download-dialog.tsx
 msgctxt "Signed document (adjective)"
 msgid "Signed"
-msgstr "Signed"
+msgstr "Підписано"
 
 #: apps/remix/app/components/general/document-signing/ua-kep-signature-tab.tsx
 #: apps/remix/app/routes/_authenticated+/t.$teamUrl+/documents.$id.logs.tsx
 #: apps/remix/app/routes/_recipient+/sign.$token+/complete.tsx
 msgid "Signed PDF (PAdES)"
-msgstr "Signed PDF (PAdES)"
+msgstr "Підписаний PDF (PAdES)"
 
 #: apps/remix/app/components/general/document-signing/ua-kep-signature-tab.tsx
 #: apps/remix/app/components/general/document-signing/ua-kep-signature-tab.tsx
@@ -10394,7 +10394,7 @@ msgstr "Some signers have not been assigned a signature field. Please assign at 
 #: apps/remix/app/utils/toast-error-messages.ts
 #: packages/ui/components/document/document-share-button.tsx
 msgid "Something went wrong"
-msgstr "Something went wrong"
+msgstr "Щось пішло не так"
 
 #: apps/remix/app/components/general/document-signing/csc-recipient-signing-in-progress-page.tsx
 msgid "Something went wrong while applying your signature. Please retry."
@@ -10480,11 +10480,11 @@ msgstr "Something went wrong. Please try again."
 
 #: apps/remix/app/components/general/document/document-audit-log-download-button.tsx
 msgid "Sorry, we were unable to download the audit logs. Please try again later."
-msgstr "Sorry, we were unable to download the audit logs. Please try again later."
+msgstr "На жаль, не вдалося завантажити журнал аудиту. Спробуйте ще раз пізніше."
 
 #: apps/remix/app/components/general/document/document-certificate-download-button.tsx
 msgid "Sorry, we were unable to download the certificate. Please try again later."
-msgstr "Sorry, we were unable to download the certificate. Please try again later."
+msgstr "На жаль, не вдалося завантажити сертифікат. Спробуйте ще раз пізніше."
 
 #: apps/remix/app/components/general/template/template-page-view-documents-table.tsx
 #: apps/remix/app/components/tables/team-members-table.tsx
@@ -10519,7 +10519,7 @@ msgstr "Stats"
 #: apps/remix/app/routes/_internal+/[__htmltopdf]+/audit-log.tsx
 #: packages/lib/server-only/pdf/render-audit-logs.ts
 msgid "Status"
-msgstr "Status"
+msgstr "Статус"
 
 #. placeholder {0}: currentStepData.order
 #. placeholder {1}: envelopeEditorSteps.length
@@ -10756,7 +10756,7 @@ msgstr "Target Organisation"
 #: apps/remix/app/routes/_authenticated+/o.$orgUrl.settings.groups.$id.tsx
 #: apps/remix/app/routes/_authenticated+/t.$teamUrl+/templates._index.tsx
 msgid "Team"
-msgstr "Team"
+msgstr "Команда"
 
 #. placeholder {0}: team.name
 #: packages/lib/server-only/team/delete-team.ts
@@ -10918,7 +10918,7 @@ msgstr "Team URL"
 #: apps/remix/app/routes/_authenticated+/o.$orgUrl.settings._layout.tsx
 #: apps/remix/app/routes/_authenticated+/o.$orgUrl.settings.teams.tsx
 msgid "Teams"
-msgstr "Teams"
+msgstr "Команди"
 
 #: apps/remix/app/routes/_authenticated+/o.$orgUrl._index.tsx
 msgid "Teams help you organise your work and collaborate with others. Create your first team to get started."
@@ -10944,7 +10944,7 @@ msgstr "Teams that this user is a member of and their roles."
 #: apps/remix/app/routes/_authenticated+/t.$teamUrl+/templates.$id._index.tsx
 #: apps/remix/app/routes/_authenticated+/t.$teamUrl+/templates.$id.legacy_editor.tsx
 msgid "Template"
-msgstr "Template"
+msgstr "Шаблон"
 
 #: packages/ui/primitives/document-upload-button.tsx
 msgid "Template (Legacy)"
@@ -11039,7 +11039,7 @@ msgstr "Template uploaded"
 #: apps/remix/app/routes/_authenticated+/t.$teamUrl+/templates.$id._index.tsx
 #: apps/remix/app/routes/_authenticated+/t.$teamUrl+/templates.folders._index.tsx
 msgid "Templates"
-msgstr "Templates"
+msgstr "Шаблони"
 
 #: apps/remix/app/components/dialogs/envelopes-bulk-delete-dialog.tsx
 msgid "Templates deleted"
@@ -11914,11 +11914,11 @@ msgstr "This will sign you out of all other devices. You will need to sign in ag
 #: apps/remix/app/components/tables/admin-document-logs-table.tsx
 #: apps/remix/app/components/tables/document-logs-table.tsx
 msgid "Time"
-msgstr "Time"
+msgstr "Час"
 
 #: apps/remix/app/routes/_authenticated+/t.$teamUrl+/documents.$id.logs.tsx
 msgid "Time zone"
-msgstr "Time zone"
+msgstr "Часовий пояс"
 
 #: apps/remix/app/components/embed/authoring/configure-document-advanced-settings.tsx
 #: apps/remix/app/components/general/envelope-editor/envelope-editor-settings-dialog.tsx
@@ -11940,7 +11940,7 @@ msgstr "Time Zone"
 #: apps/remix/app/routes/_authenticated+/admin+/unsealed-documents._index.tsx
 #: packages/ui/primitives/document-flow/add-settings.tsx
 msgid "Title"
-msgstr "Title"
+msgstr "Назва"
 
 #: packages/ui/primitives/document-flow/add-settings.types.ts
 msgid "Title cannot be empty"
@@ -12248,13 +12248,13 @@ msgstr "Two-Factor Re-Authentication"
 #: apps/remix/app/components/tables/admin-email-transports-table.tsx
 #: apps/remix/app/components/tables/templates-table.tsx
 msgid "Type"
-msgstr "Type"
+msgstr "Тип"
 
 #: packages/lib/constants/document.ts
 #: packages/ui/primitives/signature-pad/signature-pad.tsx
 msgctxt "Type signature"
 msgid "Type"
-msgstr "Type"
+msgstr "Тип"
 
 #: apps/remix/app/components/general/app-command-menu.tsx
 msgid "Type a command or search..."
@@ -12282,7 +12282,7 @@ msgstr "Uh oh! Looks like you're missing a token"
 
 #: packages/lib/constants/i18n.ts
 msgid "Ukrainian"
-msgstr "Ukrainian"
+msgstr "Українська"
 
 #: apps/remix/app/components/general/app-command-menu.tsx
 msgid "Unable to change the language at this time. Please try again later."
@@ -12464,7 +12464,7 @@ msgstr "Untitled Group"
 #: packages/ui/primitives/document-flow/add-subject.tsx
 #: packages/ui/primitives/document-flow/add-subject.tsx
 msgid "Update"
-msgstr "Update"
+msgstr "Оновити"
 
 #: apps/remix/app/components/general/admin-site-banner-section.tsx
 msgid "Update Banner"
@@ -12602,13 +12602,13 @@ msgstr "Upgrade your plan to upload more documents"
 
 #: apps/remix/app/components/dialogs/template-use-dialog.tsx
 msgid "Upload"
-msgstr "Upload"
+msgstr "Завантажити"
 
 #: packages/lib/constants/document.ts
 #: packages/ui/primitives/signature-pad/signature-pad.tsx
 msgctxt "Upload signature"
 msgid "Upload"
-msgstr "Upload"
+msgstr "Завантажити"
 
 #: apps/remix/app/components/dialogs/template-bulk-send-dialog.tsx
 msgid "Upload a CSV file to create multiple documents from this template. Each row represents one document with its recipient details."
@@ -12657,11 +12657,11 @@ msgstr "Upload failed"
 
 #: apps/remix/app/components/general/admin-global-settings-section.tsx
 msgid "Upload signature"
-msgstr "Upload signature"
+msgstr "Завантажити підпис"
 
 #: packages/ui/primitives/signature-pad/signature-pad-upload.tsx
 msgid "Upload Signature"
-msgstr "Upload Signature"
+msgstr "Завантажити підпис"
 
 #: apps/remix/app/components/general/envelope/envelope-drop-zone-wrapper.tsx
 #: packages/ui/primitives/document-upload-button.tsx
@@ -12727,7 +12727,7 @@ msgstr "Use Backup Code"
 
 #: apps/remix/app/components/general/document-signing/ua-kep-signature-tab.tsx
 msgid "Use signature"
-msgstr "Use signature"
+msgstr "Використати підпис"
 
 #: apps/remix/app/components/dialogs/template-use-dialog.tsx
 #: apps/remix/app/components/general/envelope-editor/envelope-editor-header.tsx
@@ -12751,7 +12751,7 @@ msgstr "Used by claims"
 #: apps/remix/app/components/tables/internal-audit-log-table.tsx
 #: packages/lib/server-only/pdf/render-audit-logs.ts
 msgid "User"
-msgstr "User"
+msgstr "Користувач"
 
 #: apps/remix/app/components/tables/internal-audit-log-table.tsx
 #: packages/lib/server-only/pdf/render-audit-logs.ts
@@ -12801,7 +12801,7 @@ msgstr "Username"
 #: apps/remix/app/components/tables/organisation-insights-table.tsx
 #: apps/remix/app/routes/_authenticated+/admin+/_layout.tsx
 msgid "Users"
-msgstr "Users"
+msgstr "Користувачі"
 
 #: apps/remix/app/components/general/document-signing/ua-kep-signature-tab.tsx
 msgid "Valid until"
@@ -12893,12 +12893,12 @@ msgstr "Vertical Align"
 #: apps/remix/app/components/tables/organisation-billing-invoices-table.tsx
 #: apps/remix/app/routes/_authenticated+/admin+/email-domains._index.tsx
 msgid "View"
-msgstr "View"
+msgstr "Переглянути"
 
 #: packages/lib/constants/recipient-roles.ts
 msgctxt "Recipient role action verb"
 msgid "View"
-msgstr "View"
+msgstr "Переглянути"
 
 #: apps/remix/app/routes/_authenticated+/settings+/security._index.tsx
 msgid "View activity"
@@ -14762,7 +14762,7 @@ msgstr "Your remote signature was applied"
 
 #: apps/remix/app/components/general/document-signing/csc-recipient-signing-in-progress-page.tsx
 msgid "Your signing authorisation expired before the signature could be applied. Please reauthorise to retry."
-msgstr "Your signing authorisation expired before the signature could be applied. Please reauthorise to retry."
+msgstr "Авторизація підписання завершилася до застосування підпису. Авторизуйтеся повторно, щоб спробувати ще раз."
 
 #: apps/remix/app/components/general/document-signing/csc-recipient-blocked-page.tsx
 msgid "Your signing certificate is invalid, expired, or missing a required key. Contact your administrator or signing provider for assistance."

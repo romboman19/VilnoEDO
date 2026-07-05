@@ -491,6 +491,7 @@ export default function EmbedPlaygroundPage() {
             >
               <option value="">Default (en)</option>
               <option value="en">English (en)</option>
+              <option value="uk">Ukrainian (uk)</option>
             </select>
           </div>
 
