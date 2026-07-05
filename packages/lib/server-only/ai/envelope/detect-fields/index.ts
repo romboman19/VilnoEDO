@@ -11,6 +11,7 @@ import { getEnvelopeById } from '../../../envelope/get-envelope-by-id';
 import { createEnvelopeRecipients } from '../../../recipient/create-envelope-recipients';
 import { pdfToImages } from '../../pdf-to-images';
 import { getAiModel, getAiProviderOptions } from '../../provider';
+import { repairJsonText } from '../../repair-json-text';
 import { buildRecipientContextMessage, normalizeDetectedField, resolveRecipientFromKey } from './helpers';
 import { SYSTEM_PROMPT } from './prompt';
 import { ZSubmitDetectedFieldsInputSchema } from './schema';
@@ -280,6 +281,7 @@ const detectFieldsFromPage = async ({ image, pageNumber, recipients, context }: 
     messages,
     temperature: 0.5,
     providerOptions: getAiProviderOptions(),
+    experimental_repairText: repairJsonText,
   });
 
   if (!result.object) {

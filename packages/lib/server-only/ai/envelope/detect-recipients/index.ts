@@ -8,6 +8,7 @@ import { getFileServerSide } from '../../../../universal/upload/get-file.server'
 import { getEnvelopeById } from '../../../envelope/get-envelope-by-id';
 import { pdfToImages } from '../../pdf-to-images';
 import { getAiModel } from '../../provider';
+import { repairJsonText } from '../../repair-json-text';
 import { SYSTEM_PROMPT } from './prompt';
 import type { TDetectedRecipientSchema } from './schema';
 import { ZDetectedRecipientsSchema } from './schema';
@@ -200,6 +201,7 @@ const detectRecipientsFromImages = async ({ images, onProgress }: DetectRecipien
       schema: ZDetectedRecipientsSchema,
       messages,
       temperature: 0.5,
+      experimental_repairText: repairJsonText,
     });
 
     const newRecipients = result.object?.recipients ?? [];
