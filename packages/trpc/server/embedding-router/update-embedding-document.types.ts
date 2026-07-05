@@ -9,6 +9,7 @@ import {
   ZDocumentMetaSubjectSchema,
   ZDocumentMetaTimezoneSchema,
   ZDocumentMetaTypedSignatureEnabledSchema,
+  ZDocumentMetaUaKepSignatureEnabledSchema,
   ZDocumentMetaUploadSignatureEnabledSchema,
 } from '@documenso/lib/types/document-meta';
 import {
@@ -66,6 +67,7 @@ export const ZUpdateEmbeddingDocumentRequestSchema = z.object({
       typedSignatureEnabled: ZDocumentMetaTypedSignatureEnabledSchema.optional(),
       drawSignatureEnabled: ZDocumentMetaDrawSignatureEnabledSchema.optional(),
       uploadSignatureEnabled: ZDocumentMetaUploadSignatureEnabledSchema.optional(),
+      uaKepSignatureEnabled: ZDocumentMetaUaKepSignatureEnabledSchema.optional(),
       emailSettings: ZDocumentEmailSettingsSchema.optional(),
     })
     .optional(),

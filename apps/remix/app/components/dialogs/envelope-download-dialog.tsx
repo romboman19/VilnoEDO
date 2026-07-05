@@ -18,6 +18,13 @@ import { useMemo, useState } from 'react';
 
 type EnvelopeItemToDownload = Pick<EnvelopeItem, 'id' | 'envelopeId' | 'title' | 'order'>;
 
+type UaKepEvidenceDownload = {
+  evidencePackageId: string;
+  recipientId: number;
+  recipientToken: string;
+  hasPades: boolean;
+};
+
 type EnvelopeDownloadDialogProps = {
   envelopeId: string;
   envelopeStatus: DocumentStatus;
@@ -35,6 +42,7 @@ type EnvelopeDownloadDialogProps = {
    */
   isLegacy?: boolean;
   envelopeItems?: EnvelopeItemToDownload[];
+  uaKepEvidence?: UaKepEvidenceDownload | null;
 
   /**
    * The recipient token to download the document.
@@ -50,6 +58,7 @@ export const EnvelopeDownloadDialog = ({
   envelopeStatus,
   isLegacy,
   envelopeItems: initialEnvelopeItems,
+  uaKepEvidence,
   token,
   trigger,
 }: EnvelopeDownloadDialogProps) => {
@@ -103,6 +112,25 @@ export const EnvelopeDownloadDialog = ({
   );
 
   const envelopeItems = envelopeItemsPayload?.data || [];
+  const hasUaKepEvidenceDownloads = envelopeStatus === DocumentStatus.COMPLETED && Boolean(uaKepEvidence);
+
+  const buildUaKepEvidenceUrl = (kind: 'pades.pdf' | 'archive.zip', envelopeItemId?: string) => {
+    if (!uaKepEvidence) {
+      return '#';
+    }
+
+    const query = new URLSearchParams({
+      recipientId: String(uaKepEvidence.recipientId),
+      recipientToken: uaKepEvidence.recipientToken,
+      envelopeId,
+    });
+
+    if (envelopeItemId) {
+      query.set('envelopeItemId', envelopeItemId);
+    }
+
+    return `/api/ua-kep/evidence/${encodeURIComponent(uaKepEvidence.evidencePackageId)}/${kind}?${query.toString()}`;
+  };
 
   const onDownload = async (envelopeItem: EnvelopeItemToDownload, version: 'original' | 'signed' | 'pending') => {
     const { id: envelopeItemId } = envelopeItem;
@@ -195,32 +223,59 @@ export const EnvelopeDownloadDialog = ({
                   </div>
 
                   <div className="flex flex-shrink-0 items-center gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="text-xs"
-                      onClick={async () => onDownload(item, 'original')}
-                      loading={isDownloadingState[generateDownloadKey(item.id, 'original')]}
-                    >
-                      {!isDownloadingState[generateDownloadKey(item.id, 'original')] && (
-                        <DownloadIcon className="mr-2 h-4 w-4" />
-                      )}
-                      <Trans context="Original document (adjective)">Original</Trans>
-                    </Button>
-
-                    {secondaryDownload && (
-                      <Button
-                        variant="default"
-                        size="sm"
-                        className="text-xs"
-                        onClick={async () => onDownload(item, secondaryDownload.version)}
-                        loading={isDownloadingState[generateDownloadKey(item.id, secondaryDownload.version)]}
-                      >
-                        {!isDownloadingState[generateDownloadKey(item.id, secondaryDownload.version)] && (
-                          <DownloadIcon className="mr-2 h-4 w-4" />
+                    {hasUaKepEvidenceDownloads ? (
+                      <>
+                        {uaKepEvidence?.hasPades && (
+                          <Button variant="default" size="sm" className="text-xs" asChild>
+                            <a href={buildUaKepEvidenceUrl('pades.pdf', item.id)} download>
+                              <DownloadIcon className="mr-2 h-4 w-4" />
+                              <Trans>Signed PDF (PAdES)</Trans>
+                            </a>
+                          </Button>
                         )}
-                        {secondaryDownload.label}
-                      </Button>
+
+                        <Button
+                          variant={uaKepEvidence?.hasPades ? 'outline' : 'default'}
+                          size="sm"
+                          className="text-xs"
+                          asChild
+                        >
+                          <a href={buildUaKepEvidenceUrl('archive.zip')} download>
+                            <DownloadIcon className="mr-2 h-4 w-4" />
+                            <Trans>Download archive</Trans>
+                          </a>
+                        </Button>
+                      </>
+                    ) : (
+                      <>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="text-xs"
+                          onClick={async () => onDownload(item, 'original')}
+                          loading={isDownloadingState[generateDownloadKey(item.id, 'original')]}
+                        >
+                          {!isDownloadingState[generateDownloadKey(item.id, 'original')] && (
+                            <DownloadIcon className="mr-2 h-4 w-4" />
+                          )}
+                          <Trans context="Original document (adjective)">Original</Trans>
+                        </Button>
+
+                        {secondaryDownload && (
+                          <Button
+                            variant="default"
+                            size="sm"
+                            className="text-xs"
+                            onClick={async () => onDownload(item, secondaryDownload.version)}
+                            loading={isDownloadingState[generateDownloadKey(item.id, secondaryDownload.version)]}
+                          >
+                            {!isDownloadingState[generateDownloadKey(item.id, secondaryDownload.version)] && (
+                              <DownloadIcon className="mr-2 h-4 w-4" />
+                            )}
+                            {secondaryDownload.label}
+                          </Button>
+                        )}
+                      </>
                     )}
                   </div>
                 </div>

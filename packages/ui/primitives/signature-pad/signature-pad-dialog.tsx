@@ -1,5 +1,5 @@
 import { parseMessageDescriptor } from '@documenso/lib/utils/i18n';
-import { Dialog, DialogClose, DialogContent, DialogFooter } from '@documenso/ui/primitives/dialog';
+import { Dialog, DialogClose, DialogContent, DialogFooter, DialogTitle } from '@documenso/ui/primitives/dialog';
 
 import type { MessageDescriptor } from '@lingui/core';
 import { Trans, useLingui } from '@lingui/react/macro';
@@ -9,8 +9,12 @@ import { useState } from 'react';
 
 import { cn } from '../../lib/utils';
 import { Button } from '../button';
-import { SignaturePad } from './signature-pad';
+import { SignaturePad, type SignaturePadExternalTab } from './signature-pad';
 import { SignatureRender } from './signature-render';
+
+type SignaturePadDialogExternalTabs =
+  | SignaturePadExternalTab[]
+  | ((_onSignatureChange: (value: string) => void) => SignaturePadExternalTab[]);
 
 export type SignaturePadDialogProps = Omit<HTMLAttributes<HTMLCanvasElement>, 'onChange'> & {
   disabled?: boolean;
@@ -22,6 +26,7 @@ export type SignaturePadDialogProps = Omit<HTMLAttributes<HTMLCanvasElement>, 'o
   typedSignatureEnabled?: boolean;
   uploadSignatureEnabled?: boolean;
   drawSignatureEnabled?: boolean;
+  externalTabs?: SignaturePadDialogExternalTabs;
 };
 
 export const SignaturePadDialog = ({
@@ -34,12 +39,14 @@ export const SignaturePadDialog = ({
   typedSignatureEnabled,
   uploadSignatureEnabled,
   drawSignatureEnabled,
+  externalTabs,
   dialogConfirmText,
 }: SignaturePadDialogProps) => {
   const { i18n } = useLingui();
 
   const [showSignatureModal, setShowSignatureModal] = useState(false);
   const [signature, setSignature] = useState<string>(value ?? '');
+  const resolvedExternalTabs = typeof externalTabs === 'function' ? externalTabs(setSignature) : externalTabs;
 
   return (
     <div
@@ -110,7 +117,15 @@ export const SignaturePadDialog = ({
       </motion.button>
 
       <Dialog open={showSignatureModal} onOpenChange={disabled ? undefined : setShowSignatureModal}>
-        <DialogContent hideClose={true} className="p-6 pt-4">
+        <DialogContent
+          hideClose={true}
+          className="flex max-h-[90vh] flex-col overflow-y-auto p-6 pt-4"
+          aria-describedby={undefined}
+        >
+          <DialogTitle className="sr-only">
+            <Trans>Signature</Trans>
+          </DialogTitle>
+
           <SignaturePad
             id="signature"
             fullName={fullName}
@@ -121,6 +136,7 @@ export const SignaturePadDialog = ({
             typedSignatureEnabled={typedSignatureEnabled}
             uploadSignatureEnabled={uploadSignatureEnabled}
             drawSignatureEnabled={drawSignatureEnabled}
+            externalTabs={resolvedExternalTabs}
           />
 
           <DialogFooter>

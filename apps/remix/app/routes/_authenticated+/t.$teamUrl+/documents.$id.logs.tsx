@@ -4,13 +4,15 @@ import { getTeamByUrl } from '@documenso/lib/server-only/team/get-team';
 import { mapSecondaryIdToDocumentId } from '@documenso/lib/utils/envelope';
 import { logDocumentAccess } from '@documenso/lib/utils/logger';
 import { formatDocumentsPath } from '@documenso/lib/utils/teams';
+import { prisma } from '@documenso/prisma';
+import { Button } from '@documenso/ui/primitives/button';
 import { Card } from '@documenso/ui/primitives/card';
 import type { MessageDescriptor } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react';
 import { Trans } from '@lingui/react/macro';
 import { EnvelopeType, type Recipient } from '@prisma/client';
-import { ChevronLeft } from 'lucide-react';
+import { ChevronLeft, DownloadIcon } from 'lucide-react';
 import { DateTime } from 'luxon';
 import { Link } from 'react-router';
 
@@ -57,6 +59,35 @@ export async function loader({ params, request }: Route.LoaderArgs) {
     userId: user.id,
   });
 
+  const uaKepEvidencePackage = await prisma.uaKepEvidencePackage.findFirst({
+    where: {
+      envelopeId: envelope.id,
+    },
+    select: {
+      id: true,
+      uaKepSessionId: true,
+    },
+    orderBy: {
+      createdAt: 'desc',
+    },
+  });
+
+  const uaKepHasPades = uaKepEvidencePackage
+    ? (await prisma.uaKepSignatureArtifact.count({
+        where: {
+          uaKepSessionId: uaKepEvidencePackage.uaKepSessionId,
+          artifactType: { startsWith: 'PADES' },
+        },
+      })) > 0
+    : false;
+
+  const uaKepEvidence = uaKepEvidencePackage
+    ? {
+        evidencePackageId: uaKepEvidencePackage.id,
+        hasPades: uaKepHasPades,
+      }
+    : null;
+
   return {
     // Only return necessary data
     document: {
@@ -75,13 +106,16 @@ export async function loader({ params, request }: Route.LoaderArgs) {
     recipients: envelope.recipients,
     documentRootPath,
     userId: user.id,
+    uaKepEvidence,
   };
 }
 
 export default function DocumentsLogsPage({ loaderData }: Route.ComponentProps) {
-  const { document, recipients, documentRootPath, userId } = loaderData;
+  const { document, recipients, documentRootPath, userId, uaKepEvidence } = loaderData;
 
   const { _, i18n } = useLingui();
+  const uaKepPadesUrl = `${documentRootPath}/${document.envelopeId}/ua-kep/pades`;
+  const uaKepArchiveUrl = `${documentRootPath}/${document.envelopeId}/ua-kep/archive`;
 
   const documentInformation: { description: MessageDescriptor; value: string }[] = [
     {
@@ -150,14 +184,32 @@ export default function DocumentsLogsPage({ loaderData }: Route.ComponentProps) 
           <div className="mt-2.5 flex items-center gap-x-6">
             <DocumentStatusComponent inheritColor status={document.status} className="text-muted-foreground" />
           </div>
-          <div className="mt-4 flex w-full flex-row sm:mt-0 sm:w-auto sm:self-end">
-            <DocumentCertificateDownloadButton
-              className="mr-2"
-              envelopeId={document.envelopeId}
-              documentStatus={document.status}
-            />
+          <div className="mt-4 flex w-full flex-col gap-2 sm:mt-0 sm:w-auto sm:flex-row sm:self-end">
+            {uaKepEvidence ? (
+              <>
+                {uaKepEvidence.hasPades && (
+                  <Button variant="outline" asChild>
+                    <a href={uaKepPadesUrl} download>
+                      <DownloadIcon className="mr-1.5 h-4 w-4" />
+                      <Trans>Signed PDF (PAdES)</Trans>
+                    </a>
+                  </Button>
+                )}
 
-            <DocumentAuditLogDownloadButton envelopeId={document.envelopeId} />
+                <Button asChild>
+                  <a href={uaKepArchiveUrl} download>
+                    <DownloadIcon className="mr-1.5 h-4 w-4" />
+                    <Trans>Download evidence archive</Trans>
+                  </a>
+                </Button>
+              </>
+            ) : (
+              <>
+                <DocumentCertificateDownloadButton envelopeId={document.envelopeId} documentStatus={document.status} />
+
+                <DocumentAuditLogDownloadButton envelopeId={document.envelopeId} />
+              </>
+            )}
           </div>
         </div>
       </div>

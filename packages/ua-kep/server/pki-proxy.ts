@@ -1,6 +1,6 @@
 import { lookup } from 'node:dns/promises';
-import { request as httpRequest } from 'node:http';
 import type { ClientRequest, IncomingMessage, RequestOptions } from 'node:http';
+import { request as httpRequest } from 'node:http';
 import { request as httpsRequest } from 'node:https';
 import { isIP } from 'node:net';
 
@@ -8,8 +8,9 @@ import type { Context } from 'hono';
 
 import { getProxyAllowedHosts, normalizeProxyTarget } from './ca-registry';
 
-const PKI_PROXY_TIMEOUT_MS = 10_000;
+const PKI_PROXY_TIMEOUT_MS = 30_000;
 const PKI_PROXY_MAX_RESPONSE_BYTES = 2 * 1024 * 1024;
+const PKI_PROXY_MAX_REDIRECTS = 3;
 const REDIRECT_STATUSES = new Set([301, 302, 303, 307, 308]);
 
 type VettedProxyAddress = {
@@ -67,9 +68,7 @@ const parseIpv4MappedIpv6 = (address: string) => {
     return dottedMatch[1];
   }
 
-  const hexMatch = /^(?:::ffff:|0:0:0:0:0:ffff:)([0-9a-f]{1,4}):([0-9a-f]{1,4})$/.exec(
-    normalized,
-  );
+  const hexMatch = /^(?:::ffff:|0:0:0:0:0:ffff:)([0-9a-f]{1,4}):([0-9a-f]{1,4})$/.exec(normalized);
 
   if (!hexMatch) {
     return null;
@@ -167,9 +166,7 @@ const createPinnedLookup = (vettedAddress: VettedProxyAddress): NonNullable<Requ
       | ((error: Error | null, addresses: VettedProxyAddress[]) => void);
 
     if (lookupOptions?.all) {
-      (resolvedCallback as (error: Error | null, addresses: VettedProxyAddress[]) => void)(null, [
-        vettedAddress,
-      ]);
+      (resolvedCallback as (error: Error | null, addresses: VettedProxyAddress[]) => void)(null, [vettedAddress]);
       return;
     }
 
@@ -241,18 +238,76 @@ const requestUpstreamResponse = ({
   });
 };
 
+const getHeaderValue = (value: string | string[] | undefined) => {
+  if (Array.isArray(value)) {
+    return value[0];
+  }
+
+  return value;
+};
+
+const resolveRedirectTarget = (currentUrl: URL, response: IncomingMessage) => {
+  const location = getHeaderValue(response.headers.location);
+
+  if (!location) {
+    throw new Error('PKI upstream redirect is missing a location.');
+  }
+
+  return normalizeProxyTarget(new URL(location, currentUrl).toString());
+};
+
+/// The IIT worker builds the proxy URL by raw string concatenation:
+/// `{proxy}?address=<target>&contentType=<type>` — the target is NOT
+/// URL-encoded. Standard query parsing would decode `+` to a space and split
+/// on any `&` inside the target, so extract both values from the raw query
+/// string instead (contentType, when present, is always the last parameter).
+const extractRawProxyParams = (requestUrl: string) => {
+  const queryIndex = requestUrl.indexOf('?');
+
+  if (queryIndex === -1) {
+    return { address: null, contentType: null };
+  }
+
+  const rawQuery = requestUrl.slice(queryIndex + 1);
+  const marker = 'address=';
+
+  let addressStart = -1;
+
+  if (rawQuery.startsWith(marker)) {
+    addressStart = marker.length;
+  } else {
+    const embedded = rawQuery.indexOf(`&${marker}`);
+    addressStart = embedded === -1 ? -1 : embedded + marker.length + 1;
+  }
+
+  if (addressStart === -1) {
+    return { address: null, contentType: null };
+  }
+
+  let address = rawQuery.slice(addressStart);
+  let contentType: string | null = null;
+
+  const contentTypeIndex = address.lastIndexOf('&contentType=');
+
+  if (contentTypeIndex !== -1) {
+    contentType = address.slice(contentTypeIndex + '&contentType='.length);
+    address = address.slice(0, contentTypeIndex);
+  }
+
+  return {
+    address: address.length > 0 ? address : null,
+    contentType: contentType && contentType.length > 0 ? decodeURIComponent(contentType) : null,
+  };
+};
+
 export const handleUaKepPkiProxy = async (c: Context) => {
   try {
-    const upstreamUrl = normalizeProxyTarget(c.req.query('address'));
+    const rawParams = extractRawProxyParams(c.req.url);
+
+    let upstreamUrl = normalizeProxyTarget(rawParams.address ?? c.req.query('address'));
     const allowedHosts = await getProxyAllowedHosts();
-
-    if (!allowedHosts.has(upstreamUrl.hostname.toLowerCase())) {
-      return c.text('PKI proxy host is not allowed.', 403);
-    }
-
-    const vettedAddress = await assertPublicProxyTarget(upstreamUrl);
-
-    const requestContentType = c.req.query('contentType')?.trim() || 'application/octet-stream';
+    const requestContentType =
+      rawParams.contentType?.trim() || c.req.query('contentType')?.trim() || 'application/octet-stream';
 
     const requestHeaders: Record<string, string> = {
       Accept: '*/*',
@@ -270,41 +325,56 @@ export const handleUaKepPkiProxy = async (c: Context) => {
 
     const abortController = new AbortController();
     const timeout = setTimeout(() => abortController.abort(), PKI_PROXY_TIMEOUT_MS);
-    let cleanupUpstreamResponse: (() => void) | undefined;
 
     try {
-      const { cleanup, response: upstreamResponse } = await requestUpstreamResponse({
-        body: requestBody,
-        headers: requestHeaders,
-        method: c.req.method,
-        signal: abortController.signal,
-        url: upstreamUrl,
-        vettedAddress,
-      });
+      for (let redirectCount = 0; redirectCount <= PKI_PROXY_MAX_REDIRECTS; redirectCount++) {
+        if (!allowedHosts.has(upstreamUrl.hostname.toLowerCase())) {
+          return c.text('PKI proxy host is not allowed.', 403);
+        }
 
-      cleanupUpstreamResponse = cleanup;
+        const vettedAddress = await assertPublicProxyTarget(upstreamUrl);
+        let cleanupUpstreamResponse: (() => void) | undefined;
 
-      const upstreamStatusCode = upstreamResponse.statusCode ?? 0;
+        try {
+          const { cleanup, response: upstreamResponse } = await requestUpstreamResponse({
+            body: requestBody,
+            headers: requestHeaders,
+            method: c.req.method,
+            signal: abortController.signal,
+            url: upstreamUrl,
+            vettedAddress,
+          });
 
-      if (REDIRECT_STATUSES.has(upstreamStatusCode)) {
-        upstreamResponse.destroy();
-        return c.text('PKI upstream redirects are not allowed.', 502);
+          cleanupUpstreamResponse = cleanup;
+
+          const upstreamStatusCode = upstreamResponse.statusCode ?? 0;
+
+          if (REDIRECT_STATUSES.has(upstreamStatusCode)) {
+            upstreamUrl = resolveRedirectTarget(upstreamUrl, upstreamResponse);
+            upstreamResponse.destroy();
+            continue;
+          }
+
+          if (upstreamStatusCode < 200 || upstreamStatusCode >= 300) {
+            upstreamResponse.destroy();
+            return c.text(`PKI upstream error: ${upstreamStatusCode}`, 502);
+          }
+
+          const responseBuffer = await readLimitedResponse(upstreamResponse, abortController.signal);
+
+          c.header('Cache-Control', 'no-store');
+          return c.text(responseBuffer.toString('base64'));
+        } finally {
+          cleanupUpstreamResponse?.();
+        }
       }
 
-      if (upstreamStatusCode < 200 || upstreamStatusCode >= 300) {
-        upstreamResponse.destroy();
-        return c.text(`PKI upstream error: ${upstreamStatusCode}`, 502);
-      }
-
-      const responseBuffer = await readLimitedResponse(upstreamResponse, abortController.signal);
-
-      c.header('Cache-Control', 'no-store');
-      return c.text(responseBuffer.toString('base64'));
+      return c.text('PKI upstream redirected too many times.', 502);
     } finally {
-      cleanupUpstreamResponse?.();
       clearTimeout(timeout);
     }
   } catch (error) {
+    console.error('[ua-kep] PKI proxy request failed:', error instanceof Error ? error.message : error);
     return c.text('PKI proxy request failed.', 502);
   }
 };

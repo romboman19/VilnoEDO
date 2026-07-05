@@ -137,6 +137,7 @@ export const TemplateEditForm = ({ initialTemplate, className, templateRootPath 
         typedSignatureEnabled: signatureTypes.includes(DocumentSignatureType.TYPE),
         uploadSignatureEnabled: signatureTypes.includes(DocumentSignatureType.UPLOAD),
         drawSignatureEnabled: signatureTypes.includes(DocumentSignatureType.DRAW),
+        uaKepSignatureEnabled: signatureTypes.includes(DocumentSignatureType.UA_KEP),
         language: isValidLanguageCode(data.meta.language) ? data.meta.language : undefined,
       },
     });

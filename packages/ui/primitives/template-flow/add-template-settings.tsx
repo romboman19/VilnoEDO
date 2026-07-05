@@ -1,7 +1,7 @@
 import { useAutoSave } from '@documenso/lib/client-only/hooks/use-autosave';
 import { useCurrentOrganisation } from '@documenso/lib/client-only/providers/organisation';
 import { DATE_FORMATS, DEFAULT_DOCUMENT_DATE_FORMAT } from '@documenso/lib/constants/date-formats';
-import { DOCUMENT_DISTRIBUTION_METHODS, DOCUMENT_SIGNATURE_TYPES } from '@documenso/lib/constants/document';
+import { DOCUMENT_DISTRIBUTION_METHODS, DOCUMENT_SIGNATURE_TYPES_WITH_UA_KEP } from '@documenso/lib/constants/document';
 import { SUPPORTED_LANGUAGES } from '@documenso/lib/constants/i18n';
 import { DEFAULT_DOCUMENT_TIME_ZONE, TIME_ZONES } from '@documenso/lib/constants/time-zones';
 import { ZDocumentEmailSettingsSchema } from '@documenso/lib/types/document-email';
@@ -405,7 +405,7 @@ export const AddTemplateSettingsFormPartial = ({
 
                   <FormControl>
                     <MultiSelectCombobox
-                      options={Object.values(DOCUMENT_SIGNATURE_TYPES).map((option) => ({
+                      options={Object.values(DOCUMENT_SIGNATURE_TYPES_WITH_UA_KEP).map((option) => ({
                         label: t(option.label),
                         value: option.value,
                       }))}

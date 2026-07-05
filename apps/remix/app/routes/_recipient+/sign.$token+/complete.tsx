@@ -10,6 +10,7 @@ import { getRecipientByToken } from '@documenso/lib/server-only/recipient/get-re
 import { getRecipientSignatures } from '@documenso/lib/server-only/recipient/get-recipient-signatures';
 import { getUserByEmail } from '@documenso/lib/server-only/user/get-user-by-email';
 import { isDocumentCompleted } from '@documenso/lib/utils/document';
+import { prisma } from '@documenso/prisma';
 import { trpc } from '@documenso/trpc/react';
 import { DocumentShareButton } from '@documenso/ui/components/document/document-share-button';
 import { SigningCard3D } from '@documenso/ui/components/signing-card';
@@ -89,6 +90,34 @@ export async function loader({ params, request }: Route.LoaderArgs) {
 
   const returnToHomePath = canRedirectToFolder ? `/t/${document.team.url}/documents/f/${document.folderId}` : '/';
 
+  // UA KEP evidence produced by this recipient's signing session, if any.
+  const uaKepEvidencePackage = await prisma.uaKepEvidencePackage.findFirst({
+    where: {
+      recipientId: recipient.id,
+      envelopeId: document.envelopeId,
+    },
+    select: {
+      id: true,
+      uaKepSessionId: true,
+    },
+  });
+
+  const uaKepHasPades = uaKepEvidencePackage
+    ? (await prisma.uaKepSignatureArtifact.count({
+        where: {
+          uaKepSessionId: uaKepEvidencePackage.uaKepSessionId,
+          artifactType: { startsWith: 'PADES' },
+        },
+      })) > 0
+    : false;
+
+  const uaKepEvidence = uaKepEvidencePackage
+    ? {
+        evidencePackageId: uaKepEvidencePackage.id,
+        hasPades: uaKepHasPades,
+      }
+    : null;
+
   return {
     isDocumentAccessValid: true,
     canSignUp,
@@ -99,6 +128,7 @@ export async function loader({ params, request }: Route.LoaderArgs) {
     recipient,
     returnToHomePath,
     branding,
+    uaKepEvidence,
   };
 }
 
@@ -120,6 +150,22 @@ export default function CompletedSigningPage({ loaderData }: Route.ComponentProp
     returnToHomePath,
     branding,
   } = loaderData;
+
+  const uaKepEvidence = 'uaKepEvidence' in loaderData ? loaderData.uaKepEvidence : null;
+
+  const buildUaKepEvidenceUrl = (kind: 'pades.pdf' | 'archive.zip') => {
+    if (!uaKepEvidence || !recipient || !document) {
+      return null;
+    }
+
+    const query = new URLSearchParams({
+      recipientId: String(recipient.id),
+      recipientToken: recipient.token,
+      envelopeId: document.envelopeId,
+    });
+
+    return `/api/ua-kep/evidence/${encodeURIComponent(uaKepEvidence.evidencePackageId)}/${kind}?${query.toString()}`;
+  };
 
   // Poll signing status every few seconds
   const { data: signingStatusData } = trpc.envelope.signingStatus.useQuery(
@@ -260,6 +306,16 @@ export default function CompletedSigningPage({ loaderData }: Route.ComponentProp
                   envelopeId={document.envelopeId}
                   envelopeStatus={document.status}
                   envelopeItems={document.envelopeItems}
+                  uaKepEvidence={
+                    uaKepEvidence
+                      ? {
+                          evidencePackageId: uaKepEvidence.evidencePackageId,
+                          hasPades: uaKepEvidence.hasPades,
+                          recipientId: recipient.id,
+                          recipientToken: recipient.token,
+                        }
+                      : null
+                  }
                   token={recipient?.token}
                   trigger={
                     <Button type="button" variant="outline" className="flex-1 md:flex-initial">
@@ -278,6 +334,26 @@ export default function CompletedSigningPage({ loaderData }: Route.ComponentProp
                 </Button>
               )}
             </div>
+
+            {uaKepEvidence && (
+              <div className="mt-4 flex w-full max-w-xs flex-col items-stretch gap-4 md:w-auto md:max-w-none md:flex-row md:items-center">
+                {uaKepEvidence.hasPades && (
+                  <Button type="button" variant="outline" className="flex-1 md:flex-initial" asChild>
+                    <a href={buildUaKepEvidenceUrl('pades.pdf') ?? '#'} download>
+                      <DownloadIcon className="mr-2 h-5 w-5" />
+                      <Trans>Signed PDF (PAdES)</Trans>
+                    </a>
+                  </Button>
+                )}
+
+                <Button type="button" variant="outline" className="flex-1 md:flex-initial" asChild>
+                  <a href={buildUaKepEvidenceUrl('archive.zip') ?? '#'} download>
+                    <DownloadIcon className="mr-2 h-5 w-5" />
+                    <Trans>Download signature archive</Trans>
+                  </a>
+                </Button>
+              </div>
+            )}
           </div>
 
           <div className="flex flex-col items-center">

@@ -1,5 +1,6 @@
 import { completeDocumentWithToken } from '@documenso/lib/server-only/document/complete-document-with-token';
 import { getFileServerSide } from '@documenso/lib/universal/upload/get-file.server';
+import { env } from '@documenso/lib/utils/env';
 import type { PrismaClient } from '@documenso/prisma/client';
 
 import { ZUaKepSessionItemsSchema } from '../types/session';
@@ -24,6 +25,8 @@ export const completeUaKepSigning = async ({
   callbackNonce,
   signerInfo,
   signatures,
+  completeDocument = true,
+  padesLevel = null,
 }: {
   prisma: PrismaClient;
   recipientId: number;
@@ -40,7 +43,10 @@ export const completeUaKepSigning = async ({
   signatures: Array<{
     envelopeItemId: string;
     signatureB64: string;
+    padesB64?: string;
   }>;
+  completeDocument?: boolean;
+  padesLevel?: 'B_LT' | 'B_T' | null;
 }) => {
   const session = await prisma.uaKepSession.findUnique({
     where: { recipientId },
@@ -119,11 +125,21 @@ export const completeUaKepSigning = async ({
   }
 
   // Second stage: full cryptographic verification through VilnoCheck-SignService
-  // (DSTU-4145, chain, trust material). Runs whenever the service is
-  // configured; any invalid or unverifiable signature rejects the completion.
+  // (DSTU-4145, chain, trust material).
+  //
+  // NEXT_PRIVATE_UA_KEP_REMOTE_VERIFY controls strictness:
+  // - required (production default): any invalid or unverifiable signature rejects.
+  // - optional: a cryptographic rejection still fails, but a transport
+  //   failure (service down/unreachable) degrades to structural validation
+  //   so local signing keeps working while SignService is offline.
+  // - off: skip remote verification entirely.
+  // Development defaults to optional so a local SignService auth/config issue
+  // does not block browser-key integration testing.
+  const defaultRemoteVerifyMode = env('NODE_ENV') === 'production' ? 'required' : 'optional';
+  const remoteVerifyMode = (env('NEXT_PRIVATE_UA_KEP_REMOTE_VERIFY') ?? defaultRemoteVerifyMode).trim().toLowerCase();
   const cryptoResults = new Map<string, TRemoteVerificationResult>();
 
-  if (isSignServiceConfigured()) {
+  if (isSignServiceConfigured() && remoteVerifyMode !== 'off') {
     const envelopeItems = await prisma.envelopeItem.findMany({
       where: {
         id: {
@@ -155,6 +171,12 @@ export const completeUaKepSigning = async ({
       });
 
       if (!result.valid) {
+        if (remoteVerifyMode === 'optional' && result.transportFailure) {
+          // SignService is down, not the signature — fall back to the
+          // structural verdict for this item instead of blocking signing.
+          continue;
+        }
+
         throw new Error(
           `UA KEP signature rejected by cryptographic verification: ${result.error ?? 'invalid signature'}`,
         );
@@ -186,14 +208,17 @@ export const completeUaKepSigning = async ({
         signatures,
         signerInfo,
         verificationStatusByEnvelopeItemId,
+        padesLevel,
       },
     });
 
+    // Structural/crypto validation covers the detached CAdES artifacts; the
+    // PAdES PDFs are stored as companion evidence and are not re-validated.
     const validationReports = await createUaKepValidationReports({
       prisma: tx,
       input: {
         session: signedSession,
-        artifacts: persistedArtifacts.artifacts,
+        artifacts: persistedArtifacts.artifacts.filter((artifact) => artifact.artifactType === 'CADES_DETACHED'),
         verdicts,
         cryptoResults,
         validationTime,
@@ -215,10 +240,12 @@ export const completeUaKepSigning = async ({
     };
   });
 
-  const completionResult = await completeDocumentWithToken({
-    token: recipientToken,
-    id: envelopeId as unknown as Parameters<typeof completeDocumentWithToken>[0]['id'],
-  });
+  const completionResult = completeDocument
+    ? await completeDocumentWithToken({
+        token: recipientToken,
+        id: { type: 'envelopeId', id: envelopeId },
+      })
+    : null;
 
   return {
     ok: true,
@@ -229,7 +256,7 @@ export const completeUaKepSigning = async ({
     trustMaterialSnapshotId: persistenceResult.validationReports.trustMaterialSnapshotId,
     evidencePackageId: persistenceResult.evidencePackage.id,
     evidencePackageSha256: persistenceResult.evidencePackage.packageSha256,
-    status: 'signed',
+    status: completeDocument ? 'signed' : 'ua_kep_signed',
     completionResult,
   };
 };

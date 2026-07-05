@@ -2,9 +2,9 @@ import pMap from 'p-map';
 import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf.mjs';
 import { Canvas, Image, Path2D } from 'skia-canvas';
 
-// @ts-expect-error napi-rs/canvas satisfies the requirements
+// @ts-expect-error skia-canvas satisfies the requirements
 globalThis.Path2D = Path2D;
-// @ts-expect-error napi-rs/canvas satisfies the requirements
+// @ts-expect-error skia-canvas satisfies the requirements
 globalThis.Image = Image;
 
 class SkiaCanvasFactory {
@@ -68,9 +68,9 @@ export const pdfToImages = async (pdfBytes: Uint8Array, options: PdfToImagesOpti
       const canvasContext = canvas.getContext('2d');
 
       await page.render({
-        // @ts-expect-error napi-rs/canvas satifies the requirements
+        // @ts-expect-error skia-canvas satisfies the requirements
         canvas,
-        // @ts-expect-error napi-rs/canvas satifies the requirements
+        // @ts-expect-error skia-canvas satisfies the requirements
         canvasContext,
         viewport,
       }).promise;

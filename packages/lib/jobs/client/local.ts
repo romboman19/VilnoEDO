@@ -7,6 +7,7 @@ import type { Context as HonoContext } from 'hono';
 import { NEXT_PRIVATE_INTERNAL_WEBAPP_URL } from '../../constants/app';
 import { sign } from '../../server-only/crypto/sign';
 import { verify } from '../../server-only/crypto/verify';
+import { env } from '../../utils/env';
 import {
   type JobDefinition,
   type JobRunIO,
@@ -94,6 +95,11 @@ export class LocalJobProvider extends BaseJobProvider {
    */
   public override startCron() {
     if (this._cronPoller) {
+      return;
+    }
+
+    if (env('NEXT_PRIVATE_JOBS_DISABLE_CRON') === 'true') {
+      console.log('[JOBS]: Local cron poller disabled by NEXT_PRIVATE_JOBS_DISABLE_CRON');
       return;
     }
 

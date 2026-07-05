@@ -239,6 +239,7 @@ const EnvelopeEditPage = ({ embedAuthoringOptions }: EnvelopeEditPageProps) => {
         typedSignatureEnabled: envelope.documentMeta.typedSignatureEnabled, //
         uploadSignatureEnabled: envelope.documentMeta.uploadSignatureEnabled, //
         drawSignatureEnabled: envelope.documentMeta.drawSignatureEnabled, //
+        uaKepSignatureEnabled: envelope.documentMeta.uaKepSignatureEnabled, //
         dateFormat: (envelope.documentMeta.dateFormat as TDocumentMetaDateFormat) ?? undefined,
         language: envelope.documentMeta.language as SupportedLanguageCodes,
       },

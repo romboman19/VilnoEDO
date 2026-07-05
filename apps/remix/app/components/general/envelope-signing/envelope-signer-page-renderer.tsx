@@ -384,6 +384,15 @@ export const EnvelopeSignerPageRenderer = ({ pageData }: { pageData: PageRenderD
             typedSignatureEnabled: envelope.documentMeta.typedSignatureEnabled,
             uploadSignatureEnabled: envelope.documentMeta.uploadSignatureEnabled,
             drawSignatureEnabled: envelope.documentMeta.drawSignatureEnabled,
+            uaKepSignatureEnabled: envelope.documentMeta.uaKepSignatureEnabled,
+            uaKepSigning:
+              envelope.documentMeta.uaKepSignatureEnabled !== false
+                ? {
+                    recipientId: recipient.id,
+                    envelopeId: envelope.id,
+                    recipientToken: recipient.token,
+                  }
+                : undefined,
           })
             .then(async (payload) => {
               if (!payload) {
@@ -520,7 +529,7 @@ export const EnvelopeSignerPageRenderer = ({ pageData }: { pageData: PageRenderD
   /**
    * Initialize the Konva page canvas and all fields and interactions.
    */
-  const createPageCanvas = (currentStage: Konva.Stage, currentPageLayer: Konva.Layer) => {
+  const createPageCanvas = (_currentStage: Konva.Stage, currentPageLayer: Konva.Layer) => {
     renderFields();
     currentPageLayer.batchDraw();
   };

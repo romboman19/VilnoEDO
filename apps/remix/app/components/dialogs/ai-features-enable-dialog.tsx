@@ -74,16 +74,16 @@ export const AiFeaturesEnableDialog = ({ open, onOpenChange, onEnabled }: AiFeat
         <div className="space-y-4">
           <p className="text-muted-foreground text-sm">
             <Trans>
-              Turn on AI detection to automatically find recipients and fields in your documents. AI providers do not
-              retain your data for training.
+              Turn on AI detection to automatically find recipients and fields in your documents. Your configured AI
+              provider processes document content for detection.
             </Trans>
           </p>
 
           <Alert variant="neutral">
             <AlertDescription>
               <Trans>
-                Your document content will be sent securely to our AI provider solely for detection and will not be
-                stored or used for training.
+                Your document content will be sent to the configured AI provider solely for recipient and field
+                detection. Use a local provider such as Ollama when you want detection to stay on your machine.
               </Trans>
             </AlertDescription>
           </Alert>

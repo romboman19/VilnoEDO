@@ -10,6 +10,7 @@ import {
   ZEmbedCreateEnvelopeAuthoringSchema,
 } from '@documenso/lib/types/envelope-editor';
 import type { TEnvelopeFieldAndMeta } from '@documenso/lib/types/field-meta';
+import { SignatureLevel } from '@documenso/lib/types/signature-level';
 import { extractDerivedDocumentMeta } from '@documenso/lib/utils/document';
 import { buildEmbeddedEditorOptions, buildEmbeddedFeatures } from '@documenso/lib/utils/embed-config';
 import { prisma } from '@documenso/prisma';
@@ -224,6 +225,7 @@ const EnvelopeCreatePage = ({ embedAuthoringOptions }: EnvelopeCreatePageProps) 
         typedSignatureEnabled: envelope.documentMeta.typedSignatureEnabled ?? undefined,
         uploadSignatureEnabled: envelope.documentMeta.uploadSignatureEnabled ?? undefined,
         drawSignatureEnabled: envelope.documentMeta.drawSignatureEnabled ?? undefined,
+        uaKepSignatureEnabled: envelope.documentMeta.uaKepSignatureEnabled ?? undefined,
         dateFormat: (envelope.documentMeta.dateFormat as TDocumentMetaDateFormat) ?? undefined,
         language: envelope.documentMeta.language as SupportedLanguageCodes,
       },
@@ -328,6 +330,7 @@ const EnvelopeCreatePage = ({ embedAuthoringOptions }: EnvelopeCreatePageProps) 
       id: '',
       secondaryId: '',
       internalVersion: 2,
+      signatureLevel: SignatureLevel.SES,
       type,
       status: DocumentStatus.DRAFT,
       source: 'DOCUMENT',

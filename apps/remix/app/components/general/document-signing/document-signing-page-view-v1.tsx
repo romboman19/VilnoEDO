@@ -45,7 +45,6 @@ import { DocumentSigningSignatureField } from '~/components/general/document-sig
 import { DocumentSigningTextField } from '~/components/general/document-signing/document-signing-text-field';
 import PDFViewerLazy from '~/components/general/pdf-viewer/pdf-viewer-lazy';
 
-import { useRequiredDocumentSigningAuthContext } from './document-signing-auth-provider';
 import { DocumentSigningCompleteDialog } from './document-signing-complete-dialog';
 import { DocumentSigningRecipientProvider } from './document-signing-recipient-provider';
 
@@ -75,13 +74,7 @@ export const DocumentSigningPageViewV1 = ({
   includeSenderDetails,
   branding,
 }: DocumentSigningPageViewV1Props) => {
-  const { documentData, documentMeta } = document;
-
-  const { derivedRecipientAccessAuth, user: authUser } = useRequiredDocumentSigningAuthContext();
-
-  const hasAuthenticator = authUser?.twoFactorEnabled
-    ? authUser.twoFactorEnabled && authUser.email === recipient.email
-    : false;
+  const { documentMeta } = document;
 
   const analytics = useAnalytics();
 
@@ -174,6 +167,14 @@ export const DocumentSigningPageViewV1 = ({
   const hasPendingFields = pendingFields.length > 0;
 
   const hasCustomBrandingLogo = branding.brandingEnabled && Boolean(branding.brandingLogo);
+  const uaKepSigning =
+    document.documentMeta?.uaKepSignatureEnabled !== false
+      ? {
+          recipientId: recipient.id,
+          envelopeId: document.envelopeId,
+          recipientToken: recipient.token,
+        }
+      : undefined;
 
   return (
     <DocumentSigningRecipientProvider recipient={recipient} targetSigner={targetSigner}>
@@ -380,6 +381,7 @@ export const DocumentSigningPageViewV1 = ({
                   isSubmitting={isSubmitting}
                   fieldsValidated={fieldsValidated}
                   nextRecipient={nextRecipient}
+                  uaKepSigning={uaKepSigning}
                 />
               </div>
             </div>
@@ -408,6 +410,8 @@ export const DocumentSigningPageViewV1 = ({
                     typedSignatureEnabled={documentMeta?.typedSignatureEnabled}
                     uploadSignatureEnabled={documentMeta?.uploadSignatureEnabled}
                     drawSignatureEnabled={documentMeta?.drawSignatureEnabled}
+                    uaKepSignatureEnabled={documentMeta?.uaKepSignatureEnabled}
+                    uaKepSigning={uaKepSigning}
                   />
                 ))
                 .with(FieldType.INITIALS, () => <DocumentSigningInitialsField key={field.id} field={field} />)

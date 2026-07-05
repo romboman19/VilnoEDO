@@ -98,11 +98,10 @@ export const createSpinner = ({ fieldWidth, fieldHeight }: { fieldWidth: number;
     lineCap: 'round',
   });
 
-  rect.moveToTop();
-  spinner.moveToTop();
-
   loadingGroup.add(rect);
   loadingGroup.add(spinner);
+  rect.moveToTop();
+  spinner.moveToTop();
 
   const anim = new Konva.Animation((frame) => {
     spinner.rotate(180 * (frame.timeDiff / 500));

@@ -7,6 +7,9 @@ export type TRemoteVerificationResult = {
   valid: boolean;
   skipped: boolean;
   error: string | null;
+  /// True when the service could not be reached or answered garbage — the
+  /// signature itself was never cryptographically examined.
+  transportFailure: boolean;
   signatureClass: string;
   signerCN: string | null;
   signingTime: string | null;
@@ -41,6 +44,7 @@ export const verifyDetachedSignatureRemote = async ({
     valid: false,
     skipped: false,
     error,
+    transportFailure: true,
     signatureClass: 'unknown',
     signerCN: null,
     signingTime: null,
@@ -83,10 +87,25 @@ export const verifyDetachedSignatureRemote = async ({
 
     const verification = data.verification;
 
+    // The service answered but reports it could not run verification at all
+    // (e.g. its EndUser crypto library failed to initialise). That is a service
+    // outage, not a signature verdict — flag it as a transport failure so the
+    // `optional` mode can degrade to structural validation instead of rejecting
+    // a signature that was never actually examined.
+    const errorText = typeof verification.error === 'string' ? verification.error : null;
+    const serviceUnavailable =
+      verification.valid !== true &&
+      verification.signatureClass !== 'QES' &&
+      verification.signatureClass !== 'AdES' &&
+      verification.signatureClass !== 'AdES_QC' &&
+      typeof errorText === 'string' &&
+      /unavailable|not initiali[sz]ed|initiali[sz]ation failed|internal error|failed to (start|load)/i.test(errorText);
+
     return {
       valid: verification.valid === true,
       skipped: verification.skipped === true,
-      error: typeof verification.error === 'string' ? verification.error : null,
+      error: errorText,
+      transportFailure: serviceUnavailable,
       signatureClass: typeof verification.signatureClass === 'string' ? verification.signatureClass : 'unknown',
       signerCN: typeof verification.signerCN === 'string' ? verification.signerCN : null,
       signingTime: typeof verification.signingTime === 'string' ? verification.signingTime : null,

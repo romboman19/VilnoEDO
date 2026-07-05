@@ -1,16 +1,16 @@
 import { prisma } from '@documenso/prisma';
-import { createCanvas, loadImage } from '@napi-rs/canvas';
 import { DocumentStatus, type Field, RecipientRole } from '@prisma/client';
 import { generateObject } from 'ai';
 import pMap from 'p-map';
+import { Canvas, loadImage } from 'skia-canvas';
 
 import { AppError, AppErrorCode } from '../../../../errors/app-error';
 import { getFileServerSide } from '../../../../universal/upload/get-file.server';
 import { resizeImageToGeminiImage } from '../../../../utils/images/resize-image-to-gemini-image';
 import { getEnvelopeById } from '../../../envelope/get-envelope-by-id';
 import { createEnvelopeRecipients } from '../../../recipient/create-envelope-recipients';
-import { vertex } from '../../google';
 import { pdfToImages } from '../../pdf-to-images';
+import { getAiModel, getAiProviderOptions } from '../../provider';
 import { buildRecipientContextMessage, normalizeDetectedField, resolveRecipientFromKey } from './helpers';
 import { SYSTEM_PROMPT } from './prompt';
 import { ZSubmitDetectedFieldsInputSchema } from './schema';
@@ -207,7 +207,9 @@ const maskFieldsOnImage = async ({ image, width, height, fields }: MaskFieldsOnI
   }
 
   const img = await loadImage(image);
-  const canvas = createCanvas(width, height);
+  const canvas = new Canvas(width, height);
+  canvas.gpu = false;
+
   const ctx = canvas.getContext('2d');
 
   // Draw the original image
@@ -226,7 +228,7 @@ const maskFieldsOnImage = async ({ image, width, height, fields }: MaskFieldsOnI
     ctx.fillRect(x, y, w, h);
   }
 
-  return canvas.encode('jpeg');
+  return await canvas.toBuffer('jpeg');
 };
 
 type DetectFieldsFromPageOptions = {
@@ -272,18 +274,12 @@ const detectFieldsFromPage = async ({ image, pageNumber, recipients, context }: 
   });
 
   const result = await generateObject({
-    model: vertex('gemini-3-flash-preview'),
+    model: getAiModel(),
     system: SYSTEM_PROMPT,
     schema: ZSubmitDetectedFieldsInputSchema,
     messages,
     temperature: 0.5,
-    providerOptions: {
-      google: {
-        thinkingConfig: {
-          thinkingLevel: 'low',
-        },
-      },
-    },
+    providerOptions: getAiProviderOptions(),
   });
 
   if (!result.object) {

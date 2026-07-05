@@ -1,7 +1,7 @@
 import { useCurrentEnvelopeEditor } from '@documenso/lib/client-only/providers/envelope-editor-provider';
 import { useCurrentOrganisation } from '@documenso/lib/client-only/providers/organisation';
 import { DATE_FORMATS, DEFAULT_DOCUMENT_DATE_FORMAT } from '@documenso/lib/constants/date-formats';
-import { DOCUMENT_DISTRIBUTION_METHODS, DOCUMENT_SIGNATURE_TYPES } from '@documenso/lib/constants/document';
+import { DOCUMENT_DISTRIBUTION_METHODS, DOCUMENT_SIGNATURE_TYPES_WITH_UA_KEP } from '@documenso/lib/constants/document';
 import { ZEnvelopeExpirationPeriod } from '@documenso/lib/constants/envelope-expiration';
 import { ZEnvelopeReminderSettings } from '@documenso/lib/constants/envelope-reminder';
 import { isValidLanguageCode, SUPPORTED_LANGUAGE_CODES, SUPPORTED_LANGUAGES } from '@documenso/lib/constants/i18n';
@@ -179,8 +179,9 @@ export const EnvelopeEditorSettingsDialog = ({ trigger, ...props }: EnvelopeEdit
   const { documentAuthOption } = extractDocumentAuthMethods({
     documentAuth: envelope.authOptions,
   });
-
   const createDefaultValues = () => {
+    const signatureTypes = extractTeamSignatureSettings(envelope.documentMeta);
+
     return {
       templateType: envelope.templateType || TemplateType.PRIVATE,
       externalId: envelope.externalId || '',
@@ -199,7 +200,7 @@ export const EnvelopeEditorSettingsDialog = ({ trigger, ...props }: EnvelopeEdit
         emailId: envelope.documentMeta.emailId ?? null,
         emailReplyTo: envelope.documentMeta.emailReplyTo ?? undefined,
         emailSettings: ZDocumentEmailSettingsSchema.parse(envelope.documentMeta.emailSettings),
-        signatureTypes: extractTeamSignatureSettings(envelope.documentMeta),
+        signatureTypes,
         envelopeExpirationPeriod: envelope.documentMeta?.envelopeExpirationPeriod ?? null,
         reminderSettings: envelope.documentMeta?.reminderSettings ?? null,
       },
@@ -278,6 +279,7 @@ export const EnvelopeEditorSettingsDialog = ({ trigger, ...props }: EnvelopeEdit
           drawSignatureEnabled: signatureTypes.includes(DocumentSignatureType.DRAW),
           typedSignatureEnabled: signatureTypes.includes(DocumentSignatureType.TYPE),
           uploadSignatureEnabled: signatureTypes.includes(DocumentSignatureType.UPLOAD),
+          uaKepSignatureEnabled: signatureTypes.includes(DocumentSignatureType.UA_KEP),
           envelopeExpirationPeriod,
           reminderSettings,
         },
@@ -323,6 +325,7 @@ export const EnvelopeEditorSettingsDialog = ({ trigger, ...props }: EnvelopeEdit
   }, [open, form]);
 
   const selectedTab = tabs.find((tab) => tab.id === activeTab);
+  const signatureTypeOptions = DOCUMENT_SIGNATURE_TYPES_WITH_UA_KEP;
 
   if (!selectedTab || !settings) {
     return null;
@@ -448,7 +451,7 @@ export const EnvelopeEditorSettingsDialog = ({ trigger, ...props }: EnvelopeEdit
 
                               <FormControl>
                                 <MultiSelectCombobox
-                                  options={Object.values(DOCUMENT_SIGNATURE_TYPES).map((option) => ({
+                                  options={Object.values(signatureTypeOptions).map((option) => ({
                                     label: t(option.label),
                                     value: option.value,
                                   }))}

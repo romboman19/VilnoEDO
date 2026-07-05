@@ -95,9 +95,11 @@ const buildCspHeader = ({ nonce, kind }: { nonce: string; kind: CspPathKind }) =
   // Embeds inject customer-supplied CSS via runtime-created `<style>`
   // elements (see apps/remix/app/utils/css-vars.ts). Nonce-stamping those
   // would be brittle for white-label customers, so we accept
-  // `'unsafe-inline'` on the embed scope only. Frameable (auth/signing)
-  // pages do NOT load customer CSS and keep the strict nonced policy.
-  if (kind === 'embed') {
+  // `'unsafe-inline'` on the embed scope. Frameable signing/auth pages also
+  // mount Radix/dialog scroll-lock helpers that create runtime `<style>`
+  // elements without a nonce. Keep scripts nonce-gated, but allow those
+  // style elements anywhere users can open recipient-facing dialogs.
+  if (kind === 'embed' || kind === 'frameable') {
     directives.push(`style-src-elem 'self' 'unsafe-inline'`);
   } else {
     directives.push(`style-src-elem 'self' 'nonce-${nonce}'`);

@@ -4,6 +4,7 @@ import type { TSignEnvelopeFieldValue } from '@documenso/trpc/server/envelope-ro
 import { FieldType } from '@prisma/client';
 
 import { SignFieldSignatureDialog } from '~/components/dialogs/sign-field-signature-dialog';
+import type { UaKepSigningContext } from '~/components/general/document-signing/ua-kep-signature-tab';
 
 type HandleSignatureFieldClickOptions = {
   field: TFieldSignature;
@@ -12,12 +13,23 @@ type HandleSignatureFieldClickOptions = {
   typedSignatureEnabled?: boolean;
   uploadSignatureEnabled?: boolean;
   drawSignatureEnabled?: boolean;
+  uaKepSignatureEnabled?: boolean;
+  uaKepSigning?: UaKepSigningContext;
 };
 
 export const handleSignatureFieldClick = async (
   options: HandleSignatureFieldClickOptions,
 ): Promise<Extract<TSignEnvelopeFieldValue, { type: typeof FieldType.SIGNATURE }> | null> => {
-  const { field, fullName, signature, typedSignatureEnabled, uploadSignatureEnabled, drawSignatureEnabled } = options;
+  const {
+    field,
+    fullName,
+    signature,
+    typedSignatureEnabled,
+    uploadSignatureEnabled,
+    drawSignatureEnabled,
+    uaKepSignatureEnabled,
+    uaKepSigning,
+  } = options;
 
   if (field.type !== FieldType.SIGNATURE) {
     throw new AppError(AppErrorCode.INVALID_REQUEST, {
@@ -40,6 +52,8 @@ export const handleSignatureFieldClick = async (
       typedSignatureEnabled,
       uploadSignatureEnabled,
       drawSignatureEnabled,
+      uaKepSignatureEnabled,
+      uaKepSigning,
     });
   }
 

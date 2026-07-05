@@ -28,6 +28,7 @@ export const ZDocumentMetaSchema = DocumentMetaSchema.pick({
   typedSignatureEnabled: true,
   uploadSignatureEnabled: true,
   drawSignatureEnabled: true,
+  uaKepSignatureEnabled: true,
   language: true,
   emailSettings: true,
 });
@@ -44,10 +45,16 @@ export const ZDocumentSignatureSettingsSchema = z
     typedSignatureEnabled: z.boolean(),
     uploadSignatureEnabled: z.boolean(),
     drawnSignatureEnabled: z.boolean(),
+    uaKepSignatureEnabled: z.boolean(),
   })
   .refine(
     (data) => {
-      return data.typedSignatureEnabled || data.uploadSignatureEnabled || data.drawnSignatureEnabled;
+      return (
+        data.typedSignatureEnabled ||
+        data.uploadSignatureEnabled ||
+        data.drawnSignatureEnabled ||
+        data.uaKepSignatureEnabled
+      );
     },
     {
       message: msg`At least one signature type must be enabled`.id,
@@ -105,6 +112,10 @@ export const ZDocumentMetaUploadSignatureEnabledSchema = z
   .boolean()
   .describe('Whether to allow recipients to sign using an uploaded signature.');
 
+export const ZDocumentMetaUaKepSignatureEnabledSchema = z
+  .boolean()
+  .describe('Whether to allow recipients to sign using a local Ukrainian КЕП/УЕП signature.');
+
 /**
  * Note: Any updates to this will cause public API changes. You will need to update
  * all corresponding areas where this is used (some places that use this needs to pass
@@ -123,6 +134,7 @@ export const ZDocumentMetaCreateSchema = z.object({
   typedSignatureEnabled: ZDocumentMetaTypedSignatureEnabledSchema.optional(),
   uploadSignatureEnabled: ZDocumentMetaUploadSignatureEnabledSchema.optional(),
   drawSignatureEnabled: ZDocumentMetaDrawSignatureEnabledSchema.optional(),
+  uaKepSignatureEnabled: ZDocumentMetaUaKepSignatureEnabledSchema.optional(),
   emailId: z.string().nullish(),
   emailReplyTo: zEmail().nullish(),
   emailSettings: ZDocumentEmailSettingsSchema.nullish(),

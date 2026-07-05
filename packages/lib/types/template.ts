@@ -54,6 +54,7 @@ export const ZTemplateSchema = TemplateSchema.pick({
     typedSignatureEnabled: true,
     uploadSignatureEnabled: true,
     drawSignatureEnabled: true,
+    uaKepSignatureEnabled: true,
     allowDictateNextSigner: true,
     distributionMethod: true,
     redirectUrl: true,

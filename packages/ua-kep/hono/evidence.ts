@@ -64,6 +64,63 @@ export const evidenceRoute = new Hono()
       manifest: evidencePackage.manifestJson,
     });
   })
+  .get('/:evidencePackageId/pades.pdf', async (c) => {
+    const params = ZEvidenceParamsSchema.safeParse(c.req.param());
+    const query = ZEvidenceQuerySchema.safeParse(c.req.query());
+
+    if (!params.success || !query.success) {
+      return c.json({ error: 'Invalid request' }, 400);
+    }
+
+    const evidencePackage = await getUaKepEvidencePackageManifest({
+      prisma,
+      input: {
+        evidencePackageId: params.data.evidencePackageId,
+        envelopeId: query.data.envelopeId,
+        recipientId: query.data.recipientId,
+        recipientToken: query.data.recipientToken,
+      },
+    });
+
+    if (!evidencePackage) {
+      return c.json({ error: 'Not found' }, 404);
+    }
+
+    const envelopeItemId = c.req.query('envelopeItemId');
+
+    const padesArtifact = await prisma.uaKepSignatureArtifact.findFirst({
+      where: {
+        uaKepSessionId: evidencePackage.uaKepSessionId,
+        artifactType: { startsWith: 'PADES' },
+        ...(envelopeItemId ? { envelopeItemId } : {}),
+      },
+      select: {
+        signatureBase64: true,
+        envelopeItem: {
+          select: {
+            title: true,
+          },
+        },
+      },
+      orderBy: {
+        envelopeItemId: 'asc',
+      },
+    });
+
+    if (!padesArtifact) {
+      return c.json({ error: 'No PAdES artifact for this evidence package' }, 404);
+    }
+
+    const pdfBytes = Buffer.from(padesArtifact.signatureBase64.replace(/\s/g, ''), 'base64');
+    const downloadName = `${padesArtifact.envelopeItem.title.replace(/[^A-Za-z0-9Ѐ-ӿ _.()-]+/g, '_').slice(0, 100) || 'document'}-pades.pdf`;
+
+    c.header('Cache-Control', 'private, no-store');
+    c.header('Content-Type', 'application/pdf');
+    c.header('Content-Disposition', `attachment; filename*=UTF-8''${encodeURIComponent(downloadName)}`);
+    c.header('X-Content-Type-Options', 'nosniff');
+
+    return c.body(new Uint8Array(pdfBytes).buffer as ArrayBuffer);
+  })
   .get('/:evidencePackageId/archive.zip', async (c) => {
     const params = ZEvidenceParamsSchema.safeParse(c.req.param());
     const query = ZEvidenceQuerySchema.safeParse(c.req.query());

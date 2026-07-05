@@ -29,6 +29,7 @@ export default defineConfig({
     },
   },
   server: {
+    host: '0.0.0.0',
     port: parseInt(process.env.PORT || '3000', 10),
     strictPort: true,
   },
@@ -58,6 +59,7 @@ export default defineConfig({
           pattern instanceof RegExp && pattern.source === '.*\\.css$' ? /^(?!\/api\/jobs\/board\/).*\.css$/ : pattern,
         ),
         '/assets/**',
+        '/ua-kep/**',
         '/src/app/**',
         /\?(?:inline|url|no-inline|raw|import(?:&(?:inline|url|no-inline|raw)?)?)$/,
       ],
@@ -66,7 +68,6 @@ export default defineConfig({
   ssr: {
     noExternal: ['react-dropzone', 'plausible-tracker'],
     external: [
-      '@napi-rs/canvas',
       '@node-rs/bcrypt',
       '@prisma/client',
       '@documenso/tailwind-config',
@@ -84,7 +85,6 @@ export default defineConfig({
     include: ['prop-types', 'file-selector', 'attr-accept'],
     exclude: [
       'node_modules',
-      '@napi-rs/canvas',
       '@node-rs/bcrypt',
       'sharp',
       'playwright',
@@ -110,7 +110,6 @@ export default defineConfig({
   build: {
     rollupOptions: {
       external: [
-        '@napi-rs/canvas',
         '@node-rs/bcrypt',
         '@aws-sdk/cloudfront-signer',
         '@google-cloud/kms',

@@ -22,6 +22,7 @@ import { useNavigate } from 'react-router';
 import { AssistantConfirmationDialog, type NextSigner } from '../../dialogs/assistant-confirmation-dialog';
 import { DocumentSigningCompleteDialog } from './document-signing-complete-dialog';
 import { useRequiredDocumentSigningContext } from './document-signing-provider';
+import { createUaKepSignatureTab, type UaKepSigningContext } from './ua-kep-signature-tab';
 
 export type DocumentSigningFormProps = {
   document: DocumentAndSender;
@@ -37,6 +38,7 @@ export type DocumentSigningFormProps = {
   isSubmitting: boolean;
   fieldsValidated: () => void;
   nextRecipient?: RecipientWithFields;
+  uaKepSigning?: UaKepSigningContext;
 };
 
 export const DocumentSigningForm = ({
@@ -50,6 +52,7 @@ export const DocumentSigningForm = ({
   isSubmitting,
   fieldsValidated,
   nextRecipient,
+  uaKepSigning,
 }: DocumentSigningFormProps) => {
   const { _ } = useLingui();
   const { toast } = useToast();
@@ -58,6 +61,16 @@ export const DocumentSigningForm = ({
   const assistantSignersId = useId();
 
   const { fullName, signature, setFullName, setSignature } = useRequiredDocumentSigningContext();
+  const externalSignatureTabs =
+    uaKepSigning && document.documentMeta?.uaKepSignatureEnabled !== false
+      ? (onSignatureComplete: (value: string) => void) => [
+          createUaKepSignatureTab({
+            uaKepSigning,
+            hasValue: Boolean(signature),
+            onSignatureComplete,
+          }),
+        ]
+      : undefined;
 
   const [validateUninsertedFields, setValidateUninsertedFields] = useState(false);
   const [isConfirmationDialogOpen, setIsConfirmationDialogOpen] = useState(false);
@@ -99,7 +112,7 @@ export const DocumentSigningForm = ({
 
     try {
       await completeDocument({ nextSigner });
-    } catch (err) {
+    } catch (_err) {
       toast({
         title: _(msg`Error`),
         description: _(msg`An error occurred while completing the document. Please try again.`),
@@ -254,6 +267,7 @@ export const DocumentSigningForm = ({
                         typedSignatureEnabled={document.documentMeta?.typedSignatureEnabled}
                         uploadSignatureEnabled={document.documentMeta?.uploadSignatureEnabled}
                         drawSignatureEnabled={document.documentMeta?.drawSignatureEnabled}
+                        externalTabs={externalSignatureTabs}
                       />
                     </div>
                   )}

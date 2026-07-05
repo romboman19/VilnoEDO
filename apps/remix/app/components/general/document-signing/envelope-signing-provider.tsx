@@ -169,12 +169,12 @@ export const EnvelopeSigningProvider = ({
     (() => {
       const sig = initialSignature || '';
       const isBase64 = isBase64Image(sig);
+      const isImageSignatureAllowed =
+        envelope.documentMeta.uploadSignatureEnabled ||
+        envelope.documentMeta.drawSignatureEnabled ||
+        envelope.documentMeta.uaKepSignatureEnabled;
 
-      if (
-        !sig &&
-        (envelope.documentMeta.uploadSignatureEnabled || envelope.documentMeta.drawSignatureEnabled) &&
-        envelopeData.recipientSignature?.signatureImageAsBase64
-      ) {
+      if (!sig && isImageSignatureAllowed && envelopeData.recipientSignature?.signatureImageAsBase64) {
         return envelopeData.recipientSignature.signatureImageAsBase64;
       }
 
@@ -182,7 +182,7 @@ export const EnvelopeSigningProvider = ({
         return envelopeData.recipientSignature.typedSignature;
       }
 
-      if (isBase64 && (envelope.documentMeta.uploadSignatureEnabled || envelope.documentMeta.drawSignatureEnabled)) {
+      if (isBase64 && isImageSignatureAllowed) {
         return sig;
       }
 

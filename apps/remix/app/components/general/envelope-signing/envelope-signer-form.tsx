@@ -8,6 +8,7 @@ import { RecipientRole } from '@prisma/client';
 import { useMemo } from 'react';
 
 import { useEmbedSigningContext } from '~/components/embed/embed-signing-context';
+import { createUaKepSignatureTab } from '~/components/general/document-signing/ua-kep-signature-tab';
 
 import { useRequiredEnvelopeSigningContext } from '../document-signing/envelope-signing-provider';
 
@@ -26,7 +27,21 @@ export default function EnvelopeSignerForm() {
     setSelectedAssistantRecipientId,
   } = useRequiredEnvelopeSigningContext();
 
-  const { isNameLocked, isEmailLocked } = useEmbedSigningContext() || {};
+  const { isNameLocked } = useEmbedSigningContext() || {};
+  const externalSignatureTabs =
+    envelope.documentMeta.uaKepSignatureEnabled !== false
+      ? (onSignatureComplete: (value: string) => void) => [
+          createUaKepSignatureTab({
+            uaKepSigning: {
+              recipientId: recipient.id,
+              envelopeId: envelope.id,
+              recipientToken: recipient.token,
+            },
+            hasValue: Boolean(signature),
+            onSignatureComplete,
+          }),
+        ]
+      : undefined;
 
   const hasSignatureField = useMemo(() => {
     return recipientFields.some((field) => isSignatureFieldType(field.type));
@@ -121,6 +136,7 @@ export default function EnvelopeSignerForm() {
               typedSignatureEnabled={envelope.documentMeta.typedSignatureEnabled}
               uploadSignatureEnabled={envelope.documentMeta.uploadSignatureEnabled}
               drawSignatureEnabled={envelope.documentMeta.drawSignatureEnabled}
+              externalTabs={externalSignatureTabs}
             />
           </div>
         )}

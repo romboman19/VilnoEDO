@@ -3,8 +3,8 @@ import { isBase64Image } from '@documenso/lib/constants/signatures';
 
 import { Trans } from '@lingui/react/macro';
 import { KeyboardIcon, UploadCloudIcon } from 'lucide-react';
-import type { HTMLAttributes } from 'react';
-import { useState } from 'react';
+import type { HTMLAttributes, ReactNode } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { match } from 'ts-pattern';
 
 import { SignatureIcon } from '../../icons/signature';
@@ -19,6 +19,14 @@ export type SignaturePadValue = {
   value: string;
 };
 
+export type SignaturePadExternalTab = {
+  value: string;
+  trigger: ReactNode;
+  content: ReactNode;
+  hasValue?: boolean;
+  onSelect?: () => void;
+};
+
 export type SignaturePadProps = Omit<HTMLAttributes<HTMLCanvasElement>, 'onChange'> & {
   fullName?: string;
   value?: string;
@@ -31,6 +39,7 @@ export type SignaturePadProps = Omit<HTMLAttributes<HTMLCanvasElement>, 'onChang
   drawSignatureEnabled?: boolean;
 
   onValidityChange?: (isValid: boolean) => void;
+  externalTabs?: SignaturePadExternalTab[];
 };
 
 export const SignaturePad = ({
@@ -41,10 +50,12 @@ export const SignaturePad = ({
   typedSignatureEnabled = true,
   uploadSignatureEnabled = true,
   drawSignatureEnabled = true,
+  externalTabs = [],
 }: SignaturePadProps) => {
   const [imageSignature, setImageSignature] = useState(isBase64Image(value) ? value : '');
   const [drawSignature, setDrawSignature] = useState(isBase64Image(value) ? value : '');
   const [typedSignature, setTypedSignature] = useState(isBase64Image(value) ? '' : value);
+  const externalTabsRef = useRef(externalTabs);
 
   /**
    * This is cooked.
@@ -53,7 +64,7 @@ export const SignaturePad = ({
    * the first enabled tab.
    */
   const [tab, setTab] = useState(
-    ((): 'draw' | 'text' | 'image' => {
+    ((): string => {
       // First passthrough to check to see if there's a signature for a given tab.
       if (drawSignatureEnabled && drawSignature) {
         return 'draw';
@@ -67,6 +78,12 @@ export const SignaturePad = ({
         return 'image';
       }
 
+      const externalTabWithValue = externalTabs.find((externalTab) => externalTab.hasValue);
+
+      if (externalTabWithValue) {
+        return externalTabWithValue.value;
+      }
+
       // Second passthrough to just select the first avaliable tab.
       if (drawSignatureEnabled) {
         return 'draw';
@@ -78,6 +95,12 @@ export const SignaturePad = ({
 
       if (uploadSignatureEnabled) {
         return 'image';
+      }
+
+      const [externalTab] = externalTabs;
+
+      if (externalTab) {
+        return externalTab.value;
       }
 
       throw new Error('No signature enabled');
@@ -111,7 +134,7 @@ export const SignaturePad = ({
     });
   };
 
-  const onTabChange = (value: 'draw' | 'text' | 'image') => {
+  const onTabChange = (value: string) => {
     if (disabled) {
       return;
     }
@@ -128,10 +151,18 @@ export const SignaturePad = ({
       .with('image', () => {
         onImageSignatureChange(imageSignature);
       })
-      .exhaustive();
+      .otherwise(() => null);
   };
 
-  if (!drawSignatureEnabled && !typedSignatureEnabled && !uploadSignatureEnabled) {
+  useEffect(() => {
+    externalTabsRef.current = externalTabs;
+  }, [externalTabs]);
+
+  useEffect(() => {
+    externalTabsRef.current.find((externalTab) => externalTab.value === tab)?.onSelect?.();
+  }, [tab]);
+
+  if (!drawSignatureEnabled && !typedSignatureEnabled && !uploadSignatureEnabled && externalTabs.length === 0) {
     return null;
   }
 
@@ -142,7 +173,7 @@ export const SignaturePad = ({
         'pointer-events-none': disabled,
       })}
       // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-      onValueChange={(value) => onTabChange(value as 'draw' | 'text' | 'image')}
+      onValueChange={(value) => onTabChange(value)}
     >
       <TabsList>
         {drawSignatureEnabled && (
@@ -165,6 +196,12 @@ export const SignaturePad = ({
             <Trans context="Upload signature">Upload</Trans>
           </TabsTrigger>
         )}
+
+        {externalTabs.map((externalTab) => (
+          <TabsTrigger key={externalTab.value} value={externalTab.value}>
+            {externalTab.trigger}
+          </TabsTrigger>
+        ))}
       </TabsList>
 
       <TabsContent
@@ -189,6 +226,12 @@ export const SignaturePad = ({
       >
         <SignaturePadUpload value={imageSignature} onChange={onImageSignatureChange} />
       </TabsContent>
+
+      {externalTabs.map((externalTab) => (
+        <TabsContent key={externalTab.value} value={externalTab.value}>
+          {externalTab.content}
+        </TabsContent>
+      ))}
     </Tabs>
   );
 };

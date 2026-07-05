@@ -119,6 +119,7 @@ export const generateDefaultOrganisationSettings = (): Omit<OrganisationGlobalSe
     typedSignatureEnabled: true,
     uploadSignatureEnabled: true,
     drawSignatureEnabled: true,
+    uaKepSignatureEnabled: true,
 
     brandingEnabled: false,
     brandingLogo: '',

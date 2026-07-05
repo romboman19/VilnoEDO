@@ -24,6 +24,7 @@ import { useRequiredDocumentSigningAuthContext } from './document-signing-auth-p
 import { DocumentSigningFieldContainer } from './document-signing-field-container';
 import { useRequiredDocumentSigningContext } from './document-signing-provider';
 import { useDocumentSigningRecipientContext } from './document-signing-recipient-provider';
+import { createUaKepSignatureTab, type UaKepSigningContext } from './ua-kep-signature-tab';
 
 type SignatureFieldState = 'empty' | 'signed-image' | 'signed-text';
 
@@ -34,6 +35,8 @@ export type DocumentSigningSignatureFieldProps = {
   typedSignatureEnabled?: boolean;
   uploadSignatureEnabled?: boolean;
   drawSignatureEnabled?: boolean;
+  uaKepSignatureEnabled?: boolean;
+  uaKepSigning?: UaKepSigningContext;
 };
 
 export const DocumentSigningSignatureField = ({
@@ -43,6 +46,8 @@ export const DocumentSigningSignatureField = ({
   typedSignatureEnabled,
   uploadSignatureEnabled,
   drawSignatureEnabled,
+  uaKepSignatureEnabled,
+  uaKepSigning,
 }: DocumentSigningSignatureFieldProps) => {
   const { _ } = useLingui();
   const { toast } = useToast();
@@ -86,6 +91,17 @@ export const DocumentSigningSignatureField = ({
 
     return 'signed-text';
   }, [field.inserted, signature?.signatureImageAsBase64]);
+
+  const externalTabs =
+    uaKepSigning && uaKepSignatureEnabled !== false
+      ? [
+          createUaKepSignatureTab({
+            uaKepSigning,
+            hasValue: Boolean(localSignature),
+            onSignatureComplete: setLocalSignature,
+          }),
+        ]
+      : undefined;
 
   const onPreSign = () => {
     if (!providedSignature) {
@@ -264,7 +280,7 @@ export const DocumentSigningSignatureField = ({
       )}
 
       <Dialog open={showSignatureModal} onOpenChange={setShowSignatureModal}>
-        <DialogContent>
+        <DialogContent aria-describedby={undefined} className="flex max-h-[90vh] flex-col overflow-y-auto">
           <DialogTitle>
             <Trans>
               Sign as {recipient.name} <div className="h-5 text-muted-foreground">({recipient.email})</div>
@@ -279,6 +295,7 @@ export const DocumentSigningSignatureField = ({
             typedSignatureEnabled={typedSignatureEnabled}
             uploadSignatureEnabled={uploadSignatureEnabled}
             drawSignatureEnabled={drawSignatureEnabled}
+            externalTabs={externalTabs}
           />
 
           <DocumentSigningDisclosure />

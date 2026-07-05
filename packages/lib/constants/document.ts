@@ -77,4 +77,12 @@ export const DOCUMENT_SIGNATURE_TYPES = {
     }),
     value: DocumentSignatureType.UPLOAD,
   },
+} satisfies Record<Exclude<DocumentSignatureType, DocumentSignatureType.UA_KEP>, DocumentSignatureTypeData>;
+
+export const DOCUMENT_SIGNATURE_TYPES_WITH_UA_KEP = {
+  ...DOCUMENT_SIGNATURE_TYPES,
+  [DocumentSignatureType.UA_KEP]: {
+    label: msg`KEP/UEP`,
+    value: DocumentSignatureType.UA_KEP,
+  },
 } satisfies Record<DocumentSignatureType, DocumentSignatureTypeData>;

@@ -1,6 +1,5 @@
 import crypto from 'node:crypto';
 
-import { completeDocumentWithToken } from '@documenso/lib/server-only/document/complete-document-with-token';
 import { env } from '@documenso/lib/utils/env';
 import type { PrismaClient } from '@documenso/prisma/client';
 
@@ -143,7 +142,7 @@ export const ingestSignServiceCallback = async ({
     where: { recipientId: ref.recipientId },
     include: {
       recipient: {
-        select: { token: true, envelopeId: true, expiresAt: true },
+        select: { envelopeId: true },
       },
     },
   });
@@ -229,6 +228,7 @@ export const ingestSignServiceCallback = async ({
         valid: true,
         skipped: body.verification.skipped,
         error: null,
+        transportFailure: false,
         signatureClass: body.verification.signatureClass,
         signerCN: body.verification.signerCN,
         signingTime: body.verification.signingTime,
@@ -283,11 +283,6 @@ export const ingestSignServiceCallback = async ({
     });
 
     return { persistedArtifacts, validationReports, evidencePackage };
-  });
-
-  await completeDocumentWithToken({
-    token: session.recipient.token,
-    id: ref.envelopeId as unknown as Parameters<typeof completeDocumentWithToken>[0]['id'],
   });
 
   return {

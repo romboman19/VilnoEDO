@@ -1,7 +1,7 @@
 import { useCurrentOrganisation } from '@documenso/lib/client-only/providers/organisation';
 import { useSession } from '@documenso/lib/client-only/providers/session';
 import { DATE_FORMATS } from '@documenso/lib/constants/date-formats';
-import { DOCUMENT_SIGNATURE_TYPES, DocumentSignatureType } from '@documenso/lib/constants/document';
+import { DOCUMENT_SIGNATURE_TYPES_WITH_UA_KEP, DocumentSignatureType } from '@documenso/lib/constants/document';
 import {
   type TEnvelopeExpirationPeriod,
   ZEnvelopeExpirationPeriod,
@@ -79,6 +79,7 @@ type SettingsSubset = Pick<
   | 'typedSignatureEnabled'
   | 'uploadSignatureEnabled'
   | 'drawSignatureEnabled'
+  | 'uaKepSignatureEnabled'
   | 'defaultRecipients'
   | 'delegateDocumentOwnership'
   | 'aiFeaturesEnabled'
@@ -336,7 +337,7 @@ export const DocumentPreferencesForm = ({
 
                 <FormControl>
                   <MultiSelectCombobox
-                    options={Object.values(DOCUMENT_SIGNATURE_TYPES).map((option) => ({
+                    options={Object.values(DOCUMENT_SIGNATURE_TYPES_WITH_UA_KEP).map((option) => ({
                       label: _(option.label),
                       value: option.value,
                     }))}

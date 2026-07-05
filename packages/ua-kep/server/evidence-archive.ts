@@ -211,9 +211,25 @@ export const buildUaKepEvidenceArchive = async ({
 
   const usedNames = new Set<string>();
 
-  for (const [index, artifact] of artifacts.entries()) {
-    const ordinal = String(index + 1).padStart(2, '0');
-    let baseName = `${ordinal}-${sanitizeEntryName(artifact.envelopeItem.title)}`;
+  // One signing session can produce several artifact types (detached CAdES,
+  // PAdES PDF) for the same envelope item — group them so `original/` holds
+  // one copy of each document.
+  const artifactsByEnvelopeItemId = new Map<string, typeof artifacts>();
+
+  for (const artifact of artifacts) {
+    const group = artifactsByEnvelopeItemId.get(artifact.envelopeItemId) ?? [];
+    group.push(artifact);
+    artifactsByEnvelopeItemId.set(artifact.envelopeItemId, group);
+  }
+
+  let ordinalIndex = 0;
+
+  for (const group of artifactsByEnvelopeItemId.values()) {
+    ordinalIndex += 1;
+
+    const [firstArtifact] = group;
+    const ordinal = String(ordinalIndex).padStart(2, '0');
+    let baseName = `${ordinal}-${sanitizeEntryName(firstArtifact.envelopeItem.title)}`;
 
     while (usedNames.has(baseName)) {
       baseName = `${baseName}_`;
@@ -222,12 +238,19 @@ export const buildUaKepEvidenceArchive = async ({
     usedNames.add(baseName);
 
     const documentBytes = await getFileServerSide({
-      type: artifact.envelopeItem.documentData.type,
-      data: artifact.envelopeItem.documentData.data,
+      type: firstArtifact.envelopeItem.documentData.type,
+      data: firstArtifact.envelopeItem.documentData.data,
     });
 
     addBinaryEntry(`original/${baseName}`, documentBytes);
-    addBinaryEntry(`signatures/cades-detached/${baseName}.p7s`, decodeSignatureBase64(artifact.signatureBase64));
+
+    for (const artifact of group) {
+      if (artifact.artifactType.startsWith('PADES')) {
+        addBinaryEntry(`signatures/pades/${baseName}.pdf`, decodeSignatureBase64(artifact.signatureBase64));
+      } else {
+        addBinaryEntry(`signatures/cades-detached/${baseName}.p7s`, decodeSignatureBase64(artifact.signatureBase64));
+      }
+    }
   }
 
   addJsonEntry('manifest.json', evidencePackage.manifestJson);
@@ -248,6 +271,7 @@ export const buildUaKepEvidenceArchive = async ({
     layout: {
       'original/': 'Exact document bytes covered by the detached signatures',
       'signatures/cades-detached/': 'Detached CAdES signatures (.p7s)',
+      'signatures/pades/': 'PDF documents with embedded PAdES signature',
       'validation/report.json': 'Structured validation reports',
       'audit/audit-log.json': 'Envelope audit log events',
       'trust/trust-material.json': 'Trust material snapshot used for validation',

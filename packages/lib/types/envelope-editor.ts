@@ -249,6 +249,7 @@ export type TEmbedEditEnvelopeAuthoring = z.infer<typeof ZEmbedEditEnvelopeAutho
  */
 export const ZEditorEnvelopeSchema = EnvelopeSchema.pick({
   internalVersion: true,
+  signatureLevel: true,
   type: true,
   status: true,
   source: true,
@@ -279,6 +280,7 @@ export const ZEditorEnvelopeSchema = EnvelopeSchema.pick({
     typedSignatureEnabled: true,
     uploadSignatureEnabled: true,
     drawSignatureEnabled: true,
+    uaKepSignatureEnabled: true,
     allowDictateNextSigner: true,
     language: true,
     emailSettings: true,

@@ -55,6 +55,7 @@ export const ZWebhookDocumentMetaSchema = z.object({
   typedSignatureEnabled: z.boolean(),
   uploadSignatureEnabled: z.boolean(),
   drawSignatureEnabled: z.boolean(),
+  uaKepSignatureEnabled: z.boolean(),
   language: z.string(),
   distributionMethod: z.nativeEnum(DocumentDistributionMethod),
   emailSettings: z.any().nullable(),

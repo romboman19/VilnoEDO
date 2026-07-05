@@ -17,6 +17,7 @@ export enum DocumentSignatureType {
   DRAW = 'draw',
   TYPE = 'type',
   UPLOAD = 'upload',
+  UA_KEP = 'ua-kep',
 }
 
 export const formatTeamUrl = (teamUrl: string, baseUrl?: string) => {
@@ -93,10 +94,16 @@ export const extractTeamSignatureSettings = (
     typedSignatureEnabled: boolean | null;
     drawSignatureEnabled: boolean | null;
     uploadSignatureEnabled: boolean | null;
+    uaKepSignatureEnabled?: boolean | null;
   } | null,
 ) => {
   if (!settings) {
-    return [DocumentSignatureType.TYPE, DocumentSignatureType.UPLOAD, DocumentSignatureType.DRAW];
+    return [
+      DocumentSignatureType.TYPE,
+      DocumentSignatureType.UPLOAD,
+      DocumentSignatureType.DRAW,
+      DocumentSignatureType.UA_KEP,
+    ];
   }
 
   const signatureTypes: DocumentSignatureType[] = [];
@@ -111,6 +118,10 @@ export const extractTeamSignatureSettings = (
 
   if (settings.uploadSignatureEnabled) {
     signatureTypes.push(DocumentSignatureType.UPLOAD);
+  }
+
+  if (settings.uaKepSignatureEnabled === true) {
+    signatureTypes.push(DocumentSignatureType.UA_KEP);
   }
 
   return signatureTypes;
@@ -186,6 +197,7 @@ export const generateDefaultTeamSettings = (): Omit<TeamGlobalSettings, 'id' | '
     typedSignatureEnabled: null,
     uploadSignatureEnabled: null,
     drawSignatureEnabled: null,
+    uaKepSignatureEnabled: null,
 
     brandingEnabled: null,
     brandingLogo: null,

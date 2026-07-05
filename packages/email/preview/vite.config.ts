@@ -45,7 +45,6 @@ export default defineConfig({
   ssr: {
     noExternal: ['@documenso/email'],
     external: [
-      '@napi-rs/canvas',
       '@node-rs/bcrypt',
       '@prisma/client',
       '@documenso/tailwind-config',
@@ -59,7 +58,6 @@ export default defineConfig({
   },
   optimizeDeps: {
     exclude: [
-      '@napi-rs/canvas',
       '@node-rs/bcrypt',
       'sharp',
       'playwright',

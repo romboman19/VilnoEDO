@@ -88,6 +88,7 @@ export default function OrganisationSettingsDocumentPage() {
           typedSignatureEnabled: signatureTypes.includes(DocumentSignatureType.TYPE),
           uploadSignatureEnabled: signatureTypes.includes(DocumentSignatureType.UPLOAD),
           drawSignatureEnabled: signatureTypes.includes(DocumentSignatureType.DRAW),
+          uaKepSignatureEnabled: signatureTypes.includes(DocumentSignatureType.UA_KEP),
           delegateDocumentOwnership: delegateDocumentOwnership,
           aiFeaturesEnabled,
           envelopeExpirationPeriod: envelopeExpirationPeriod ?? undefined,

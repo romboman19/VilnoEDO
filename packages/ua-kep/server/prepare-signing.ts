@@ -63,7 +63,7 @@ export const prepareUaKepSigning = async ({
 
   // Hash the exact document bytes the recipient signs, not the raw storage
   // column (which may hold base64 text or an S3 key).
-  const itemsJson = await Promise.all(
+  const preparedItems = await Promise.all(
     itemsWithData.map(async (item, index) => {
       const documentBytes = await getFileServerSide({
         type: item.documentData.type,
@@ -76,10 +76,17 @@ export const prepareUaKepSigning = async ({
         envelopeItemId: item.id,
         documentDataId: item.documentDataId,
         hashB64,
+        payloadB64: Buffer.from(documentBytes).toString('base64'),
         ordinal: index,
       };
     }),
   );
+  const itemsJson = preparedItems.map((item) => ({
+    envelopeItemId: item.envelopeItemId,
+    documentDataId: item.documentDataId,
+    hashB64: item.hashB64,
+    ordinal: item.ordinal,
+  }));
 
   const { session, sessionToken, callbackNonce } = await upsertUaKepPreparedSession({
     prisma,
@@ -100,6 +107,6 @@ export const prepareUaKepSigning = async ({
     expiresAt: session.expiresAt,
     signingTime: session.signingTime,
     recipientToken,
-    items: itemsJson,
+    items: preparedItems,
   };
 };

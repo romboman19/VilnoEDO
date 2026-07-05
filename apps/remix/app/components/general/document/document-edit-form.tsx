@@ -174,6 +174,7 @@ export const DocumentEditForm = ({ className, initialDocument, documentRootPath 
         typedSignatureEnabled: signatureTypes.includes(DocumentSignatureType.TYPE),
         uploadSignatureEnabled: signatureTypes.includes(DocumentSignatureType.UPLOAD),
         drawSignatureEnabled: signatureTypes.includes(DocumentSignatureType.DRAW),
+        uaKepSignatureEnabled: signatureTypes.includes(DocumentSignatureType.UA_KEP),
       },
     });
   };

@@ -23,7 +23,7 @@ import { legacy_insertFieldInPDF } from '../../../server-only/pdf/legacy-insert-
 import { getTeamSettings } from '../../../server-only/team/get-team-settings';
 import { triggerWebhook } from '../../../server-only/webhooks/trigger/trigger-webhook';
 import { DOCUMENT_AUDIT_LOG_TYPE, type TDocumentAuditLog } from '../../../types/document-audit-logs';
-import { isTspEnvelope } from '../../../types/signature-level';
+import { isTspEnvelope, isUaKepEnvelope } from '../../../types/signature-level';
 import { mapEnvelopeToWebhookDocumentPayload, ZWebhookDocumentSchema } from '../../../types/webhook-payload';
 import { prefixedId } from '../../../universal/id';
 import { getFileServerSide } from '../../../universal/upload/get-file.server';
@@ -53,7 +53,11 @@ export const run = async ({ payload, io }: { payload: TSealDocumentJobDefinition
           },
         },
         documentMeta: true,
-        recipients: true,
+        recipients: {
+          include: {
+            uaKepSession: true,
+          },
+        },
         fields: {
           include: {
             signature: true,
@@ -67,6 +71,16 @@ export const run = async ({ payload, io }: { payload: TSealDocumentJobDefinition
                 signature: true,
               },
             },
+          },
+        },
+        uaKepEvidencePackages: {
+          select: {
+            id: true,
+          },
+        },
+        uaKepSignatureArtifacts: {
+          select: {
+            id: true,
           },
         },
       },
@@ -165,6 +179,11 @@ export const run = async ({ payload, io }: { payload: TSealDocumentJobDefinition
     });
 
     const finalEnvelopeStatus = isRejected ? DocumentStatus.REJECTED : DocumentStatus.COMPLETED;
+    const hasUaKepEvidence =
+      isUaKepEnvelope(envelope) ||
+      envelope.uaKepEvidencePackages.length > 0 ||
+      envelope.uaKepSignatureArtifacts.length > 0 ||
+      envelope.recipients.some((recipient) => recipient.uaKepSession?.status === 'signed');
 
     if (isTspEnvelope(envelope)) {
       if (isResealing) {
@@ -184,6 +203,45 @@ export const run = async ({ payload, io }: { payload: TSealDocumentJobDefinition
         envelope,
         envelopeCompletedAuditLog,
         requestMetadata,
+      });
+
+      return {
+        envelopeId: envelope.id,
+        envelopeStatus: envelope.status,
+        isRejected,
+      };
+    }
+
+    if (hasUaKepEvidence) {
+      if (isResealing && envelope.status !== DocumentStatus.PENDING) {
+        throw new AppError(AppErrorCode.NOT_SETUP, {
+          message: 'Re-sealing UA KEP envelopes is not supported: recipient signatures cannot be regenerated.',
+        });
+      }
+
+      if (isRejected) {
+        throw new AppError(AppErrorCode.NOT_SETUP, {
+          message: 'UA KEP envelope rejection is not supported: rejection stamps would invalidate PAdES signatures.',
+        });
+      }
+
+      // UA KEP artifacts are recipient-bound CAdES/PAdES evidence. The SES
+      // decorate/sign pass would rewrite the PDF bytes and can invalidate the
+      // evidence package, so completion only records final envelope state.
+      await prisma.$transaction(async (tx) => {
+        await tx.envelope.update({
+          where: {
+            id: envelope.id,
+          },
+          data: {
+            status: finalEnvelopeStatus,
+            completedAt: new Date(),
+          },
+        });
+
+        await tx.documentAuditLog.create({
+          data: envelopeCompletedAuditLog,
+        });
       });
 
       return {

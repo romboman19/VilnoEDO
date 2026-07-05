@@ -6,8 +6,8 @@ import { chunk } from 'remeda';
 import { AppError, AppErrorCode } from '../../../../errors/app-error';
 import { getFileServerSide } from '../../../../universal/upload/get-file.server';
 import { getEnvelopeById } from '../../../envelope/get-envelope-by-id';
-import { vertex } from '../../google';
 import { pdfToImages } from '../../pdf-to-images';
+import { getAiModel } from '../../provider';
 import { SYSTEM_PROMPT } from './prompt';
 import type { TDetectedRecipientSchema } from './schema';
 import { ZDetectedRecipientsSchema } from './schema';
@@ -195,7 +195,7 @@ const detectRecipientsFromImages = async ({ images, onProgress }: DetectRecipien
     });
 
     const result = await generateObject({
-      model: vertex('gemini-3-flash-preview'),
+      model: getAiModel(),
       system: SYSTEM_PROMPT,
       schema: ZDetectedRecipientsSchema,
       messages,

@@ -24,7 +24,42 @@ export const SUPPORT_EMAIL = env('NEXT_PUBLIC_SUPPORT_EMAIL') ?? 'support@docume
 
 export const USE_INTERNAL_URL_BROWSERLESS = () => env('NEXT_PUBLIC_USE_INTERNAL_URL_BROWSERLESS') === 'true';
 
-export const IS_AI_FEATURES_CONFIGURED = () => !!env('GOOGLE_VERTEX_PROJECT_ID') && !!env('GOOGLE_VERTEX_API_KEY');
+const AI_PROVIDERS = ['google', 'ollama', 'openai'] as const;
+
+type TAiProvider = (typeof AI_PROVIDERS)[number];
+
+const getEnvValue = (name: string) => env(name)?.trim() || undefined;
+
+const getAiProvider = (): TAiProvider => {
+  const configuredProvider = getEnvValue('AI_PROVIDER')?.toLowerCase();
+
+  if (configuredProvider && AI_PROVIDERS.includes(configuredProvider as TAiProvider)) {
+    return configuredProvider as TAiProvider;
+  }
+
+  if (getEnvValue('OPENAI_API_KEY')) {
+    return 'openai';
+  }
+
+  if (getEnvValue('OLLAMA_MODEL')) {
+    return 'ollama';
+  }
+
+  return 'google';
+};
+
+export const IS_AI_FEATURES_CONFIGURED = () => {
+  const provider = getAiProvider();
+
+  switch (provider) {
+    case 'google':
+      return Boolean(getEnvValue('GOOGLE_VERTEX_PROJECT_ID') && getEnvValue('GOOGLE_VERTEX_API_KEY'));
+    case 'openai':
+      return Boolean(getEnvValue('OPENAI_API_KEY'));
+    case 'ollama':
+      return Boolean(getEnvValue('OLLAMA_MODEL'));
+  }
+};
 
 /**
  * Temporary flag to toggle between Playwright-based and Konva-based PDF generation

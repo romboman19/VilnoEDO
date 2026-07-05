@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { createCallable } from 'react-call';
 
 import { DocumentSigningDisclosure } from '../general/document-signing/document-signing-disclosure';
+import { createUaKepSignatureTab, type UaKepSigningContext } from '../general/document-signing/ua-kep-signature-tab';
 
 export type SignFieldSignatureDialogProps = {
   initialSignature?: string;
@@ -13,15 +14,39 @@ export type SignFieldSignatureDialogProps = {
   typedSignatureEnabled?: boolean;
   uploadSignatureEnabled?: boolean;
   drawSignatureEnabled?: boolean;
+  uaKepSignatureEnabled?: boolean;
+  uaKepSigning?: UaKepSigningContext;
 };
 
 export const SignFieldSignatureDialog = createCallable<SignFieldSignatureDialogProps, string | null>(
-  ({ call, fullName, typedSignatureEnabled, uploadSignatureEnabled, drawSignatureEnabled, initialSignature }) => {
+  ({
+    call,
+    fullName,
+    typedSignatureEnabled,
+    uploadSignatureEnabled,
+    drawSignatureEnabled,
+    uaKepSignatureEnabled,
+    initialSignature,
+    uaKepSigning,
+  }) => {
     const [localSignature, setLocalSignature] = useState(initialSignature);
+    const externalTabs =
+      uaKepSigning && uaKepSignatureEnabled !== false
+        ? [
+            createUaKepSignatureTab({
+              uaKepSigning,
+              onSignatureComplete: setLocalSignature,
+            }),
+          ]
+        : undefined;
 
     return (
       <Dialog open={true} onOpenChange={(value) => (!value ? call.end(null) : null)}>
-        <DialogContent position="center">
+        <DialogContent
+          position="center"
+          aria-describedby={undefined}
+          className="flex max-h-[90vh] flex-col overflow-y-auto sm:max-w-3xl"
+        >
           <div>
             <DialogHeader>
               <DialogTitle>
@@ -36,6 +61,7 @@ export const SignFieldSignatureDialog = createCallable<SignFieldSignatureDialogP
               typedSignatureEnabled={typedSignatureEnabled}
               uploadSignatureEnabled={uploadSignatureEnabled}
               drawSignatureEnabled={drawSignatureEnabled}
+              externalTabs={externalTabs}
             />
           </div>
 

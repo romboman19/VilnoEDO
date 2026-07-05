@@ -573,6 +573,7 @@ model DocumentMeta {
   typedSignatureEnabled  Boolean @default(true)
   uploadSignatureEnabled Boolean @default(true)
   drawSignatureEnabled   Boolean @default(true)
+  uaKepSignatureEnabled  Boolean @default(true)
 
   language           String                     @default("en")
   distributionMethod DocumentDistributionMethod @default(EMAIL)
@@ -844,7 +845,7 @@ model UaKepSignatureArtifact {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@unique([uaKepSessionId, envelopeItemId])
+  @@unique([uaKepSessionId, envelopeItemId, artifactType], map: "UaKepSignatureArtifact_session_item_type_key")
   @@index([envelopeId])
   @@index([recipientId])
   @@index([envelopeItemId])
@@ -1151,6 +1152,7 @@ model OrganisationGlobalSettings {
   typedSignatureEnabled  Boolean @default(true)
   uploadSignatureEnabled Boolean @default(true)
   drawSignatureEnabled   Boolean @default(true)
+  uaKepSignatureEnabled  Boolean @default(true)
 
   defaultRecipients Json? /// [DefaultRecipient[]] @zod.custom.use(ZDefaultRecipientsSchema)
 
@@ -1194,6 +1196,7 @@ model TeamGlobalSettings {
   typedSignatureEnabled  Boolean?
   uploadSignatureEnabled Boolean?
   drawSignatureEnabled   Boolean?
+  uaKepSignatureEnabled  Boolean?
 
   defaultRecipients Json? /// [DefaultRecipient[]] @zod.custom.use(ZDefaultRecipientsSchema)
 

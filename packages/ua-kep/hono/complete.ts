@@ -23,9 +23,12 @@ const ZCompleteRequestSchema = z.object({
       z.object({
         envelopeItemId: z.string().min(1),
         signatureB64: z.string().min(1),
+        padesB64: z.string().min(1).optional(),
       }),
     )
     .min(1),
+  completeDocument: z.boolean().optional().default(true),
+  padesLevel: z.enum(['B_LT', 'B_T']).nullish(),
 });
 
 export const completeRoute = new Hono().post('/', async (c) => {
@@ -46,6 +49,8 @@ export const completeRoute = new Hono().post('/', async (c) => {
       callbackNonce: input.data.callbackNonce,
       signerInfo: input.data.signerInfo,
       signatures: input.data.signatures,
+      completeDocument: input.data.completeDocument,
+      padesLevel: input.data.padesLevel ?? null,
     });
 
     return c.json(result);

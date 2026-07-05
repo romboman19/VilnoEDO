@@ -1,10 +1,39 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 
-const appRoot = process.cwd();
-const caFilePath = path.join(appRoot, 'apps', 'remix', 'public', 'ua-kep', 'data', 'CAs.json');
+/// The dev server runs with cwd = apps/remix (turbo), production may run from
+/// the repo root — probe both layouts instead of assuming one.
+const CA_FILE_CANDIDATES = [
+  path.join(process.cwd(), 'public', 'ua-kep', 'data', 'CAs.json'),
+  path.join(process.cwd(), 'apps', 'remix', 'public', 'ua-kep', 'data', 'CAs.json'),
+];
 
-const EXTRA_PROXY_ALLOWED_HOSTS = new Set(['zc.bank.gov.ua']);
+const resolveCaFilePath = async () => {
+  for (const candidate of CA_FILE_CANDIDATES) {
+    try {
+      await fs.access(candidate);
+      return candidate;
+    } catch {
+      // Try the next layout.
+    }
+  }
+
+  throw new Error(`UA KEP CA registry not found. Tried: ${CA_FILE_CANDIDATES.join(', ')}`);
+};
+
+const EXTRA_PROXY_ALLOWED_HOSTS = new Set([
+  'acsk.privatbank.ua',
+  'apiext.pumb.ua',
+  'cabinet.e-life.com.ua',
+  'cihsm-api.bankalliance.ua',
+  'cs.vchasno.ua',
+  'depositsign.com',
+  'diia-sign.it.ua',
+  'sid.uakey.com.ua',
+  'smart-sign.tax.gov.ua',
+  'vtms-api-qca.ukrgasbank.com',
+  'zc.bank.gov.ua',
+]);
 
 let caRegistryPromise: Promise<Array<Record<string, unknown>>> | null = null;
 let proxyAllowedHostsPromise: Promise<Set<string>> | null = null;
@@ -27,7 +56,9 @@ const normalizeProxyTarget = (rawAddress: unknown) => {
 };
 
 const addHostToAllowList = (target: unknown, hosts: Set<string>) => {
-  if (!target) return;
+  if (!target) {
+    return;
+  }
 
   try {
     const url = normalizeProxyTarget(target);
@@ -42,16 +73,18 @@ const addHostToAllowList = (target: unknown, hosts: Set<string>) => {
 
 export const getCaRegistry = async () => {
   if (!caRegistryPromise) {
-    caRegistryPromise = fs
-      .readFile(caFilePath, 'utf8')
-      .then((raw) => JSON.parse(raw) as Array<Record<string, unknown>>)
+    caRegistryPromise = resolveCaFilePath()
+      .then(async (caFilePath) => {
+        const raw = await fs.readFile(caFilePath, 'utf8');
+        return JSON.parse(raw) as Array<Record<string, unknown>>;
+      })
       .catch((error) => {
         caRegistryPromise = null;
         throw error;
       });
   }
 
-  return caRegistryPromise;
+  return await caRegistryPromise;
 };
 
 export const getProxyAllowedHosts = async () => {
@@ -80,7 +113,7 @@ export const getProxyAllowedHosts = async () => {
       });
   }
 
-  return proxyAllowedHostsPromise;
+  return await proxyAllowedHostsPromise;
 };
 
 export { normalizeProxyTarget };

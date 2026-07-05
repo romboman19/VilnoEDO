@@ -11,6 +11,7 @@ import {
   ZDocumentMetaSubjectSchema,
   ZDocumentMetaTimezoneSchema,
   ZDocumentMetaTypedSignatureEnabledSchema,
+  ZDocumentMetaUaKepSignatureEnabledSchema,
   ZDocumentMetaUploadSignatureEnabledSchema,
 } from '@documenso/lib/types/document-meta';
 import { ZEnvelopeAttachmentTypeSchema } from '@documenso/lib/types/envelope-attachment';
@@ -94,6 +95,7 @@ export const ZUseEnvelopePayloadSchema = z.object({
       typedSignatureEnabled: ZDocumentMetaTypedSignatureEnabledSchema.optional(),
       uploadSignatureEnabled: ZDocumentMetaUploadSignatureEnabledSchema.optional(),
       drawSignatureEnabled: ZDocumentMetaDrawSignatureEnabledSchema.optional(),
+      uaKepSignatureEnabled: ZDocumentMetaUaKepSignatureEnabledSchema.optional(),
       allowDictateNextSigner: z.boolean().optional(),
       envelopeExpirationPeriod: ZEnvelopeExpirationPeriod.nullish(),
     })

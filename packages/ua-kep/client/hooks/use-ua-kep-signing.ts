@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 
 import type { TUaKepSigningMethod } from '../../types/signing-methods';
 
@@ -46,6 +46,11 @@ export type TUaKepSigningStatus = {
   } | null;
 };
 
+type TPreparedSessionCredentials = {
+  sessionToken: string | null;
+  callbackNonce: string | null;
+};
+
 const readErrorMessage = async (response: Response, fallback: string) => {
   try {
     const data = await response.json();
@@ -71,6 +76,10 @@ export const useUaKepSigning = ({
   const [lastPreparedSessionId, setLastPreparedSessionId] = useState<string | null>(null);
   const [lastPreparedSessionToken, setLastPreparedSessionToken] = useState<string | null>(null);
   const [lastPreparedCallbackNonce, setLastPreparedCallbackNonce] = useState<string | null>(null);
+  const lastPreparedCredentialsRef = useRef<TPreparedSessionCredentials>({
+    sessionToken: null,
+    callbackNonce: null,
+  });
 
   const prepare = async () => {
     setIsPreparing(true);
@@ -89,9 +98,16 @@ export const useUaKepSigning = ({
       }
 
       const data = await response.json();
-      setLastPreparedSessionId(data.sessionId ?? null);
-      setLastPreparedSessionToken(data.sessionToken ?? null);
-      setLastPreparedCallbackNonce(data.callbackNonce ?? null);
+      const sessionToken = typeof data.sessionToken === 'string' ? data.sessionToken : null;
+      const callbackNonce = typeof data.callbackNonce === 'string' ? data.callbackNonce : null;
+
+      lastPreparedCredentialsRef.current = {
+        sessionToken,
+        callbackNonce,
+      };
+      setLastPreparedSessionId(typeof data.sessionId === 'string' ? data.sessionId : null);
+      setLastPreparedSessionToken(sessionToken);
+      setLastPreparedCallbackNonce(callbackNonce);
       return data;
     } finally {
       setIsPreparing(false);
@@ -99,21 +115,25 @@ export const useUaKepSigning = ({
   };
 
   const complete = async (payload: {
+    completeDocument?: boolean;
     signerInfo?: {
       subjCN?: string;
       issuerCN?: string;
       edrpou?: string;
       serial?: string;
     } | null;
-    signatures: Array<{ envelopeItemId: string; signatureB64: string }>;
+    signatures: Array<{ envelopeItemId: string; signatureB64: string; padesB64?: string }>;
+    padesLevel?: 'B_LT' | 'B_T' | null;
     sessionToken?: string;
     callbackNonce?: string;
   }) => {
     setIsCompleting(true);
 
     try {
-      const sessionToken = payload.sessionToken ?? lastPreparedSessionToken;
-      const callbackNonce = payload.callbackNonce ?? lastPreparedCallbackNonce;
+      const sessionToken =
+        payload.sessionToken ?? lastPreparedCredentialsRef.current.sessionToken ?? lastPreparedSessionToken;
+      const callbackNonce =
+        payload.callbackNonce ?? lastPreparedCredentialsRef.current.callbackNonce ?? lastPreparedCallbackNonce;
 
       if (!sessionToken || !callbackNonce) {
         throw new Error('UA KEP session was not prepared');
@@ -132,6 +152,8 @@ export const useUaKepSigning = ({
           callbackNonce,
           signerInfo: payload.signerInfo,
           signatures: payload.signatures,
+          completeDocument: payload.completeDocument,
+          padesLevel: payload.padesLevel,
         }),
       });
 
@@ -162,54 +184,23 @@ export const useUaKepSigning = ({
   }, [recipientId, recipientToken, envelopeId]);
 
   const getEvidenceUrl = useCallback(
-    (evidencePackageId: string, kind: 'manifest' | 'archive') => {
+    (evidencePackageId: string, kind: 'manifest' | 'archive' | 'pades') => {
       const query = new URLSearchParams({
         recipientId: String(recipientId),
         recipientToken,
         envelopeId,
       });
 
-      const file = kind === 'manifest' ? 'manifest.json' : 'archive.zip';
+      const file = kind === 'manifest' ? 'manifest.json' : kind === 'pades' ? 'pades.pdf' : 'archive.zip';
 
       return `/api/ua-kep/evidence/${encodeURIComponent(evidencePackageId)}/${file}?${query.toString()}`;
     },
     [recipientId, recipientToken, envelopeId],
   );
 
-  const [isStartingSignService, setIsStartingSignService] = useState(false);
-
-  // Hand the document to VilnoCheck-SignService and redirect the user to sign
-  // there. The signed result returns via the authenticated HMAC callback.
-  const startSignServiceRedirect = async () => {
-    setIsStartingSignService(true);
-
-    try {
-      const response = await fetch('/api/ua-kep/sign-service/start', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ recipientId, envelopeId, recipientToken, signingMethod }),
-      });
-
-      if (!response.ok) {
-        throw new Error(await readErrorMessage(response, 'Не вдалося почати підписання в SignService'));
-      }
-
-      const data = await response.json();
-
-      if (!data.signingUrl) {
-        throw new Error('SignService не повернув посилання для підпису');
-      }
-
-      window.location.href = data.signingUrl;
-    } finally {
-      setIsStartingSignService(false);
-    }
-  };
-
   return {
     isPreparing,
     isCompleting,
-    isStartingSignService,
     lastPreparedSessionId,
     lastPreparedSessionToken,
     lastPreparedCallbackNonce,
@@ -217,6 +208,5 @@ export const useUaKepSigning = ({
     complete,
     fetchStatus,
     getEvidenceUrl,
-    startSignServiceRedirect,
   };
 };
