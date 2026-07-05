@@ -42,6 +42,7 @@ export const getEnvelopeItemsByTokenRoute = maybeAuthenticatedProcedure
 
       return {
         data,
+        uaKepEvidence: await getUaKepEvidenceDownload({ envelopeId }),
       };
     }
 
@@ -52,8 +53,62 @@ export const getEnvelopeItemsByTokenRoute = maybeAuthenticatedProcedure
 
     return {
       data,
+      uaKepEvidence: await getUaKepEvidenceDownload({ envelopeId, recipientToken: access.token }),
     };
   });
+
+const getUaKepEvidenceDownload = async ({
+  envelopeId,
+  recipientToken,
+}: {
+  envelopeId: string;
+  recipientToken?: string;
+}) => {
+  const evidencePackage = await prisma.uaKepEvidencePackage.findFirst({
+    where: {
+      envelopeId,
+      ...(recipientToken
+        ? {
+            recipient: {
+              token: recipientToken,
+            },
+          }
+        : {}),
+    },
+    select: {
+      id: true,
+      uaKepSessionId: true,
+      recipient: {
+        select: {
+          id: true,
+          token: true,
+        },
+      },
+    },
+    orderBy: {
+      createdAt: 'desc',
+    },
+  });
+
+  if (!evidencePackage) {
+    return null;
+  }
+
+  const hasPades =
+    (await prisma.uaKepSignatureArtifact.count({
+      where: {
+        uaKepSessionId: evidencePackage.uaKepSessionId,
+        artifactType: { startsWith: 'PADES' },
+      },
+    })) > 0;
+
+  return {
+    evidencePackageId: evidencePackage.id,
+    recipientId: evidencePackage.recipient.id,
+    recipientToken: evidencePackage.recipient.token,
+    hasPades,
+  };
+};
 
 const handleGetEnvelopeItemsByToken = async ({ envelopeId, token }: { envelopeId: string; token: string }) => {
   const envelope = await prisma.envelope.findFirst({

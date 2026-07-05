@@ -21,4 +21,12 @@ export const ZGetEnvelopeItemsByTokenResponseSchema = z.object({
     title: true,
     order: true,
   }).array(),
+  uaKepEvidence: z
+    .object({
+      evidencePackageId: z.string(),
+      recipientId: z.number(),
+      recipientToken: z.string(),
+      hasPades: z.boolean(),
+    })
+    .nullable(),
 });
