@@ -7,7 +7,8 @@ export type SupportedLanguageCodes = (typeof SUPPORTED_LANGUAGE_CODES)[number];
 export const APP_I18N_OPTIONS = {
   supportedLangs: SUPPORTED_LANGUAGE_CODES,
   sourceLang: 'en',
-  defaultLocale: 'en-US',
+  fallbackLang: 'uk',
+  defaultLocale: 'uk-UA',
 } as const;
 
-export const ZSupportedLanguageCodeSchema = z.enum(SUPPORTED_LANGUAGE_CODES).catch('en');
+export const ZSupportedLanguageCodeSchema = z.enum(SUPPORTED_LANGUAGE_CODES).catch('uk');

@@ -57,8 +57,8 @@ export const getI18nInstance = async (lang?: SupportedLanguages | (string & {}))
   const instances = await allI18nInstances;
 
   if (!isValidLanguageCode(lang)) {
-    return instances[APP_I18N_OPTIONS.sourceLang];
+    return instances[APP_I18N_OPTIONS.fallbackLang];
   }
 
-  return instances[lang] ?? instances[APP_I18N_OPTIONS.sourceLang];
+  return instances[lang] ?? instances[APP_I18N_OPTIONS.fallbackLang];
 };

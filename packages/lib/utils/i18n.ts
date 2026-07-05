@@ -77,7 +77,7 @@ export const extractLocaleData = ({ headers }: ExtractLocaleDataOptions): I18nLo
   });
 
   return {
-    lang: languages[0] || APP_I18N_OPTIONS.sourceLang,
+    lang: languages[0] || APP_I18N_OPTIONS.fallbackLang,
     locales: headerLocales,
   };
 };
