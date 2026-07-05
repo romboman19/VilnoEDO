@@ -27,6 +27,7 @@ export const ZGetEnvelopeItemsByTokenResponseSchema = z.object({
       recipientId: z.number(),
       recipientToken: z.string(),
       hasPades: z.boolean(),
+      padesEnvelopeItemIds: z.string().array(),
     })
     .nullable(),
 });

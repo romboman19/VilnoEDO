@@ -102,19 +102,25 @@ export async function loader({ params, request }: Route.LoaderArgs) {
     },
   });
 
-  const uaKepHasPades = uaKepEvidencePackage
-    ? (await prisma.uaKepSignatureArtifact.count({
+  const uaKepPadesArtifacts = uaKepEvidencePackage
+    ? await prisma.uaKepSignatureArtifact.findMany({
         where: {
           uaKepSessionId: uaKepEvidencePackage.uaKepSessionId,
           artifactType: { startsWith: 'PADES' },
         },
-      })) > 0
-    : false;
+        select: {
+          envelopeItemId: true,
+        },
+      })
+    : [];
+
+  const uaKepPadesEnvelopeItemIds = [...new Set(uaKepPadesArtifacts.map((artifact) => artifact.envelopeItemId))];
 
   const uaKepEvidence = uaKepEvidencePackage
     ? {
         evidencePackageId: uaKepEvidencePackage.id,
-        hasPades: uaKepHasPades,
+        hasPades: uaKepPadesEnvelopeItemIds.length > 0,
+        padesEnvelopeItemIds: uaKepPadesEnvelopeItemIds,
       }
     : null;
 
@@ -311,6 +317,7 @@ export default function CompletedSigningPage({ loaderData }: Route.ComponentProp
                       ? {
                           evidencePackageId: uaKepEvidence.evidencePackageId,
                           hasPades: uaKepEvidence.hasPades,
+                          padesEnvelopeItemIds: uaKepEvidence.padesEnvelopeItemIds,
                           recipientId: recipient.id,
                           recipientToken: recipient.token,
                         }

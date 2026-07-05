@@ -23,6 +23,7 @@ type UaKepEvidenceDownload = {
   recipientId: number;
   recipientToken: string;
   hasPades: boolean;
+  padesEnvelopeItemIds: string[];
 };
 
 type EnvelopeDownloadDialogProps = {
@@ -119,6 +120,13 @@ export const EnvelopeDownloadDialog = ({
   const envelopeItems = envelopeItemsPayload?.data || [];
   const resolvedUaKepEvidence = uaKepEvidence ?? envelopeItemsPayload?.uaKepEvidence ?? null;
   const hasUaKepEvidenceDownloads = envelopeStatus === DocumentStatus.COMPLETED && Boolean(resolvedUaKepEvidence);
+  const hasUaKepPadesForEnvelopeItem = (envelopeItemId: string) => {
+    if (!resolvedUaKepEvidence?.hasPades) {
+      return false;
+    }
+
+    return resolvedUaKepEvidence.padesEnvelopeItemIds.includes(envelopeItemId);
+  };
 
   const buildUaKepEvidenceUrl = (kind: 'pades.pdf' | 'archive.zip', envelopeItemId?: string) => {
     if (!resolvedUaKepEvidence) {
@@ -243,7 +251,7 @@ export const EnvelopeDownloadDialog = ({
                     </Button>
 
                     {hasUaKepEvidenceDownloads
-                      ? resolvedUaKepEvidence?.hasPades && (
+                      ? hasUaKepPadesForEnvelopeItem(item.id) && (
                           <Button variant="default" size="sm" className="text-xs" asChild>
                             <a href={buildUaKepEvidenceUrl('pades.pdf', item.id)} download>
                               <DownloadIcon className="mr-2 h-4 w-4" />

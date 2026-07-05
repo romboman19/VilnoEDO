@@ -94,19 +94,24 @@ const getUaKepEvidenceDownload = async ({
     return null;
   }
 
-  const hasPades =
-    (await prisma.uaKepSignatureArtifact.count({
-      where: {
-        uaKepSessionId: evidencePackage.uaKepSessionId,
-        artifactType: { startsWith: 'PADES' },
-      },
-    })) > 0;
+  const padesArtifacts = await prisma.uaKepSignatureArtifact.findMany({
+    where: {
+      uaKepSessionId: evidencePackage.uaKepSessionId,
+      artifactType: { startsWith: 'PADES' },
+    },
+    select: {
+      envelopeItemId: true,
+    },
+  });
+
+  const padesEnvelopeItemIds = [...new Set(padesArtifacts.map((artifact) => artifact.envelopeItemId))];
 
   return {
     evidencePackageId: evidencePackage.id,
     recipientId: evidencePackage.recipient.id,
     recipientToken: evidencePackage.recipient.token,
-    hasPades,
+    hasPades: padesEnvelopeItemIds.length > 0,
+    padesEnvelopeItemIds,
   };
 };
 
@@ -125,6 +130,9 @@ const handleGetEnvelopeItemsByToken = async ({ envelopeId, token }: { envelopeId
       envelopeItems: {
         include: {
           documentData: true,
+        },
+        orderBy: {
+          order: 'asc',
         },
       },
     },
@@ -168,6 +176,9 @@ const handleGetEnvelopeItemsByUser = async ({
         include: {
           documentData: true,
         },
+        orderBy: {
+          order: 'asc',
+        },
       },
     },
   });
@@ -188,6 +199,9 @@ const handleGetEnvelopeItemsByUser = async ({
         envelopeItems: {
           include: {
             documentData: true,
+          },
+          orderBy: {
+            order: 'asc',
           },
         },
       },

@@ -21,6 +21,7 @@ import { insertFieldInPDFV1 } from '../../../server-only/pdf/insert-field-in-pdf
 import { insertFieldInPDFV2 } from '../../../server-only/pdf/insert-field-in-pdf-v2';
 import { legacy_insertFieldInPDF } from '../../../server-only/pdf/legacy-insert-field-in-pdf';
 import { getTeamSettings } from '../../../server-only/team/get-team-settings';
+import { ensureUaKepSigningProtocolEnvelopeItem } from '../../../server-only/ua-kep/signing-protocol';
 import { triggerWebhook } from '../../../server-only/webhooks/trigger/trigger-webhook';
 import { DOCUMENT_AUDIT_LOG_TYPE, type TDocumentAuditLog } from '../../../types/document-audit-logs';
 import { isTspEnvelope, isUaKepEnvelope } from '../../../types/signature-level';
@@ -227,7 +228,13 @@ export const run = async ({ payload, io }: { payload: TSealDocumentJobDefinition
 
       // UA KEP artifacts are recipient-bound CAdES/PAdES evidence. The SES
       // decorate/sign pass would rewrite the PDF bytes and can invalidate the
-      // evidence package, so completion only records final envelope state.
+      // evidence package, so completion only records final envelope state and
+      // attaches a separate protocol PDF instead of mutating signed documents.
+      await ensureUaKepSigningProtocolEnvelopeItem({
+        envelopeId: envelope.id,
+        requestMetadata,
+      });
+
       await prisma.$transaction(async (tx) => {
         await tx.envelope.update({
           where: {

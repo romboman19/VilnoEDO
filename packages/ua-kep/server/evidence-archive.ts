@@ -1,3 +1,4 @@
+import { UA_KEP_SIGNING_PROTOCOL_TITLE } from '@documenso/lib/constants/ua-kep';
 import { getFileServerSide } from '@documenso/lib/universal/upload/get-file.server';
 import type { PrismaClient } from '@documenso/prisma/client';
 import { zipSync } from 'fflate';
@@ -196,6 +197,21 @@ export const buildUaKepEvidenceArchive = async ({
     },
   });
 
+  const signingProtocolItem = await prisma.envelopeItem.findFirst({
+    where: {
+      envelopeId: recipient.envelopeId,
+      title: UA_KEP_SIGNING_PROTOCOL_TITLE,
+    },
+    select: {
+      documentData: {
+        select: {
+          type: true,
+          data: true,
+        },
+      },
+    },
+  });
+
   const entries: Record<string, [Uint8Array, { level: 0 | 6; mtime: Date }]> = {};
 
   // Pin entry mtimes to package updatedAt so re-exports stay byte-stable.
@@ -275,6 +291,7 @@ export const buildUaKepEvidenceArchive = async ({
       'validation/report.json': 'Structured validation reports',
       'audit/audit-log.json': 'Envelope audit log events',
       'trust/trust-material.json': 'Trust material snapshot used for validation',
+      'protocol/signing-protocol.pdf': 'Human-readable UA KEP signing protocol PDF',
       'manifest.json': 'Canonical evidence manifest (SHA-256 = packageSha256)',
     },
   });
@@ -296,6 +313,15 @@ export const buildUaKepEvidenceArchive = async ({
     evidencePackageId: evidencePackage.id,
     snapshot: trustMaterialSnapshot,
   });
+
+  if (signingProtocolItem) {
+    const protocolBytes = await getFileServerSide({
+      type: signingProtocolItem.documentData.type,
+      data: signingProtocolItem.documentData.data,
+    });
+
+    addBinaryEntry('protocol/signing-protocol.pdf', protocolBytes);
+  }
 
   const zipBytes = zipSync(entries);
 

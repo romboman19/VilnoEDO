@@ -10,7 +10,7 @@ type CreateUaKepSignatureAppearanceImageOptions = {
   timeZone?: string | null;
 };
 
-const SIGNING_METHOD_DISPLAY_LABELS: Record<string, string> = {
+export const UA_KEP_SIGNING_METHOD_DISPLAY_LABELS: Record<string, string> = {
   'file-key': 'File QES/AES key',
   'iit-token': 'Hardware QES/AES key',
   'privatbank-smartid': 'Cloud signature PrivatBank SmartID',
@@ -28,7 +28,7 @@ const SIGNING_METHOD_DISPLAY_LABELS: Record<string, string> = {
 
 const getStringValue = (value: unknown) => (typeof value === 'string' && value.length > 0 ? value : null);
 
-const getSignerCommonName = (signerInfo: unknown) => {
+export const getUaKepSignerCommonName = (signerInfo: unknown) => {
   if (!signerInfo || typeof signerInfo !== 'object') {
     return null;
   }
@@ -42,15 +42,18 @@ const getSignerCommonName = (signerInfo: unknown) => {
   );
 };
 
-const getSigningMethodDisplayLabel = (signingMethod: string | null | undefined) => {
-  if (signingMethod && SIGNING_METHOD_DISPLAY_LABELS[signingMethod]) {
-    return SIGNING_METHOD_DISPLAY_LABELS[signingMethod];
+export const getUaKepSigningMethodDisplayLabel = (signingMethod: string | null | undefined) => {
+  if (signingMethod && UA_KEP_SIGNING_METHOD_DISPLAY_LABELS[signingMethod]) {
+    return UA_KEP_SIGNING_METHOD_DISPLAY_LABELS[signingMethod];
   }
 
   return 'QES/AES';
 };
 
-const formatSigningTime = (value: Date | string | null | undefined, timeZone: string | null | undefined) => {
+export const formatUaKepSigningTime = (
+  value: Date | string | null | undefined,
+  timeZone: string | null | undefined,
+) => {
   const zone = timeZone || DEFAULT_DOCUMENT_TIME_ZONE;
 
   if (!value) {
@@ -77,9 +80,9 @@ export const createUaKepSignatureAppearanceImage = async ({
   canvas.gpu = false;
 
   const context = canvas.getContext('2d');
-  const signerName = getSignerCommonName(signerInfo) ?? 'Signer defined by the signature manifest';
-  const signedAtText = formatSigningTime(signedAt, timeZone);
-  const signingMethodLabel = getSigningMethodDisplayLabel(signingMethod);
+  const signerName = getUaKepSignerCommonName(signerInfo) ?? 'Signer defined by the signature manifest';
+  const signedAtText = formatUaKepSigningTime(signedAt, timeZone);
+  const signingMethodLabel = getUaKepSigningMethodDisplayLabel(signingMethod);
 
   context.clearRect(0, 0, canvas.width, canvas.height);
   context.strokeStyle = '#65a30d';
