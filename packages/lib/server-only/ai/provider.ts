@@ -81,6 +81,33 @@ export const getAiModel = (): LanguageModel => {
         apiKey: getEnvValue('OLLAMA_API_KEY') || 'ollama',
         baseURL: getEnvValue('OLLAMA_BASE_URL') || 'http://localhost:11434/v1',
         name: 'ollama',
+        // The AI SDK emits the system prompt as the OpenAI "developer" role,
+        // which Ollama (and ollama.com cloud models) reject on multimodal
+        // requests with a 500. Rewrite it back to "system".
+        fetch: async (input, init) => {
+          if (init?.body && typeof init.body === 'string') {
+            try {
+              const parsed: unknown = JSON.parse(init.body);
+
+              if (
+                parsed &&
+                typeof parsed === 'object' &&
+                'messages' in parsed &&
+                Array.isArray(parsed.messages)
+              ) {
+                parsed.messages = parsed.messages.map((message: { role?: string }) =>
+                  message?.role === 'developer' ? { ...message, role: 'system' } : message,
+                );
+
+                init = { ...init, body: JSON.stringify(parsed) };
+              }
+            } catch {
+              // Not JSON, pass the request through untouched.
+            }
+          }
+
+          return await fetch(input, init);
+        },
       });
 
       return ollama.chat(getEnvValue('OLLAMA_MODEL') || 'llama3.2-vision');

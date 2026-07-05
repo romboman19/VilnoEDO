@@ -114,7 +114,6 @@ export default defineConfig({
         '@aws-sdk/cloudfront-signer',
         '@google-cloud/kms',
         '@google-cloud/secret-manager',
-        '@it-enterprise/digital-signature',
         'nodemailer',
         /playwright/,
         '@playwright/browser-chromium',
