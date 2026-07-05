@@ -351,13 +351,23 @@ NEXT_PUBLIC_DISABLE_MICROSOFT_SIGNIN="true"
 
 ## AI Features
 
-Documenso can use Google Vertex AI for recipient and field detection.
+Documenso can use Google Vertex AI, OpenAI, or Ollama for recipient and field detection.
 
-| Variable                   | Description                                    | Default  |
-| -------------------------- | ---------------------------------------------- | -------- |
-| `GOOGLE_VERTEX_PROJECT_ID` | Google Cloud project ID with Vertex AI enabled |          |
-| `GOOGLE_VERTEX_API_KEY`    | Vertex AI Express API key                      |          |
-| `GOOGLE_VERTEX_LOCATION`   | Vertex AI region                               | `global` |
+| Variable                   | Description                                                                 | Default                  |
+| -------------------------- | --------------------------------------------------------------------------- | ------------------------ |
+| `AI_PROVIDER`              | AI provider: `google`, `openai`, or `ollama`. Auto-detected when unset.     |                          |
+| `GOOGLE_VERTEX_PROJECT_ID` | Google Cloud project ID with Vertex AI enabled                              |                          |
+| `GOOGLE_VERTEX_API_KEY`    | Vertex AI Express API key                                                   |                          |
+| `GOOGLE_VERTEX_LOCATION`   | Vertex AI region                                                            | `global`                 |
+| `GOOGLE_VERTEX_MODEL`      | Google Vertex model                                                         | `gemini-3-flash-preview` |
+| `OPENAI_API_KEY`           | OpenAI API key                                                              |                          |
+| `OPENAI_MODEL`             | OpenAI model used for vision-capable detection                              | `gpt-4.1-mini`           |
+| `OPENAI_BASE_URL`          | Optional OpenAI-compatible base URL for proxies or compatible providers     |                          |
+| `OPENAI_ORGANIZATION`      | Optional OpenAI organisation ID                                             |                          |
+| `OPENAI_PROJECT`           | Optional OpenAI project ID                                                  |                          |
+| `OLLAMA_BASE_URL`          | Ollama OpenAI-compatible API endpoint                                       | `http://localhost:11434/v1` |
+| `OLLAMA_MODEL`             | Local Ollama model. Required when `AI_PROVIDER=ollama`                      |                          |
+| `OLLAMA_API_KEY`           | Placeholder API key for OpenAI-compatible Ollama clients                    | `ollama`                 |
 
 AI features must also be enabled in organisation/team settings after configuration.
 

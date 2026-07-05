@@ -133,10 +133,20 @@ declare namespace NodeJS {
     NEXT_PRIVATE_TURNSTILE_SECRET_KEY?: string;
 
     /**
-     * Google Vertex AI environment variables
+     * AI provider environment variables
      */
+    AI_PROVIDER?: 'google' | 'ollama' | 'openai';
     GOOGLE_VERTEX_PROJECT_ID?: string;
     GOOGLE_VERTEX_LOCATION?: string;
+    GOOGLE_VERTEX_MODEL?: string;
     GOOGLE_VERTEX_API_KEY?: string;
+    OPENAI_API_KEY?: string;
+    OPENAI_MODEL?: string;
+    OPENAI_BASE_URL?: string;
+    OPENAI_ORGANIZATION?: string;
+    OPENAI_PROJECT?: string;
+    OLLAMA_BASE_URL?: string;
+    OLLAMA_MODEL?: string;
+    OLLAMA_API_KEY?: string;
   }
 }
