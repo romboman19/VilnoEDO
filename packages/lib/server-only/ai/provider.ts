@@ -81,9 +81,13 @@ export const getAiModel = (): LanguageModel => {
         apiKey: getEnvValue('OLLAMA_API_KEY') || 'ollama',
         baseURL: getEnvValue('OLLAMA_BASE_URL') || 'http://localhost:11434/v1',
         name: 'ollama',
-        // The AI SDK emits the system prompt as the OpenAI "developer" role,
-        // which Ollama (and ollama.com cloud models) reject on multimodal
-        // requests with a 500. Rewrite it back to "system".
+        // Ollama.com cloud models need two request adjustments:
+        // 1. The AI SDK emits the system prompt as the OpenAI "developer"
+        //    role, which the cloud proxy rejects on multimodal requests
+        //    with a 500. Rewrite it back to "system".
+        // 2. The cloud proxy ignores `response_format: json_schema`, so the
+        //    model answers in prose. Inject the schema requirement into the
+        //    system prompt so structured generation still works.
         fetch: async (input, init) => {
           if (init?.body && typeof init.body === 'string') {
             try {
@@ -95,9 +99,42 @@ export const getAiModel = (): LanguageModel => {
                 'messages' in parsed &&
                 Array.isArray(parsed.messages)
               ) {
-                parsed.messages = parsed.messages.map((message: { role?: string }) =>
-                  message?.role === 'developer' ? { ...message, role: 'system' } : message,
+                let messages: Array<Record<string, unknown>> = parsed.messages.map(
+                  (message: Record<string, unknown>) =>
+                    message?.role === 'developer' ? { ...message, role: 'system' } : message,
                 );
+
+                const responseFormat =
+                  'response_format' in parsed
+                    ? (parsed.response_format as {
+                        type?: string;
+                        json_schema?: { schema?: unknown };
+                      })
+                    : undefined;
+
+                const schema = responseFormat?.json_schema?.schema;
+
+                if (responseFormat?.type === 'json_schema' && schema) {
+                  const instruction = `\n\nIMPORTANT: Respond ONLY with a single raw JSON value that validates against the following JSON schema. Do not wrap it in markdown code fences and do not add any other text.\n${JSON.stringify(schema)}`;
+
+                  const systemIndex = messages.findIndex(
+                    (message) => message?.role === 'system',
+                  );
+
+                  const system = systemIndex !== -1 ? messages[systemIndex] : undefined;
+
+                  if (system && typeof system.content === 'string') {
+                    messages = [
+                      ...messages.slice(0, systemIndex),
+                      { ...system, content: system.content + instruction },
+                      ...messages.slice(systemIndex + 1),
+                    ];
+                  } else if (!system) {
+                    messages = [{ role: 'system', content: instruction.trim() }, ...messages];
+                  }
+                }
+
+                parsed.messages = messages;
 
                 init = { ...init, body: JSON.stringify(parsed) };
               }
