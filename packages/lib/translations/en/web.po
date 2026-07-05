@@ -9934,8 +9934,8 @@ msgid "Set up your template properties and recipient information"
 msgstr "Set up your template properties and recipient information"
 
 #: packages/email/templates/admin-user-created.tsx
-msgid "Set your password for Documenso"
-msgstr "Set your password for Documenso"
+msgid "Set your password for VilnoEDO"
+msgstr "Set your password for VilnoEDO"
 
 #: apps/remix/app/components/general/app-command-menu.tsx
 #: apps/remix/app/components/general/app-command-menu.tsx

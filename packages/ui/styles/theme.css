@@ -5,23 +5,38 @@
 @layer base {
   :root,
   .dark-mode-disabled {
-    --background: 0 0% 100%;
-    --foreground: 222.2 47.4% 11.2%;
+    --ve-ink: #171a1c;
+    --ve-background: #f8fafc;
+    --ve-surface: #ffffff;
+    --ve-border: #e2e8f0;
+    --ve-muted: #64748b;
+    --ve-muted-bg: #f1f5f9;
+    --ve-brand-green: #7ed957;
+    --ve-brand-green-hover: #6dcc48;
+    --ve-brand-green-soft: #ecfbe7;
+    --ve-technical-cyan: #20c7c2;
+    --ve-technical-cyan-soft: #e6fffd;
+    --ve-success: #16a34a;
+    --ve-warning: #f59e0b;
+    --ve-error: #dc2626;
+
+    --background: 210 40% 98.04%;
+    --foreground: 204 9.8% 10%;
 
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 47.4% 11.2%;
+    --popover-foreground: 204 9.8% 10%;
 
     --card: 0 0% 100%;
     --card-border: 214.3 31.8% 91.4%;
     --card-border-tint: 112 205 159;
-    --card-foreground: 222.2 47.4% 11.2%;
+    --card-foreground: 204 9.8% 10%;
 
-    --field-card: 95 74% 90%;
-    --field-card-border: 95.08 71.08% 67.45%;
-    --field-card-foreground: 222.2 47.4% 11.2%;
+    --field-card: 105 71.43% 94.51%;
+    --field-card-border: 102 63.11% 59.61%;
+    --field-card-foreground: 204 9.8% 10%;
 
     --widget: 0 0% 97%;
     --widget-foreground: 0 0% 95%;
@@ -29,27 +44,27 @@
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
 
-    --primary: 95.08 71.08% 67.45%;
-    --primary-foreground: 95.08 71.08% 10%;
+    --primary: 204 9.8% 10%;
+    --primary-foreground: 0 0% 100%;
 
     --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary-foreground: 204 9.8% 10%;
 
     --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent-foreground: 204 9.8% 10%;
 
-    --destructive: 0 100% 50%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 72.22% 50.59%;
+    --destructive-foreground: 0 0% 100%;
 
-    --ring: 95.08 71.08% 67.45%;
+    --ring: 102 63.11% 59.61%;
 
     --radius: 0.5rem;
 
-    --warning: 54 96% 45%;
+    --warning: 37.69 92.13% 50.2%;
 
     --gold: 47.9 95.8% 53.1%;
 
-    --recipient-green: 100 48% 55%;
+    --recipient-green: 102 63.11% 59.61%;
     --recipient-blue: 212 56% 50%;
     --recipient-purple: 266 100% 64%;
     --recipient-orange: 36 92% 54%;
@@ -82,7 +97,7 @@
     --new-white-800: 0, 0%, 90%;
     --new-white-900: 0, 0%, 100%;
 
-    /* Primary - Green */
+    /* Primary - VilnoEDO verified green */
     --new-primary-50: 98, 73%, 97%;
     --new-primary-100: 95, 73%, 94%;
     --new-primary-200: 94, 70%, 87%;
@@ -142,45 +157,45 @@
   }
 
   .dark:not(.dark-mode-disabled) {
-    --background: 0 0% 14.9%;
-    --foreground: 0 0% 97%;
+    --background: 204 9.8% 10%;
+    --foreground: 210 40% 98.04%;
 
     --muted: 0 0% 23.4%;
     --muted-foreground: 0 0% 85%;
 
-    --popover: 0 0% 14.9%;
-    --popover-foreground: 0 0% 90%;
+    --popover: 204 9.8% 10%;
+    --popover-foreground: 210 40% 98.04%;
 
-    --card: 0 0% 14.9%;
-    --card-border: 0 0% 27.9%;
+    --card: 204 9.8% 10%;
+    --card-border: 206.67 9.68% 18.24%;
     --card-border-tint: 112 205 159;
-    --card-foreground: 0 0% 95%;
+    --card-foreground: 210 40% 98.04%;
 
-    --widget: 0 0% 14.9%;
-    --widget-foreground: 0 0% 18%;
+    --widget: 206.67 9.68% 18.24%;
+    --widget-foreground: 210 40% 96.08%;
 
-    --border: 0 0% 27.9%;
-    --input: 0 0% 27.9%;
+    --border: 206.67 9.68% 18.24%;
+    --input: 206.67 9.68% 18.24%;
 
     --field-border: 214.3 31.8% 91.4%;
 
-    --primary: 95.08 71.08% 67.45%;
-    --primary-foreground: 95.08 71.08% 10%;
+    --primary: 0 0% 100%;
+    --primary-foreground: 204 9.8% 10%;
 
-    --secondary: 0 0% 23.4%;
-    --secondary-foreground: 95.08 71.08% 67.45%;
+    --secondary: 206.67 9.68% 18.24%;
+    --secondary-foreground: 210 40% 98.04%;
 
-    --accent: 0 0% 27.9%;
-    --accent-foreground: 95.08 71.08% 67.45%;
+    --accent: 206.67 9.68% 18.24%;
+    --accent-foreground: 210 40% 98.04%;
 
-    --destructive: 0 87% 62%;
-    --destructive-foreground: 0 87% 19%;
+    --destructive: 0 72.22% 50.59%;
+    --destructive-foreground: 0 0% 100%;
 
-    --ring: 95.08 71.08% 67.45%;
+    --ring: 102 63.11% 59.61%;
 
     --radius: 0.5rem;
 
-    --warning: 54 96% 45%;
+    --warning: 37.69 92.13% 50.2%;
 
     --gold: 47.9 95.8% 53.1%;
 

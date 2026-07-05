@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="2248" height="320" viewBox="0 0 2248 320" role="img" aria-label="VilnoEDO">
+  
+  <svg x="0" y="0" width="320" height="320" viewBox="0 0 320 320">
+    
+    <g fill="none" stroke="#171A1C" stroke-linecap="round" stroke-linejoin="round">
+      <path stroke-width="18" d="M84 38h132l62 62v180H84z" />
+      <path stroke-width="18" d="M216 38v70h62" />
+      <path stroke-width="15" d="M120 108h54" />
+      <path stroke-width="15" d="M120 144h54" />
+      <path stroke-width="17" d="M116 226c24-34 51-76 69-54 17 21-26 66-62 75 31-11 52-28 75-8 18 16 28 2 48-8 19-9 36 5 56 4" />
+      <path stroke-width="18" d="M84 280h136" />
+    </g>
+    <g fill="none" stroke="#171A1C" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="268" cy="222" r="62" stroke-width="18" />
+      <path stroke-width="19" d="m236 222 24 24 43-48" />
+    </g>
+  
+  </svg>
+  <text x="430" y="214" fill="#171A1C" font-family="Inter, Arial, Helvetica, sans-serif" font-size="184" font-weight="760" letter-spacing="0">VilnoEDO</text>
+</svg>
