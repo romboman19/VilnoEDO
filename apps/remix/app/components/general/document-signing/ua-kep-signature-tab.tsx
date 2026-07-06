@@ -367,18 +367,8 @@ const UaKepKeyStatusMessage = ({ status }: { status: UaKepKeyStatus }) => {
   return <div className={`rounded-md border p-3 text-sm ${className}`}>{status.message}</div>;
 };
 
-const UaKepSigningResult = ({
-  getEvidenceUrl,
-  onUseSignature,
-  status,
-}: {
-  getEvidenceUrl: (evidencePackageId: string, kind: 'manifest' | 'archive' | 'pades') => string;
-  onUseSignature: () => void | Promise<void>;
-  status: TUaKepSigningStatus;
-}) => {
+const UaKepSigningResult = ({ status }: { status: TUaKepSigningStatus }) => {
   const signerCn = getSignerCommonName(status.signerInfo);
-  const evidencePackageId = status.evidencePackage?.id ?? null;
-  const hasPades = status.items.some((item) => item.artifactType.startsWith('PADES'));
 
   return (
     <div className="space-y-3 rounded-md border border-green-200 bg-green-50 p-3 text-green-950 text-sm">
@@ -388,28 +378,6 @@ const UaKepSigningResult = ({
         </p>
         {signerCn ? <p>{signerCn}</p> : null}
         {status.signedAt ? <p>{new Date(status.signedAt).toLocaleString('en-US')}</p> : null}
-      </div>
-
-      <div className="flex flex-wrap gap-2">
-        <Button type="button" size="sm" onClick={() => void onUseSignature()}>
-          <Trans>Use signature</Trans>
-        </Button>
-
-        {evidencePackageId && hasPades ? (
-          <Button type="button" size="sm" variant="secondary" asChild>
-            <a href={getEvidenceUrl(evidencePackageId, 'pades')} download>
-              <Trans>Signed PDF (PAdES)</Trans>
-            </a>
-          </Button>
-        ) : null}
-
-        {evidencePackageId ? (
-          <Button type="button" size="sm" variant="secondary" asChild>
-            <a href={getEvidenceUrl(evidencePackageId, 'archive')} download>
-              <Trans>Download archive</Trans>
-            </a>
-          </Button>
-        ) : null}
       </div>
     </div>
   );
@@ -711,6 +679,7 @@ const UaKepSignatureTab = ({
       // Cloud KSP keys cannot produce PAdES in the SDK — only attempt the
       // embedded-PDF signature for local file/hardware keys.
       const signed = await service.signPreparedPayloads(sdk, items, readKeyInfo.ownerInfo, {
+        signPreparedHash: signingMode === 'cloud',
         tryPades: signingMode !== 'cloud',
       });
 
@@ -915,19 +884,7 @@ const UaKepSignatureTab = ({
 
   return (
     <div className="space-y-4 rounded-md border border-border bg-muted/25 p-4">
-      {isSigned && signingStatus ? (
-        <UaKepSigningResult
-          status={signingStatus}
-          getEvidenceUrl={getEvidenceUrl}
-          onUseSignature={async () => {
-            const signatureImage = await applySignatureFromStatus(signingStatus);
-
-            if (signatureImage) {
-              await onSignatureApply?.(signatureImage);
-            }
-          }}
-        />
-      ) : null}
+      {isSigned && signingStatus ? <UaKepSigningResult status={signingStatus} /> : null}
 
       <fieldset className="space-y-4" disabled={isSigningDisabled}>
         <div className="space-y-2">

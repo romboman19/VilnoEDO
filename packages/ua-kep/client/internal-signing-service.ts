@@ -623,7 +623,7 @@ export const signPreparedPayloads = async (
   sdk: DigitalSignature,
   items: TUaKepPreparedPayloadItem[],
   fallbackSignerInfo?: TBrowserSigningResult['signerInfo'],
-  options: { tryPades?: boolean } = {},
+  options: { signPreparedHash?: boolean; tryPades?: boolean } = {},
 ): Promise<TBrowserSigningResult> => {
   if (items.length === 0) {
     throw new Error('There are no prepared documents to sign');
@@ -632,6 +632,7 @@ export const signPreparedPayloads = async (
   // PAdES is only produced for local file/hardware keys. Cloud KSP providers
   // (except Hriada) reject PAdES inside the SDK, so attempting it there just
   // wastes a round-trip and can leave the worker in an error state.
+  const signPreparedHash = options.signPreparedHash ?? false;
   const tryPades = options.tryPades ?? true;
   const signType = createDetachedCadesXLongSignType();
   const signatures: TBrowserSigningResult['items'] = [];
@@ -645,9 +646,7 @@ export const signPreparedPayloads = async (
     let signature: Awaited<ReturnType<DigitalSignature['signData']>>;
 
     try {
-      // Let the IIT SDK hash the original document bytes with the algorithm
-      // required by the read key, then send only that hash to the KSP.
-      signature = await sdk.signData(payloadBytes, signType);
+      signature = signPreparedHash ? await sdk.signHash(item.hashB64) : await sdk.signData(payloadBytes, signType);
     } catch (error) {
       // Surface the failing step so cloud-vs-file issues are distinguishable.
       throw new Error(`Failed to create the detached CAdES signature: ${getSdkErrorMessage(error)}`);
