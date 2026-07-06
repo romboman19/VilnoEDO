@@ -1,6 +1,5 @@
 import { IS_INSTANCE_CSC_MODE, NEXT_PUBLIC_WEBAPP_URL } from '@documenso/lib/constants/app';
 import { AppError, AppErrorCode } from '@documenso/lib/errors/app-error';
-import { assertLicensedFor } from '@documenso/lib/server-only/license/assert-licensed-for';
 import { requireEnv } from '@documenso/lib/utils/env';
 import type { OAuth2Client } from 'arctic';
 
@@ -14,11 +13,11 @@ import { isEnvTsaConfigured } from './tsa-resolver';
  *
  * Boot-discovers `cscInfo` (§11.1) once, caches the OAuth base URL +
  * `signatures/timestamp` capability, and exposes a configured arctic
- * `OAuth2Client`. License + env + discovery are gated at construction so a
+ * `OAuth2Client`. Env + discovery are gated at construction so a
  * misconfigured instance fails at the first call site, not at sign time.
  *
  * Cached on `globalThis` so Hono routes and Remix loaders share one instance
- * across bundles (mirrors {@link LicenseClient}'s strategy).
+ * across bundles.
  *
  * A failed build is **not** cached — the next caller retries. This keeps a
  * transient discovery hiccup from permanently breaking the transport while
@@ -61,7 +60,6 @@ declare global {
  *
  * Throws:
  * - `NOT_SETUP` — instance is not in CSC mode, or a required env var is unset.
- * - `CSC_UNLICENSED` — `instanceCscSigning` license flag missing.
  * - `CSC_PROVIDER_INFO_FAILED` — `info` discovery failed or response omits
  *   the REQUIRED `oauth2` base URL.
  *
@@ -88,9 +86,9 @@ export const getCscTransport = async (): Promise<CscTransport> => {
 };
 
 /**
- * Drop the cached transport. Intended for tests / operator-triggered reload
- * after a license-key swap. Next {@link getCscTransport} call re-runs the
- * full build pipeline (license + env + discovery).
+ * Drop the cached transport. Intended for tests / operator-triggered reload.
+ * Next {@link getCscTransport} call re-runs the full build pipeline
+ * (env + discovery).
  */
 export const resetCscTransport = (): void => {
   globalThis.__documenso_csc_transport__ = undefined;
@@ -103,8 +101,6 @@ const buildCscTransport = async (): Promise<CscTransport> => {
       message: 'CSC transport requested but NEXT_PRIVATE_SIGNING_TRANSPORT is not "csc".',
     });
   }
-
-  await assertLicensedFor('instanceCscSigning', { errorCode: AppErrorCode.CSC_UNLICENSED });
 
   const serviceBaseUrl = requireEnv('NEXT_PRIVATE_SIGNING_CSC_PROVIDER_BASE_URL');
   const clientId = requireEnv('NEXT_PRIVATE_SIGNING_CSC_OAUTH_CLIENT_ID');

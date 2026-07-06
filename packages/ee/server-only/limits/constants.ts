@@ -1,9 +1,9 @@
 import type { TLimitsSchema } from './schema';
 
 export const FREE_PLAN_LIMITS: TLimitsSchema = {
-  documents: 5,
-  recipients: 10,
-  directTemplates: 3,
+  documents: Infinity,
+  recipients: Infinity,
+  directTemplates: Infinity,
 };
 
 export const INACTIVE_PLAN_LIMITS: TLimitsSchema = {
@@ -26,8 +26,10 @@ export const SELFHOSTED_PLAN_LIMITS: TLimitsSchema = {
 
 /**
  * Used as an initial value for the frontend before values are loaded from the server.
+ *
+ * 0 = Unlimited envelope items.
  */
-export const DEFAULT_MINIMUM_ENVELOPE_ITEM_COUNT = 5;
+export const DEFAULT_MINIMUM_ENVELOPE_ITEM_COUNT = 0;
 
 /**
  * Used as an initial value for the frontend before values are loaded from the server.

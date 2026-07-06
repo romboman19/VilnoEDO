@@ -49,6 +49,7 @@ export const EnvelopeDropZoneWrapper = ({ children, type, className }: EnvelopeD
     DEFAULT_DOCUMENT_TIME_ZONE;
 
   const { quota, remaining, refreshLimits, maximumEnvelopeItemCount } = useLimits();
+  const hasEnvelopeItemLimit = maximumEnvelopeItemCount > 0;
 
   const { mutateAsync: createEnvelope } = trpc.envelope.create.useMutation();
 
@@ -155,7 +156,7 @@ export const EnvelopeDropZoneWrapper = ({ children, type, className }: EnvelopeD
     accept: getAllowedUploadMimeTypes(),
     multiple: true,
     maxSize: megabytesToBytes(APP_DOCUMENT_UPLOAD_SIZE_LIMIT),
-    maxFiles: maximumEnvelopeItemCount,
+    maxFiles: hasEnvelopeItemLimit ? maximumEnvelopeItemCount : undefined,
     onDrop: (files) => void onFileDrop(files),
     onDropRejected: onFileDropRejected,
     noClick: true,

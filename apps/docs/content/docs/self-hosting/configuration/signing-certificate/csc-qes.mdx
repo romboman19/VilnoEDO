@@ -17,8 +17,8 @@ This transport enables **Advanced Electronic Signatures (AES)** and **Qualified 
 </Callout>
 
 <Callout type="warn">
-  CSC mode requires an active [Enterprise Edition](/docs/policies/enterprise-edition) license. The
-  instance refuses to start in `csc` mode without it.
+  CSC mode no longer requires a Documenso license key in VilnoEDO, but it still requires a compatible CSC provider,
+  OAuth credentials, and a correctly configured instance-wide signing transport.
 </Callout>
 
 ## Prerequisites
@@ -47,9 +47,9 @@ The callback URL is fixed — Documenso derives it from `NEXT_PUBLIC_WEBAPP_URL`
 </Step>
 <Step>
 
-### Enterprise Edition license
+### Provider and transport setup
 
-CSC mode is gated by the `instanceCscSigning` license flag. Without a valid Enterprise license, the transport refuses to start (`CSC_UNLICENSED`).
+Configure a compatible CSC provider and set the required transport environment variables. VilnoEDO does not check a Documenso license flag before starting the CSC transport.
 
 </Step>
 <Step>

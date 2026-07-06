@@ -229,7 +229,7 @@ Documenso requires a certificate to digitally sign documents.
 
 Routes signing through a third-party Trust Service Provider for Advanced and Qualified Electronic Signatures (AES/QES). Instance-wide; set `NEXT_PRIVATE_SIGNING_TRANSPORT=csc` to enable. See [CSC (AES / QES)](/docs/self-hosting/configuration/signing-certificate/csc-qes) for the full setup walkthrough.
 
-CSC mode requires an active [Enterprise Edition](/docs/policies/enterprise-edition) license. Without a valid license, the instance will refuse to start in `csc` mode.
+VilnoEDO does not require a Documenso license key for CSC mode. CSC still requires a compatible provider, OAuth credentials, and the signing transport variables below.
 
 | Variable                                       | Description                                                                                                                | Default |
 | ---------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- | ------- |
@@ -435,8 +435,6 @@ For setup guides and provider recommendations, see [Background Jobs](/docs/self-
 | ----------------------------- | -------------------------------------------- | ------- |
 | `DOCUMENSO_DISABLE_TELEMETRY` | Set to `true` to disable anonymous telemetry | `false` |
 
-Telemetry also auto-disables when `NEXT_PRIVATE_DOCUMENSO_LICENSE_KEY` is configured.
-
 Telemetry collects only: app version, installation ID, and node ID. No personal data is collected.
 
 ---
@@ -451,13 +449,12 @@ Telemetry collects only: app version, installation ID, and node ID. No personal 
 
 ---
 
-## Enterprise Features
+## Optional External Services
 
-These variables require an active [Enterprise Edition](/docs/policies/enterprise-edition) license. Obtain a license key from [license.documenso.com](https://license.documenso.com) and set it below to unlock enterprise features such as SSO, embed editor, and 21 CFR Part 11 compliance.
+VilnoEDO self-hosted does not require a Documenso license key. The variables below configure optional external services used by billing or email-domain verification code paths.
 
 | Variable                             | Description                                      |
 | ------------------------------------ | ------------------------------------------------ |
-| `NEXT_PRIVATE_DOCUMENSO_LICENSE_KEY` | License key for enterprise features              |
 | `NEXT_PRIVATE_STRIPE_API_KEY`        | Stripe API key for billing                       |
 | `NEXT_PRIVATE_STRIPE_WEBHOOK_SECRET` | Stripe webhook secret                            |
 | `NEXT_PRIVATE_SES_ACCESS_KEY_ID`     | AWS SES access key for email domain verification |

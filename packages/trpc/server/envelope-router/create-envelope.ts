@@ -99,7 +99,7 @@ export const createEnvelopeRouteCaller = async ({
     });
   }
 
-  if (files.length > maximumEnvelopeItemCount) {
+  if (maximumEnvelopeItemCount > 0 && files.length > maximumEnvelopeItemCount) {
     throw new AppError('ENVELOPE_ITEM_LIMIT_EXCEEDED', {
       message: `You cannot upload more than ${maximumEnvelopeItemCount} envelope items per envelope`,
       statusCode: 400,

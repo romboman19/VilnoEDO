@@ -43,6 +43,7 @@ export const EnvelopeUploadButton = ({ className, type, folderId }: EnvelopeUplo
   const userTimezone = TIME_ZONES.find((timezone) => timezone === Intl.DateTimeFormat().resolvedOptions().timeZone);
 
   const { quota, remaining, refreshLimits, maximumEnvelopeItemCount } = useLimits();
+  const hasEnvelopeItemLimit = maximumEnvelopeItemCount > 0;
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -165,7 +166,7 @@ export const EnvelopeUploadButton = ({ className, type, folderId }: EnvelopeUplo
                 onDropRejected={onFileDropRejected}
                 type={type}
                 internalVersion="2"
-                maxFiles={maximumEnvelopeItemCount}
+                maxFiles={hasEnvelopeItemLimit ? maximumEnvelopeItemCount : undefined}
               />
             </div>
           </TooltipTrigger>

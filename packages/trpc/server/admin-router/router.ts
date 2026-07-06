@@ -35,7 +35,6 @@ import { reregisterEmailDomainRoute } from './reregister-email-domain';
 import { resealDocumentRoute } from './reseal-document';
 import { resetOrganisationMonthlyStatRoute } from './reset-organisation-monthly-stat';
 import { resetTwoFactorRoute } from './reset-two-factor-authentication';
-import { resyncLicenseRoute } from './resync-license';
 import { swapOrganisationSubscriptionRoute } from './swap-organisation-subscription';
 import { syncOrganisationSubscriptionRoute } from './sync-organisation-subscription';
 import { updateAdminOrganisationRoute } from './update-admin-organisation';
@@ -74,9 +73,6 @@ export const adminRouter = router({
   },
   stripe: {
     createCustomer: createStripeCustomerRoute,
-  },
-  license: {
-    resync: resyncLicenseRoute,
   },
   user: {
     get: getUserRoute,

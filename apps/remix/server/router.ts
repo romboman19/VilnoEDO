@@ -1,9 +1,7 @@
 import { tsRestHonoApp } from '@documenso/api/hono';
 import { auth } from '@documenso/auth/server';
 import { csc } from '@documenso/ee/server-only/signing/csc/hono';
-import { uaKep } from '@vilnoedo/ua-kep';
 import { jobsClient } from '@documenso/lib/jobs/client';
-import { LicenseClient } from '@documenso/lib/server-only/license/license-client';
 import { createRateLimitMiddleware } from '@documenso/lib/server-only/rate-limit/rate-limit-middleware';
 import {
   aiRateLimit,
@@ -18,6 +16,7 @@ import { migrateLegacyServiceAccount } from '@documenso/lib/server-only/user/ser
 import { env } from '@documenso/lib/utils/env';
 import { logger } from '@documenso/lib/utils/logger';
 import { openApiDocument } from '@documenso/trpc/server/open-api';
+import { uaKep } from '@vilnoedo/ua-kep';
 import { Hono } from 'hono';
 import { contextStorage } from 'hono/context-storage';
 import { cors } from 'hono/cors';
@@ -150,9 +149,6 @@ app.use(`/api/v2-beta/*`, async (c) =>
 if (env('NODE_ENV') !== 'development') {
   void TelemetryClient.start();
 }
-
-// Start license client to verify license on startup.
-void LicenseClient.start();
 
 // Start cron scheduler for background jobs (e.g. envelope expiration sweep).
 // No-op for Inngest provider which handles cron externally.

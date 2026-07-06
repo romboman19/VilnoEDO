@@ -43,6 +43,7 @@ export const EnvelopeEditorUploadPage = () => {
 
   const { t, i18n } = useLingui();
   const { maximumEnvelopeItemCount, remaining } = useLimits();
+  const hasEnvelopeItemLimit = maximumEnvelopeItemCount > 0;
   const { toast } = useToast();
 
   const {
@@ -407,7 +408,7 @@ export const EnvelopeEditorUploadPage = () => {
       return msg`Document upload disabled due to unpaid invoices`;
     }
 
-    if (maximumEnvelopeItemCount <= localFiles.length) {
+    if (hasEnvelopeItemLimit && maximumEnvelopeItemCount <= localFiles.length) {
       return msg({
         message: plural(maximumEnvelopeItemCount, {
           one: `You cannot upload more than # item per envelope.`,
@@ -418,7 +419,7 @@ export const EnvelopeEditorUploadPage = () => {
 
     return null;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [localFiles.length, maximumEnvelopeItemCount, remaining.documents]);
+  }, [hasEnvelopeItemLimit, localFiles.length, maximumEnvelopeItemCount, remaining.documents]);
 
   const onFileDropRejected = (fileRejections: FileRejection[]) => {
     const maxItemsReached = fileRejections.some((fileRejection) =>
@@ -469,7 +470,7 @@ export const EnvelopeEditorUploadPage = () => {
               disabled={dropzoneDisabledMessage !== null}
               disabledMessage={dropzoneDisabledMessage || undefined}
               disabledHeading={msg`Upload disabled`}
-              maxFiles={maximumEnvelopeItemCount - localFiles.length}
+              maxFiles={hasEnvelopeItemLimit ? maximumEnvelopeItemCount - localFiles.length : undefined}
               onDropRejected={onFileDropRejected}
             />
           )}

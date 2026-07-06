@@ -1223,7 +1223,6 @@ msgstr "Actions"
 msgid "Active"
 msgstr "Active"
 
-#: apps/remix/app/components/general/admin-license-card.tsx
 #: apps/remix/app/components/tables/user-billing-organisations-table.tsx
 #: packages/lib/constants/billing.ts
 msgctxt "Subscription status"
@@ -3428,14 +3427,6 @@ msgstr "Create separate organisation"
 msgid "Create signing links"
 msgstr "Create signing links"
 
-#: apps/remix/app/routes/_authenticated+/admin+/organisations.$id.tsx
-msgid "Create Stripe customer"
-msgstr "Create Stripe customer"
-
-#: apps/remix/app/routes/_authenticated+/admin+/organisations.$id.tsx
-msgid "Create subscription"
-msgstr "Create subscription"
-
 #: apps/remix/app/components/dialogs/claim-create-dialog.tsx
 msgid "Create Subscription Claim"
 msgstr "Create Subscription Claim"
@@ -4143,10 +4134,6 @@ msgstr "DKIM records generated. Please add the DNS records to verify your domain
 #: apps/remix/app/routes/_authenticated+/o.$orgUrl.settings.email-domains.$id.tsx
 msgid "DNS Records"
 msgstr "DNS Records"
-
-#: apps/remix/app/components/general/admin-license-card.tsx
-msgid "Documenso License"
-msgstr "Documenso License"
 
 #: apps/remix/app/components/dialogs/account-delete-dialog.tsx
 msgid "Documenso will delete <0>all of your documents</0>, along with all of your completed documents, signatures, and all other resources belonging to your Account."
@@ -5450,7 +5437,6 @@ msgstr "Envelope updated"
 #: apps/remix/app/components/general/verify-email-banner.tsx
 #: apps/remix/app/routes/_authenticated+/admin+/documents.$id.tsx
 #: apps/remix/app/routes/_authenticated+/admin+/email-domains.$id.tsx
-#: apps/remix/app/routes/_authenticated+/admin+/organisations.$id.tsx
 #: apps/remix/app/routes/_authenticated+/admin+/users.$id.tsx
 #: apps/remix/app/routes/_authenticated+/settings+/security.linked-accounts.tsx
 #: apps/remix/app/routes/_authenticated+/settings+/security.sessions.tsx
@@ -5539,15 +5525,6 @@ msgstr "Expiration"
 #: apps/remix/app/routes/_authenticated+/t.$teamUrl+/settings._index.tsx
 msgid "Expired"
 msgstr "Expired"
-
-#: apps/remix/app/components/general/admin-license-card.tsx
-msgctxt "Subscription status"
-msgid "Expired"
-msgstr "Expired"
-
-#: apps/remix/app/components/general/admin-license-card.tsx
-msgid "Expires"
-msgstr "Expires"
 
 #. placeholder {0}: recipient.expiresAt ? i18n.date(recipient.expiresAt, DateTime.DATETIME_MED) : 'N/A'
 #: apps/remix/app/components/general/document/document-page-view-recipients.tsx
@@ -5663,10 +5640,6 @@ msgstr "Failed to save transport."
 msgid "Failed to sign out all sessions"
 msgstr "Failed to sign out all sessions"
 
-#: apps/remix/app/components/general/admin-license-card.tsx
-msgid "Failed to sync license"
-msgstr "Failed to sync license"
-
 #: apps/remix/app/components/dialogs/admin-organisation-sync-subscription-dialog.tsx
 msgid "Failed to sync subscription"
 msgstr "Failed to sync subscription"
@@ -5725,10 +5698,6 @@ msgstr "Fair use limit exceeded"
 #: apps/remix/app/routes/_authenticated+/admin+/organisations.$id.tsx
 msgid "Feature Flags"
 msgstr "Feature Flags"
-
-#: apps/remix/app/components/general/admin-license-card.tsx
-msgid "Features"
-msgstr "Features"
 
 #: apps/remix/app/components/dialogs/admin-organisation-sync-subscription-dialog.tsx
 msgid "Fetch the latest subscription data from Stripe and apply it to this organisation."
@@ -6190,10 +6159,6 @@ msgstr "Hi, {userName} <0>({userEmail})</0>"
 msgid "Hide"
 msgstr "Hide"
 
-#: apps/remix/app/components/general/admin-license-card.tsx
-msgid "Hide license key"
-msgstr "Hide license key"
-
 #: apps/remix/app/components/dialogs/folder-move-dialog.tsx
 #: apps/remix/app/components/general/folder/folder-grid.tsx
 #: apps/remix/app/components/general/generic-error-layout.tsx
@@ -6463,14 +6428,6 @@ msgstr "Invalid Embedding Parameters"
 msgid "Invalid embedding presign token provided"
 msgstr "Invalid embedding presign token provided"
 
-#: apps/remix/app/components/general/admin-license-card.tsx
-msgid "Invalid License Key"
-msgstr "Invalid License Key"
-
-#: apps/remix/app/components/general/admin-license-status-banner.tsx
-msgid "Invalid License Type - Your Documenso instance is using features that are not part of your license."
-msgstr "Invalid License Type - Your Documenso instance is using features that are not part of your license."
-
 #: apps/remix/app/routes/_unauthenticated+/team.verify.email.$token.tsx
 msgid "Invalid link"
 msgstr "Invalid link"
@@ -6722,10 +6679,7 @@ msgstr "Last Verified"
 msgid "Last Year"
 msgstr "Last Year"
 
-#: apps/remix/app/components/forms/subscription-claim-form.tsx
-#: apps/remix/app/components/general/admin-license-card.tsx
 #: apps/remix/app/components/general/organisations/organisation-quota-banner.tsx
-#: apps/remix/app/routes/_authenticated+/admin+/organisations.$id.tsx
 msgid "Learn more"
 msgstr "Learn more"
 
@@ -6764,27 +6718,6 @@ msgstr "Letter spacing"
 #: apps/remix/app/components/forms/editor/editor-field-generic-field-forms.tsx
 msgid "Letter Spacing"
 msgstr "Letter Spacing"
-
-#: apps/remix/app/components/general/admin-license-card.tsx
-#: apps/remix/app/components/general/admin-license-card.tsx
-msgid "License"
-msgstr "License"
-
-#: apps/remix/app/components/general/admin-license-status-banner.tsx
-msgid "License Expired - Please renew your license to continue using enterprise features."
-msgstr "License Expired - Please renew your license to continue using enterprise features."
-
-#: apps/remix/app/components/general/admin-license-card.tsx
-msgid "License Key"
-msgstr "License Key"
-
-#: apps/remix/app/components/general/admin-license-status-banner.tsx
-msgid "License Payment Overdue - Please update your payment to avoid service disruptions."
-msgstr "License Payment Overdue - Please update your payment to avoid service disruptions."
-
-#: apps/remix/app/components/general/admin-license-card.tsx
-msgid "License synced"
-msgstr "License synced"
 
 #: apps/remix/app/components/general/app-command-menu.tsx
 msgid "Light Mode"
@@ -6988,11 +6921,6 @@ msgstr "Manage permissions and access controls"
 msgid "Manage sessions"
 msgstr "Manage sessions"
 
-#: apps/remix/app/routes/_authenticated+/admin+/organisations.$id.tsx
-#: apps/remix/app/routes/_authenticated+/admin+/organisations.$id.tsx
-msgid "Manage subscription"
-msgstr "Manage subscription"
-
 #: apps/remix/app/routes/_authenticated+/admin+/teams.$id.tsx
 msgid "Manage team"
 msgstr "Manage team"
@@ -7001,11 +6929,6 @@ msgstr "Manage team"
 #: apps/remix/app/routes/_authenticated+/admin+/organisations.$id.tsx
 msgid "Manage the {0} organisation"
 msgstr "Manage the {0} organisation"
-
-#. placeholder {0}: organisation.name
-#: apps/remix/app/routes/_authenticated+/admin+/organisations.$id.tsx
-msgid "Manage the {0} organisation subscription"
-msgstr "Manage the {0} organisation subscription"
 
 #. placeholder {0}: team.name
 #: apps/remix/app/routes/_authenticated+/admin+/teams.$id.tsx
@@ -7039,6 +6962,11 @@ msgstr "Manage the settings for this folder."
 #: apps/remix/app/routes/_authenticated+/o.$orgUrl.settings.teams.tsx
 msgid "Manage the teams in this organisation."
 msgstr "Manage the teams in this organisation."
+
+#. placeholder {0}: organisation.name
+#: apps/remix/app/routes/_authenticated+/admin+/organisations.$id.tsx
+msgid "Manage unlimited self-hosted limits and enabled features for {0}."
+msgstr "Manage unlimited self-hosted limits and enabled features for {0}."
 
 #: apps/remix/app/routes/_authenticated+/admin+/users._index.tsx
 msgid "Manage users"
@@ -7118,8 +7046,8 @@ msgstr "Maximum number of recipients per document allowed. 0 = Unlimited"
 
 #: apps/remix/app/components/forms/subscription-claim-form.tsx
 #: apps/remix/app/routes/_authenticated+/admin+/organisations.$id.tsx
-msgid "Maximum number of uploaded files per envelope allowed"
-msgstr "Maximum number of uploaded files per envelope allowed"
+msgid "Maximum number of uploaded files per envelope allowed. 0 = Unlimited"
+msgstr "Maximum number of uploaded files per envelope allowed. 0 = Unlimited"
 
 #: apps/remix/app/components/dialogs/admin-organisation-member-update-dialog.tsx
 #: apps/remix/app/components/dialogs/admin-organisation-member-update-dialog.tsx
@@ -7195,10 +7123,6 @@ msgstr "Middle"
 #: packages/ui/primitives/document-flow/field-items-advanced-settings/number-field.tsx
 msgid "Min"
 msgstr "Min"
-
-#: apps/remix/app/components/general/admin-license-status-banner.tsx
-msgid "Missing License - Your Documenso instance is using features that require a license."
-msgstr "Missing License - Your Documenso instance is using features that require a license."
 
 #: apps/remix/app/components/general/envelope-editor/envelope-editor-fields-page.tsx
 msgid "Missing Recipients"
@@ -7442,10 +7366,6 @@ msgstr "No email detected"
 msgid "No emails configured for this domain."
 msgstr "No emails configured for this domain."
 
-#: apps/remix/app/components/general/admin-license-card.tsx
-msgid "No features enabled"
-msgstr "No features enabled"
-
 #: apps/remix/app/components/general/envelope-editor/envelope-editor-fields-page-renderer.tsx
 msgid "No field type matching this description was found."
 msgstr "No field type matching this description was found."
@@ -7480,10 +7400,6 @@ msgstr "No groups found"
 #: apps/remix/app/routes/_authenticated+/admin+/organisations.$id.tsx
 msgid "No inherited claim"
 msgstr "No inherited claim"
-
-#: apps/remix/app/components/general/admin-license-card.tsx
-msgid "No License Configured"
-msgstr "No License Configured"
 
 #: apps/remix/app/components/general/organisation-members-multiselect-combobox.tsx
 msgid "No members found"
@@ -7564,14 +7480,6 @@ msgstr "No signature field found"
 #: apps/remix/app/components/general/document-signing/csc-recipient-blocked-page.tsx
 msgid "No signing credentials available"
 msgstr "No signing credentials available"
-
-#: apps/remix/app/routes/_authenticated+/admin+/organisations.$id.tsx
-msgid "No Stripe customer attached"
-msgstr "No Stripe customer attached"
-
-#: apps/remix/app/routes/_authenticated+/admin+/organisations.$id.tsx
-msgid "No subscription found"
-msgstr "No subscription found"
 
 #: packages/ui/components/recipient/recipient-autocomplete-input.tsx
 msgid "No suggestions found"
@@ -7862,6 +7770,10 @@ msgstr "Organisation invitation"
 msgid "Organisation invitations have been sent."
 msgstr "Organisation invitations have been sent."
 
+#: apps/remix/app/routes/_authenticated+/admin+/organisations.$id.tsx
+msgid "Organisation limits and capabilities"
+msgstr "Organisation limits and capabilities"
+
 #: packages/lib/constants/organisations-translations.ts
 msgid "Organisation Manager"
 msgstr "Organisation Manager"
@@ -8136,7 +8048,6 @@ msgstr "Password updated"
 msgid "Password updated!"
 msgstr "Password updated!"
 
-#: apps/remix/app/components/general/admin-license-card.tsx
 #: apps/remix/app/components/tables/user-billing-organisations-table.tsx
 #: packages/lib/constants/billing.ts
 msgctxt "Subscription status"
@@ -9579,10 +9490,6 @@ msgstr "Security"
 msgid "Security activity"
 msgstr "Security activity"
 
-#: apps/remix/app/components/general/admin-license-status-banner.tsx
-msgid "See Documentation"
-msgstr "See Documentation"
-
 #: apps/remix/app/routes/_authenticated+/admin+/documents.$id.tsx
 msgid "See the background jobs tab for the status"
 msgstr "See the background jobs tab for the status"
@@ -9989,10 +9896,6 @@ msgstr "Show advanced settings"
 #: apps/remix/app/routes/_authenticated+/admin+/organisation-stats._index.tsx
 msgid "Show daily averages for documents, emails and API usages"
 msgstr "Show daily averages for documents, emails and API usages"
-
-#: apps/remix/app/components/general/admin-license-card.tsx
-msgid "Show license key"
-msgstr "Show license key"
 
 #: apps/remix/app/routes/_authenticated+/t.$teamUrl+/settings.public-profile.tsx
 msgid "Show templates in your public profile for your audience to sign and get started quickly"
@@ -10536,14 +10439,6 @@ msgstr "Step <0>{step} of {maxStep}</0>"
 msgid "Stripe"
 msgstr "Stripe"
 
-#: apps/remix/app/routes/_authenticated+/admin+/organisations.$id.tsx
-msgid "Stripe customer created successfully"
-msgstr "Stripe customer created successfully"
-
-#: apps/remix/app/routes/_authenticated+/admin+/organisations.$id.tsx
-msgid "Stripe Customer ID"
-msgstr "Stripe Customer ID"
-
 #: apps/remix/app/routes/_authenticated+/admin+/unsealed-documents._index.tsx
 msgid "Stuck For"
 msgstr "Stuck For"
@@ -10575,7 +10470,6 @@ msgid "Subscribe"
 msgstr "Subscribe"
 
 #: apps/remix/app/components/tables/admin-organisations-table.tsx
-#: apps/remix/app/routes/_authenticated+/admin+/organisations.$id.tsx
 msgid "Subscription"
 msgstr "Subscription"
 
@@ -10666,7 +10560,6 @@ msgstr "Subscription synced"
 #: apps/remix/app/components/tables/settings-security-passkey-table-actions.tsx
 #: apps/remix/app/routes/_authenticated+/admin+/organisations.$id.tsx
 #: apps/remix/app/routes/_authenticated+/admin+/organisations.$id.tsx
-#: apps/remix/app/routes/_authenticated+/admin+/organisations.$id.tsx
 #: apps/remix/app/routes/_authenticated+/o.$orgUrl.settings.groups.$id.tsx
 #: apps/remix/app/routes/_authenticated+/o.$orgUrl.settings.sso.tsx
 #: apps/remix/app/routes/_authenticated+/t.$teamUrl+/settings.webhooks.$id._index.tsx
@@ -10720,13 +10613,8 @@ msgstr "Sync Email Domains"
 msgid "Sync failed, changes not saved"
 msgstr "Sync failed, changes not saved"
 
-#: apps/remix/app/components/general/admin-license-card.tsx
-msgid "Sync license from server"
-msgstr "Sync license from server"
-
 #: apps/remix/app/components/dialogs/admin-organisation-sync-subscription-dialog.tsx
 #: apps/remix/app/components/dialogs/admin-organisation-sync-subscription-dialog.tsx
-#: apps/remix/app/routes/_authenticated+/admin+/organisations.$id.tsx
 msgid "Sync Stripe subscription"
 msgstr "Sync Stripe subscription"
 
@@ -13131,10 +13019,6 @@ msgstr "We are unable to update this passkey at the moment. Please try again lat
 msgid "We couldn't convert this file. Please check it's a valid Word document or upload a PDF instead."
 msgstr "We couldn't convert this file. Please check it's a valid Word document or upload a PDF instead."
 
-#: apps/remix/app/routes/_authenticated+/admin+/organisations.$id.tsx
-msgid "We couldn't create a Stripe customer. Please try again."
-msgstr "We couldn't create a Stripe customer. Please try again."
-
 #: apps/remix/app/components/dialogs/ai-features-enable-dialog.tsx
 msgid "We couldn't enable AI features right now. Please try again."
 msgstr "We couldn't enable AI features right now. Please try again."
@@ -14513,11 +14397,6 @@ msgstr "Your bulk send operation for template \"{templateName}\" has completed."
 #: apps/remix/app/routes/_authenticated+/o.$orgUrl.settings.billing.tsx
 msgid "Your current {currentProductName} plan is past due. Please update your payment information."
 msgstr "Your current {currentProductName} plan is past due. Please update your payment information."
-
-#: apps/remix/app/components/forms/subscription-claim-form.tsx
-#: apps/remix/app/routes/_authenticated+/admin+/organisations.$id.tsx
-msgid "Your current license does not include these features."
-msgstr "Your current license does not include these features."
 
 #: apps/remix/app/routes/_authenticated+/o.$orgUrl.support.tsx
 msgid "Your current plan includes the following support channels:"

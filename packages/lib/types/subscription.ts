@@ -88,13 +88,29 @@ export const ZClaimFlagsSchema = z.object({
 
 export type TClaimFlags = z.infer<typeof ZClaimFlagsSchema>;
 
+export const VILNOEDO_UNLOCKED_CLAIM_FLAGS = {
+  unlimitedDocuments: true,
+  allowCustomBranding: true,
+  hidePoweredBy: true,
+  emailDomains: true,
+  embedAuthoring: true,
+  embedAuthoringWhiteLabel: true,
+  embedSigning: true,
+  embedSigningWhiteLabel: true,
+  cfr21: true,
+  hipaa: true,
+  authenticationPortal: true,
+  allowLegacyEnvelopes: true,
+  signingReminders: true,
+  cscQesSigning: true,
+} satisfies TClaimFlags;
+
 // When adding keys, update internal documentation with this.
 export const SUBSCRIPTION_CLAIM_FEATURE_FLAGS: Record<
   keyof TClaimFlags,
   {
     label: string;
     key: keyof TClaimFlags;
-    isEnterprise?: boolean;
   }
 > = {
   unlimitedDocuments: {
@@ -107,17 +123,15 @@ export const SUBSCRIPTION_CLAIM_FEATURE_FLAGS: Record<
   },
   hidePoweredBy: {
     key: 'hidePoweredBy',
-    label: 'Hide Documenso branding by',
+    label: 'Hide product branding',
   },
   emailDomains: {
     key: 'emailDomains',
     label: 'Email domains',
-    isEnterprise: true,
   },
   embedAuthoring: {
     key: 'embedAuthoring',
     label: 'Embed authoring',
-    isEnterprise: true,
   },
   embedSigning: {
     key: 'embedSigning',
@@ -126,7 +140,6 @@ export const SUBSCRIPTION_CLAIM_FEATURE_FLAGS: Record<
   embedAuthoringWhiteLabel: {
     key: 'embedAuthoringWhiteLabel',
     label: 'White label for embed authoring',
-    isEnterprise: true,
   },
   embedSigningWhiteLabel: {
     key: 'embedSigningWhiteLabel',
@@ -135,17 +148,14 @@ export const SUBSCRIPTION_CLAIM_FEATURE_FLAGS: Record<
   cfr21: {
     key: 'cfr21',
     label: '21 CFR',
-    isEnterprise: true,
   },
   hipaa: {
     key: 'hipaa',
     label: 'HIPAA',
-    isEnterprise: true,
   },
   authenticationPortal: {
     key: 'authenticationPortal',
     label: 'Authentication portal',
-    isEnterprise: true,
   },
   allowLegacyEnvelopes: {
     key: 'allowLegacyEnvelopes',
@@ -158,7 +168,6 @@ export const SUBSCRIPTION_CLAIM_FEATURE_FLAGS: Record<
   cscQesSigning: {
     key: 'cscQesSigning',
     label: 'QES signing',
-    isEnterprise: true,
   },
   disableEmails: {
     key: 'disableEmails',

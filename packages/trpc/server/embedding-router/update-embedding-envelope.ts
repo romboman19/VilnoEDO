@@ -178,7 +178,7 @@ export const updateEmbeddingEnvelopeRoute = procedure
     const resultingEnvelopeItemCount =
       envelope.envelopeItems.length - envelopeItemIdsToDelete.length + envelopeItemsToCreate.length;
 
-    if (resultingEnvelopeItemCount > organisationClaim.envelopeItemCount) {
+    if (organisationClaim.envelopeItemCount > 0 && resultingEnvelopeItemCount > organisationClaim.envelopeItemCount) {
       throw new AppError('ENVELOPE_ITEM_LIMIT_EXCEEDED', {
         message: `You cannot upload more than ${organisationClaim.envelopeItemCount} envelope items`,
         statusCode: 400,
