@@ -679,7 +679,7 @@ const UaKepSignatureTab = ({
       // Cloud KSP keys cannot produce PAdES in the SDK — only attempt the
       // embedded-PDF signature for local file/hardware keys.
       const signed = await service.signPreparedPayloads(sdk, items, readKeyInfo.ownerInfo, {
-        signPreparedHash: signingMode === 'cloud',
+        cadesLevels: signingMode === 'cloud' ? ['BES', 'T', 'X_LONG'] : undefined,
         tryPades: signingMode !== 'cloud',
       });
 

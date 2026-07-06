@@ -26,6 +26,8 @@ type TEndUserConstants = {
     Detached: number;
   };
   EndUserSignType: {
+    CAdES_BES: number;
+    CAdES_T: number;
     CAdES_X_Long: number;
   };
   EndUserPAdESSignLevel: {
@@ -41,6 +43,8 @@ type TEndUserSignContainerInfo = {
   subType?: number;
   signLevel?: number;
 };
+
+type TDetachedCadesLevel = 'BES' | 'T' | 'X_LONG';
 
 const EUSign = EUSignCP as {
   EndUserConstants: TEndUserConstants;
@@ -355,14 +359,37 @@ const base64ToUint8Array = (value: string) => {
   return bytes;
 };
 
-const createDetachedCadesXLongSignType = () => {
+const createDetachedCadesSignType = (level: TDetachedCadesLevel) => {
   const signType = new EUSign.EndUserSignContainerInfo();
+  const signLevel = {
+    BES: EUSign.EndUserConstants.EndUserSignType.CAdES_BES,
+    T: EUSign.EndUserConstants.EndUserSignType.CAdES_T,
+    X_LONG: EUSign.EndUserConstants.EndUserSignType.CAdES_X_Long,
+  }[level];
 
   signType.type = EUSign.EndUserConstants.EndUserSignContainerType.CAdES;
   signType.subType = EUSign.EndUserConstants.EndUserCAdESType.Detached;
-  signType.signLevel = EUSign.EndUserConstants.EndUserSignType.CAdES_X_Long;
+  signType.signLevel = signLevel;
 
   return signType;
+};
+
+const signDetachedCadesWithFallback = async (
+  sdk: DigitalSignature,
+  payloadBytes: Uint8Array,
+  levels: TDetachedCadesLevel[],
+) => {
+  let lastError: unknown = null;
+
+  for (const level of levels) {
+    try {
+      return await sdk.signData(payloadBytes, createDetachedCadesSignType(level));
+    } catch (error) {
+      lastError = error;
+    }
+  }
+
+  throw lastError ?? new Error('SDK did not create a detached CAdES signature');
 };
 
 const createPadesSignType = (level: 'B_LT' | 'B_T') => {
@@ -623,7 +650,7 @@ export const signPreparedPayloads = async (
   sdk: DigitalSignature,
   items: TUaKepPreparedPayloadItem[],
   fallbackSignerInfo?: TBrowserSigningResult['signerInfo'],
-  options: { signPreparedHash?: boolean; tryPades?: boolean } = {},
+  options: { cadesLevels?: TDetachedCadesLevel[]; tryPades?: boolean } = {},
 ): Promise<TBrowserSigningResult> => {
   if (items.length === 0) {
     throw new Error('There are no prepared documents to sign');
@@ -632,9 +659,8 @@ export const signPreparedPayloads = async (
   // PAdES is only produced for local file/hardware keys. Cloud KSP providers
   // (except Hriada) reject PAdES inside the SDK, so attempting it there just
   // wastes a round-trip and can leave the worker in an error state.
-  const signPreparedHash = options.signPreparedHash ?? false;
+  const cadesLevels = options.cadesLevels ?? (['X_LONG'] satisfies TDetachedCadesLevel[]);
   const tryPades = options.tryPades ?? true;
-  const signType = createDetachedCadesXLongSignType();
   const signatures: TBrowserSigningResult['items'] = [];
   let signerInfo: TBrowserSigningResult['signerInfo'] | null = null;
   let padesLevel: TBrowserSigningResult['padesLevel'] = null;
@@ -646,7 +672,7 @@ export const signPreparedPayloads = async (
     let signature: Awaited<ReturnType<DigitalSignature['signData']>>;
 
     try {
-      signature = signPreparedHash ? await sdk.signHash(item.hashB64) : await sdk.signData(payloadBytes, signType);
+      signature = await signDetachedCadesWithFallback(sdk, payloadBytes, cadesLevels);
     } catch (error) {
       // Surface the failing step so cloud-vs-file issues are distinguishable.
       throw new Error(`Failed to create the detached CAdES signature: ${getSdkErrorMessage(error)}`);
