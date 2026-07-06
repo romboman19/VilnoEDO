@@ -30,6 +30,10 @@ type TEndUserConstants = {
     CAdES_T: number;
     CAdES_X_Long: number;
   };
+  EndUserSignAlgo: {
+    DSTU4145WithGOST34311: number;
+    DSTU4145WithDSTU7564: number;
+  };
   EndUserPAdESSignLevel: {
     B_B: number;
     B_T: number;
@@ -50,6 +54,8 @@ const EUSign = EUSignCP as {
   EndUserConstants: TEndUserConstants;
   EndUserSignContainerInfo: new () => TEndUserSignContainerInfo;
 };
+
+const DSTU_7564_CUTOVER_DATE = new Date(2026, 6, 1).getTime();
 
 export type TUaKepPreparedPayloadItem = {
   envelopeItemId: string;
@@ -106,6 +112,7 @@ export type TUaKepReadKeyInfo = {
   certificateInfo: {
     subjCN: string | null;
     issuerCN: string | null;
+    edrpou: string | null;
     serial: string | null;
   } | null;
   certificatesCount: number;
@@ -137,6 +144,32 @@ const CLOUD_KSP_PROVIDER_META: Record<string, { id: TUaKepCloudSigningMethod; na
   pumb: { id: 'pumb', name: 'PUMB cloud signature' },
   ugb: { id: 'ugb', name: 'Ukrgasbank EcoSign' },
   alliance: { id: 'alliance', name: 'Bank Alliance cloud signature' },
+};
+
+const getDstuCloudSigningAlgos = () => {
+  const signAlgo =
+    Date.now() >= DSTU_7564_CUTOVER_DATE
+      ? EUSign.EndUserConstants.EndUserSignAlgo.DSTU4145WithDSTU7564
+      : EUSign.EndUserConstants.EndUserSignAlgo.DSTU4145WithGOST34311;
+
+  return [signAlgo];
+};
+
+const normalizeDstuCloudKspSignAlgos = (provider: TKspSettings): TKspSettings => {
+  const address = provider.address ?? '';
+  const shouldApplyCutover =
+    provider.ksp === EUSign.EndUserConstants.EU_KSP_DIIA ||
+    address.includes('acsk.privatbank.ua/cloud') ||
+    address.includes('cs.vchasno.ua');
+
+  if (!shouldApplyCutover) {
+    return provider;
+  }
+
+  return {
+    ...provider,
+    signAlgos: getDstuCloudSigningAlgos(),
+  };
 };
 
 const createFallbackCloudKspSettings = (): TKspSettings[] => {
@@ -279,7 +312,7 @@ const createDefaultCloudKspSettings = () => {
     }
   }
 
-  return Array.from(providersById.values());
+  return Array.from(providersById.values()).map((provider) => normalizeDstuCloudKspSignAlgos(provider));
 };
 
 const normalizeCloudProvider = (kspSettings: TKspSettings): TSmartIdProviderConfig | null => {
@@ -311,11 +344,25 @@ export const CLOUD_KSP_PROVIDERS: TSmartIdProviderConfig[] = createDefaultCloudK
 
 export const SMART_ID_PROVIDERS = CLOUD_KSP_PROVIDERS;
 
+const getOptionalString = (value: string | null | undefined) => {
+  const trimmedValue = value?.trim() ?? '';
+
+  return trimmedValue.length > 0 ? trimmedValue : null;
+};
+
+const getFirstOptionalString = (...values: Array<string | null | undefined>) =>
+  values.map((value) => getOptionalString(value)).find((value): value is string => value !== null) ?? null;
+
 const getOwnerInfo = (rawOwnerInfo: TIitOwnerInfo | null | undefined) => ({
-  subjCN: rawOwnerInfo?.subjCN ?? null,
-  issuerCN: rawOwnerInfo?.issuerCN ?? null,
-  edrpou: rawOwnerInfo?.EDRPOUCode ?? rawOwnerInfo?.DRFOCode ?? null,
-  serial: rawOwnerInfo?.serial ?? null,
+  subjCN: getOptionalString(rawOwnerInfo?.subjCN),
+  issuerCN: getOptionalString(rawOwnerInfo?.issuerCN),
+  edrpou: getFirstOptionalString(
+    rawOwnerInfo?.EDRPOUCode,
+    rawOwnerInfo?.DRFOCode,
+    rawOwnerInfo?.subjEDRPOUCode,
+    rawOwnerInfo?.subjDRFOCode,
+  ),
+  serial: getOptionalString(rawOwnerInfo?.serial),
 });
 
 const getCertificateInfo = (certificates: TIitCertificate[] | null | undefined) => {
@@ -326,11 +373,28 @@ const getCertificateInfo = (certificates: TIitCertificate[] | null | undefined) 
   }
 
   return {
-    subjCN: certificate.infoEx.subjCN ?? null,
-    issuerCN: certificate.infoEx.issuerCN ?? null,
-    serial: certificate.infoEx.serial ?? null,
+    subjCN: getOptionalString(certificate.infoEx.subjCN),
+    issuerCN: getOptionalString(certificate.infoEx.issuerCN),
+    edrpou: getFirstOptionalString(
+      certificate.infoEx.EDRPOUCode,
+      certificate.infoEx.DRFOCode,
+      certificate.infoEx.subjEDRPOUCode,
+      certificate.infoEx.subjDRFOCode,
+      certificate.infoEx.subjUserCode,
+    ),
+    serial: getOptionalString(certificate.infoEx.serial),
   };
 };
+
+const mergeSignerInfo = (
+  ownerInfo: TBrowserSigningResult['signerInfo'],
+  certificateInfo: TUaKepReadKeyInfo['certificateInfo'],
+) => ({
+  subjCN: ownerInfo.subjCN ?? certificateInfo?.subjCN ?? null,
+  issuerCN: ownerInfo.issuerCN ?? certificateInfo?.issuerCN ?? null,
+  edrpou: ownerInfo.edrpou ?? certificateInfo?.edrpou ?? null,
+  serial: ownerInfo.serial ?? certificateInfo?.serial ?? null,
+});
 
 const getFirstCertificateIssuerCN = (certificates: TIitCertificate[] | null | undefined) =>
   certificates?.find((entry) => typeof entry?.infoEx?.issuerCN === 'string' && entry.infoEx.issuerCN.length > 0)?.infoEx
@@ -542,10 +606,11 @@ export const readJksKey = async ({
     certificates.length > 0 ? certificates : undefined,
   );
   const keyCertificates = keyInfo.certificates ?? selected.certificates;
+  const certificateInfo = getCertificateInfo(keyCertificates);
 
   return {
-    ownerInfo: getOwnerInfo(keyInfo.ownerInfo),
-    certificateInfo: getCertificateInfo(keyCertificates),
+    ownerInfo: mergeSignerInfo(getOwnerInfo(keyInfo.ownerInfo), certificateInfo),
+    certificateInfo,
     certificatesCount: keyCertificates.length,
     label: selected.alias || issuerCN || file.name,
   };
@@ -584,10 +649,11 @@ export const readHardwareKey = async ({
 
   const keyInfo = await sdk.readHardwareKey({ ...keyMedia, password });
   const keyCertificates = keyInfo.certificates ?? [];
+  const certificateInfo = getCertificateInfo(keyCertificates);
 
   return {
-    ownerInfo: getOwnerInfo(keyInfo.ownerInfo),
-    certificateInfo: getCertificateInfo(keyCertificates),
+    ownerInfo: mergeSignerInfo(getOwnerInfo(keyInfo.ownerInfo), certificateInfo),
+    certificateInfo,
     certificatesCount: keyCertificates.length,
     label: getKeyMediaLabel(keyMedia, 0),
   };
@@ -637,10 +703,11 @@ export const readSmartIdKey = async ({
 
   const keyInfo = await sdk.readPrivateKeyKSP(createSmartIdKspSettings(provider), null, true);
   const keyCertificates = keyInfo.certificates ?? [];
+  const certificateInfo = getCertificateInfo(keyCertificates);
 
   return {
-    ownerInfo: getOwnerInfo(keyInfo.ownerInfo),
-    certificateInfo: getCertificateInfo(keyCertificates),
+    ownerInfo: mergeSignerInfo(getOwnerInfo(keyInfo.ownerInfo), certificateInfo),
+    certificateInfo,
     certificatesCount: keyCertificates.length,
     label: provider.name,
   };

@@ -303,6 +303,7 @@ const getErrorMessage = (error: unknown, fallback: string) => {
 const UaKepReadKeyInfoCard = ({ keyInfo, methodLabel }: { keyInfo: TUaKepReadKeyInfo; methodLabel: string }) => {
   const signerName = keyInfo.ownerInfo.subjCN ?? keyInfo.certificateInfo?.subjCN ?? null;
   const issuer = keyInfo.ownerInfo.issuerCN ?? keyInfo.certificateInfo?.issuerCN ?? null;
+  const edrpou = keyInfo.ownerInfo.edrpou ?? keyInfo.certificateInfo?.edrpou ?? null;
   const serial = keyInfo.certificateInfo?.serial ?? keyInfo.ownerInfo.serial ?? null;
 
   return (
@@ -337,7 +338,7 @@ const UaKepReadKeyInfoCard = ({ keyInfo, methodLabel }: { keyInfo: TUaKepReadKey
           <dt className="text-green-800">
             <Trans>EDRPOU / Tax ID</Trans>
           </dt>
-          <dd>{getDisplayValue(keyInfo.ownerInfo.edrpou)}</dd>
+          <dd>{getDisplayValue(edrpou)}</dd>
         </div>
 
         <div className="grid gap-1 sm:grid-cols-[150px_1fr]">

@@ -8,138 +8,230 @@ export default function SignatureDisclosure() {
     <div>
       <article className="prose dark:prose-invert">
         <h1>
-          <Trans>Electronic Signature Disclosure</Trans>
+          <Trans>Розкриття щодо електронного підпису</Trans>
         </h1>
 
         <h2>
-          <Trans>Welcome</Trans>
+          <Trans>Загальна інформація</Trans>
         </h2>
         <p>
           <Trans>
-            Thank you for using Documenso to perform your electronic document signing. The purpose of this disclosure is
-            to inform you about the process, legality, and your rights regarding the use of electronic signatures on our
-            platform. By opting to use an electronic signature, you are agreeing to the terms and conditions outlined
-            below.
+            VilnoEDO орієнтується на український режим електронного документообігу, у якому електронний документ може
+            мати юридичну силу нарівні з паперовим, якщо він створений, підписаний і зберігається відповідно до
+            застосовного законодавства.
+          </Trans>
+        </p>
+        <p>
+          <Trans>
+            Юридична сила документа та його допустимість як доказу не можуть заперечуватися лише тому, що документ має
+            електронну форму. Для документів, які потребують підпису, важливо зберігати не тільки візуальне
+            представлення, а й оригінальний електронний файл, підписний артефакт, часові дані та результат перевірки.
           </Trans>
         </p>
 
         <h2>
-          <Trans>Acceptance and Consent</Trans>
+          <Trans>Нормативна база</Trans>
         </h2>
         <p>
           <Trans>
-            When you use our platform to affix your electronic signature to documents, you are consenting to do so under
-            the Electronic Signatures in Global and National Commerce Act (E-Sign Act) and other applicable laws. This
-            action indicates your agreement to use electronic means to sign documents and receive notifications.
+            Для електронного підпису та електронного документообігу в Україні ключовими є Закон України «Про електронні
+            документи та електронний документообіг», Закон України «Про електронну ідентифікацію та електронні довірчі
+            послуги», процесуальні кодекси щодо електронних доказів, правила бухгалтерського та архівного зберігання
+            документів, а також нормативні акти щодо форматів, перевірки і використання електронних довірчих послуг.
           </Trans>
         </p>
 
         <h2>
-          <Trans>Legality of Electronic Signatures</Trans>
+          <Trans>Що вважається електронним документом</Trans>
         </h2>
         <p>
           <Trans>
-            An electronic signature provided by you on our platform, achieved through clicking through to a document and
-            entering your name, or any other electronic signing method we provide, is legally binding. It carries the
-            same weight and enforceability as a manual signature written with ink on paper.
+            Електронний документ — це документ, інформація в якому зафіксована у вигляді електронних даних і який
+            містить обов’язкові реквізити. Оригіналом вважається електронний примірник документа з такими реквізитами, а
+            в потрібних випадках — з електронним підписом автора або підписом, прирівняним до власноручного.
+          </Trans>
+        </p>
+        <p>
+          <Trans>
+            Щоб електронний документ був придатним для перевірки і доказування, має бути можливо встановити його
+            цілісність, справжність, автора підпису та контекст підписання.
           </Trans>
         </p>
 
         <h2>
-          <Trans>System Requirements</Trans>
+          <Trans>Який підпис обирати</Trans>
         </h2>
         <p>
-          <Trans>To use our electronic signature service, you must have access to:</Trans>
+          <Trans>
+            КЕП і кваліфікований електронний підпис — це одна й та сама актуальна категорія в українському праві. Саме
+            КЕП має презумпцію відповідності власноручному підпису. Удосконалений електронний підпис може
+            використовуватися там, де це допускає закон або домовленість сторін.
+          </Trans>
+        </p>
+        <p>
+          <Trans>
+            Історичний термін «ЕЦП» не слід використовувати як актуальну правову категорію, оскільки закон про
+            електронний цифровий підпис втратив чинність у 2018 році.
+          </Trans>
+        </p>
+
+        <h2>
+          <Trans>Коли КЕП є особливо важливим</Trans>
+        </h2>
+        <p>
+          <Trans>
+            КЕП варто використовувати для документів з підвищеним юридичним ризиком, документів для державних органів,
+            бухгалтерських і податково значущих документів, а також для випадків, де закон, договір або внутрішні
+            правила прямо вимагають кваліфіковані електронні довірчі послуги.
+          </Trans>
+        </p>
+        <p>
+          <Trans>
+            Якщо електронний правочин підлягає нотаріальному посвідченню або державній реєстрації, можуть
+            застосовуватися окремі вимоги до виду підпису, довірчої послуги та формату документа.
+          </Trans>
+        </p>
+
+        <h2>
+          <Trans>Згода на електронний підпис</Trans>
+        </h2>
+        <p>
+          <Trans>
+            Продовжуючи підписання у VilnoEDO, ви погоджуєтеся використовувати електронну форму взаємодії для
+            відповідного документа та підтверджуєте намір підписати документ обраним електронним підписом.
+          </Trans>
+        </p>
+        <p>
+          <Trans>
+            Ви можете відмовитися від електронного підписання до завершення процесу. Для цього зверніться до відправника
+            документа. Якщо зв’язатися з відправником неможливо, напишіть нам на{' '}
+            <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>.
+          </Trans>
+        </p>
+
+        <h2>
+          <Trans>Як VilnoEDO перевіряє підпис</Trans>
+        </h2>
+        <p>
+          <Trans>Перевірка підпису може охоплювати:</Trans>
         </p>
         <ul>
           <li>
-            <Trans>A stable internet connection</Trans>
+            <Trans>криптографічну цілісність документа;</Trans>
           </li>
           <li>
-            <Trans>An email account</Trans>
+            <Trans>чинність сертифіката підписувача;</Trans>
           </li>
           <li>
-            <Trans>A device capable of accessing, opening, and reading documents</Trans>
+            <Trans>відповідність сертифіката особі підписувача;</Trans>
           </li>
           <li>
-            <Trans>A means to print or download documents for your records</Trans>
+            <Trans>перевірку надавача довірчих послуг через довірчий список;</Trans>
+          </li>
+          <li>
+            <Trans>перевірку часової мітки, якщо вона наявна;</Trans>
+          </li>
+          <li>
+            <Trans>формування або збереження результату перевірки для подальшого аудиту.</Trans>
           </li>
         </ul>
 
         <h2>
-          <Trans>Electronic Delivery of Documents</Trans>
+          <Trans>Що зберігати як доказ</Trans>
         </h2>
         <p>
           <Trans>
-            All documents related to the electronic signing process will be provided to you electronically through our
-            platform or via email. It is your responsibility to ensure that your email address is current and that you
-            can receive and open our emails.
+            Для доказовості підписаного документа важливо зберігати повний контекст підписання, а не лише PDF або
+            візуальну копію. До такого контексту можуть входити:
+          </Trans>
+        </p>
+        <ul>
+          <li>
+            <Trans>оригінальний файл документа;</Trans>
+          </li>
+          <li>
+            <Trans>вбудований підпис або окремий файл підпису;</Trans>
+          </li>
+          <li>
+            <Trans>валідаційний звіт або результат перевірки;</Trans>
+          </li>
+          <li>
+            <Trans>дані сертифіката та сертифікатного ланцюга;</Trans>
+          </li>
+          <li>
+            <Trans>часові мітки та час завершення підписання;</Trans>
+          </li>
+          <li>
+            <Trans>журнал дій, IP-адреси, ідентифікатори сесій та інші технічні метадані;</Trans>
+          </li>
+          <li>
+            <Trans>контрольні хеші файлів і пакет доказів для експорту.</Trans>
+          </li>
+        </ul>
+        <p>
+          <Trans>
+            Для відокремленого підпису необхідно зберігати і файл-оригінал, і файл підпису, наприклад .p7s, оскільки
+            перевірка виконується щодо цієї пари файлів.
           </Trans>
         </p>
 
         <h2>
-          <Trans>Consent to Electronic Transactions</Trans>
+          <Trans>Електронні докази</Trans>
         </h2>
         <p>
           <Trans>
-            By using the electronic signature feature, you are consenting to conduct transactions and receive
-            disclosures electronically. You acknowledge that your electronic signature on documents is binding and that
-            you accept the terms outlined in the documents you are signing.
+            Електронними доказами можуть бути не лише файли документів, а й метадані, журнали дій, повідомлення, записи
+            в базах даних, дані на серверах і резервні копії. У разі спору може знадобитися саме оригінал електронного
+            документа або набір даних, який дозволяє перевірити незмінність документа і зв’язок підпису з підписувачем.
           </Trans>
         </p>
 
         <h2>
-          <Trans>Withdrawing Consent</Trans>
+          <Trans>Зберігання документів</Trans>
         </h2>
         <p>
           <Trans>
-            You have the right to withdraw your consent to use electronic signatures at any time before completing the
-            signing process. To withdraw your consent, please contact the sender of the document. In failing to contact
-            the sender you may reach out to <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a> for assistance. Be
-            aware that withdrawing consent may delay or halt the completion of the related transaction or service.
+            Строк зберігання електронного документа залежить від його категорії, змісту, ролі сторін, вимог договору та
+            застосовного законодавства. Для багатьох податково значущих документів можуть застосовуватися спеціальні
+            строки зберігання, а для інших категорій — правила архівного, бухгалтерського або галузевого зберігання.
+          </Trans>
+        </p>
+        <p>
+          <Trans>
+            Після підписання рекомендуємо завантажити та зберегти власну копію підписаного документа і, якщо доступно,
+            пакет доказів або архів підписання.
           </Trans>
         </p>
 
         <h2>
-          <Trans>Updating Your Information</Trans>
+          <Trans>Обмеження</Trans>
         </h2>
         <p>
           <Trans>
-            It is crucial to keep your contact information, especially your email address, up to date with us. Please
-            notify us immediately of any changes to ensure that you continue to receive all necessary communications.
+            Це розкриття має інформаційний характер і не є юридичною консультацією. Юридична сила конкретного
+            електронного документа залежить від його змісту, виду підпису, повноважень підписувачів, домовленостей
+            сторін, вимог закону та можливості перевірити цілісність і автентичність документа.
           </Trans>
         </p>
 
         <h2>
-          <Trans>Retention of Documents</Trans>
+          <Trans>Визнання</Trans>
         </h2>
         <p>
           <Trans>
-            After signing a document electronically, you will be provided the opportunity to view, download, and print
-            the document for your records. It is highly recommended that you retain a copy of all electronically signed
-            documents for your personal records. We will also retain a copy of the signed document for our records
-            however we may not be able to provide you with a copy of the signed document after a certain period of time.
+            Використовуючи сервіс електронного підпису VilnoEDO, ви підтверджуєте, що ознайомилися з цим розкриттям,
+            розумієте особливості електронного підписання та погоджуєтеся виконати підписання в електронній формі для
+            відповідного документа.
           </Trans>
         </p>
 
         <h2>
-          <Trans>Acknowledgment</Trans>
+          <Trans>Контакти</Trans>
         </h2>
         <p>
           <Trans>
-            By proceeding to use the electronic signature service provided by Documenso, you affirm that you have read
-            and understood this disclosure. You agree to all terms and conditions related to the use of electronic
-            signatures and electronic transactions as outlined herein.
-          </Trans>
-        </p>
-
-        <h2>
-          <Trans>Contact Information</Trans>
-        </h2>
-        <p>
-          <Trans>
-            For any questions regarding this disclosure, electronic signatures, or any related process, please contact
-            us at: <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>
+            Якщо у вас є питання щодо цього розкриття, електронного підпису або процесу підписання, напишіть нам на{' '}
+            <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>.
           </Trans>
         </p>
       </article>
@@ -147,7 +239,7 @@ export default function SignatureDisclosure() {
       <div className="mt-8">
         <Button asChild>
           <Link to="/">
-            <Trans>Back home</Trans>
+            <Trans>На головну</Trans>
           </Link>
         </Button>
       </div>

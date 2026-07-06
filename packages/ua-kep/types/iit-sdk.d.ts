@@ -37,6 +37,8 @@ declare module '@it-enterprise/digital-signature' {
     issuerCN?: string | null;
     EDRPOUCode?: string | null;
     DRFOCode?: string | null;
+    subjEDRPOUCode?: string | null;
+    subjDRFOCode?: string | null;
     serial?: string | null;
   };
 
@@ -46,6 +48,11 @@ declare module '@it-enterprise/digital-signature' {
       subjCN?: string | null;
       issuerCN?: string | null;
       serial?: string | null;
+      EDRPOUCode?: string | null;
+      DRFOCode?: string | null;
+      subjEDRPOUCode?: string | null;
+      subjDRFOCode?: string | null;
+      subjUserCode?: string | null;
       publicKeyType?: number;
       keyUsageType?: number;
       extKeyUsages?: string[];
