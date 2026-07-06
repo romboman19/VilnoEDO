@@ -22,13 +22,12 @@ import {
 } from '@documenso/ui/primitives/form/form';
 import { Input } from '@documenso/ui/primitives/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@documenso/ui/primitives/select';
-import { Tooltip, TooltipContent, TooltipTrigger } from '@documenso/ui/primitives/tooltip';
 import { useToast } from '@documenso/ui/primitives/use-toast';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { msg } from '@lingui/core/macro';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { OrganisationMemberRole } from '@prisma/client';
-import { InfoIcon, Loader } from 'lucide-react';
+import { Loader } from 'lucide-react';
 import { useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link } from 'react-router';
@@ -513,60 +512,6 @@ const OrganisationAdminForm = ({ organisation }: OrganisationAdminFormOptions) =
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <FormField
-          control={form.control}
-          name="originalSubscriptionClaimId"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="flex items-center">
-                <Trans>Inherited subscription claim</Trans>
-                <Tooltip>
-                  <TooltipTrigger type="button">
-                    <InfoIcon className="mx-2 h-4 w-4" />
-                  </TooltipTrigger>
-
-                  <TooltipContent className="max-w-md space-y-2 p-4 text-foreground">
-                    <h2>
-                      <strong>
-                        <Trans>Inherited subscription claim</Trans>
-                      </strong>
-                    </h2>
-
-                    <p>
-                      <Trans>
-                        This is the claim that this organisation was initially created with. Any feature flag changes to
-                        this claim will be backported into this organisation.
-                      </Trans>
-                    </p>
-
-                    <p>
-                      <Trans>
-                        For example, if the claim has a new flag "FLAG_1" set to true, then this organisation will get
-                        that flag added.
-                      </Trans>
-                    </p>
-                    <p>
-                      <Trans>
-                        This will ONLY backport feature flags which are set to true, anything disabled in the initial
-                        claim will not be backported
-                      </Trans>
-                    </p>
-                  </TooltipContent>
-                </Tooltip>
-              </FormLabel>
-              <div className="rounded-lg border bg-muted/40 px-3 py-2.5 text-sm">
-                {field.value ? (
-                  <span className="font-mono text-foreground">{field.value}</span>
-                ) : (
-                  <span className="text-muted-foreground">
-                    <Trans>No inherited claim</Trans>
-                  </span>
-                )}
-              </div>
-            </FormItem>
-          )}
-        />
-
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <FormField
             control={form.control}

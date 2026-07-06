@@ -419,8 +419,8 @@ msgid "{maximumEnvelopeItemCount, plural, one {You cannot upload more than # ite
 msgstr "{maximumEnvelopeItemCount, plural, one {You cannot upload more than # item per envelope.} other {You cannot upload more than # items per envelope.}}"
 
 #: apps/remix/app/components/dialogs/email-transport-delete-dialog.tsx
-msgid "{organisationClaimCount, plural, one {# Organisation claim} other {# Organisation claims}}"
-msgstr "{organisationClaimCount, plural, one {# Organisation claim} other {# Organisation claims}}"
+msgid "{organisationClaimCount, plural, one {# Organisation profile} other {# Organisation profiles}}"
+msgstr "{organisationClaimCount, plural, one {# Organisation profile} other {# Organisation profiles}}"
 
 #: apps/remix/app/components/general/direct-template/direct-template-page.tsx
 msgid "{recipientActionVerb} document"
@@ -474,8 +474,8 @@ msgid "{signerName} has rejected the document \"{documentName}\"."
 msgstr "{signerName} has rejected the document \"{documentName}\"."
 
 #: apps/remix/app/components/dialogs/email-transport-delete-dialog.tsx
-msgid "{subscriptionClaimCount, plural, one {# Subscription claim} other {# Subscription claims}}"
-msgstr "{subscriptionClaimCount, plural, one {# Subscription claim} other {# Subscription claims}}"
+msgid "{subscriptionClaimCount, plural, one {# Capability profile} other {# Capability profiles}}"
+msgstr "{subscriptionClaimCount, plural, one {# Capability profile} other {# Capability profiles}}"
 
 #. placeholder {0}: _(actionVerb).toLowerCase()
 #: packages/email/template-components/template-document-invite.tsx
@@ -956,10 +956,6 @@ msgstr "7 days"
 msgid "A confirmation email has been sent, and it should arrive in your inbox shortly."
 msgstr "A confirmation email has been sent, and it should arrive in your inbox shortly."
 
-#: apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
-msgid "A device capable of accessing, opening, and reading documents"
-msgstr "A device capable of accessing, opening, and reading documents"
-
 #: packages/lib/jobs/definitions/emails/send-signing-email.handler.ts
 msgid "A document was created by your direct template that requires you to {recipientActionVerb} it."
 msgstr "A document was created by your direct template that requires you to {recipientActionVerb} it."
@@ -982,10 +978,6 @@ msgstr "A field was removed"
 msgctxt "Audit log format"
 msgid "A field was updated"
 msgstr "A field was updated"
-
-#: apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
-msgid "A means to print or download documents for your records"
-msgstr "A means to print or download documents for your records"
 
 #: packages/email/templates/organisation-join.tsx
 msgid "A member has joined your organisation on Documenso"
@@ -1053,10 +1045,6 @@ msgstr "A request to use your email has been initiated by {0} on Documenso"
 msgid "A secret that will be sent to your URL so you can verify that the request has been sent by Documenso."
 msgstr "A secret that will be sent to your URL so you can verify that the request has been sent by Documenso."
 
-#: apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
-msgid "A stable internet connection"
-msgstr "A stable internet connection"
-
 #: packages/email/templates/team-delete.tsx
 #: packages/email/templates/team-delete.tsx
 msgid "A team you were a part of has been deleted"
@@ -1104,10 +1092,6 @@ msgstr "Accept invitation to join an organisation on Documenso"
 #: packages/email/templates/confirm-team-email.tsx
 msgid "Accept team email request for {teamName} on Documenso"
 msgstr "Accept team email request for {teamName} on Documenso"
-
-#: apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
-msgid "Acceptance and Consent"
-msgstr "Acceptance and Consent"
 
 #: apps/remix/app/components/dialogs/team-inherit-member-disable-dialog.tsx
 msgid "Access disabled"
@@ -1170,10 +1154,6 @@ msgstr "Account Re-Authentication"
 msgid "Account unlinked"
 msgstr "Account unlinked"
 
-#: apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
-msgid "Acknowledgment"
-msgstr "Acknowledgment"
-
 #: apps/remix/app/components/general/document/document-page-view-dropdown.tsx
 #: apps/remix/app/components/tables/admin-document-logs-table.tsx
 #: apps/remix/app/components/tables/document-logs-table.tsx
@@ -1187,7 +1167,6 @@ msgstr "Action"
 #: apps/remix/app/components/general/document-signing/document-signing-page-view-v2.tsx
 #: apps/remix/app/components/general/envelope-signing/envelope-signer-header.tsx
 #: apps/remix/app/components/general/template/template-page-view-documents-table.tsx
-#: apps/remix/app/components/tables/admin-claims-table.tsx
 #: apps/remix/app/components/tables/admin-email-transports-table.tsx
 #: apps/remix/app/components/tables/admin-organisations-table.tsx
 #: apps/remix/app/components/tables/documents-table.tsx
@@ -1237,10 +1216,6 @@ msgstr "Active sessions"
 #: apps/remix/app/routes/_authenticated+/settings+/security.sessions.tsx
 msgid "Active Sessions"
 msgstr "Active Sessions"
-
-#: apps/remix/app/routes/_authenticated+/admin+/stats.tsx
-msgid "Active Subscriptions"
-msgstr "Active Subscriptions"
 
 #: apps/remix/app/components/dialogs/team-email-add-dialog.tsx
 #: apps/remix/app/components/general/document/document-attachments-popover.tsx
@@ -1525,10 +1500,6 @@ msgstr "Advanced settings"
 msgid "Advanced Settings"
 msgstr "Advanced Settings"
 
-#: apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
-msgid "After signing a document electronically, you will be provided the opportunity to view, download, and print the document for your records. It is highly recommended that you retain a copy of all electronically signed documents for your personal records. We will also retain a copy of the signed document for our records however we may not be able to provide you with a copy of the signed document after a certain period of time."
-msgstr "After signing a document electronically, you will be provided the opportunity to view, download, and print the document for your records. It is highly recommended that you retain a copy of all electronically signed documents for your personal records. We will also retain a copy of the signed document for our records however we may not be able to provide you with a copy of the signed document after a certain period of time."
-
 #: packages/lib/constants/template.ts
 msgid "After submission, a document will be automatically generated and added to your documents page. You will also receive a notification via email."
 msgstr "After submission, a document will be automatically generated and added to your documents page. You will also receive a notification via email."
@@ -1550,11 +1521,6 @@ msgstr "AI features are disabled for your team. Please ask your team owner or or
 msgid "All"
 msgstr "All"
 
-#: apps/remix/app/routes/_authenticated+/admin+/organisation-stats._index.tsx
-#: apps/remix/app/routes/_authenticated+/admin+/organisation-stats._index.tsx
-msgid "All claims"
-msgstr "All claims"
-
 #: apps/remix/app/components/general/app-command-menu.tsx
 msgid "All documents"
 msgstr "All documents"
@@ -1566,10 +1532,6 @@ msgstr "All documents have been completed!"
 #: apps/remix/app/components/tables/documents-table-empty-state.tsx
 msgid "All documents have been processed. Any new documents that are sent or received will show here."
 msgstr "All documents have been processed. Any new documents that are sent or received will show here."
-
-#: apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
-msgid "All documents related to the electronic signing process will be provided to you electronically through our platform or via email. It is your responsibility to ensure that your email address is current and that you can receive and open our emails."
-msgstr "All documents related to the electronic signing process will be provided to you electronically through our platform or via email. It is your responsibility to ensure that your email address is current and that you can receive and open our emails."
 
 #: apps/remix/app/components/tables/organisation-email-domains-table.tsx
 msgid "All email domains have been synced successfully"
@@ -1652,10 +1614,6 @@ msgstr "Allowed Email Domains"
 msgid "Allowed Signature Types"
 msgstr "Allowed Signature Types"
 
-#: apps/remix/app/components/tables/admin-claims-table.tsx
-msgid "Allowed teams"
-msgstr "Allowed teams"
-
 #: apps/remix/app/routes/_authenticated+/settings+/security._index.tsx
 msgid "Allows authenticating using biometrics, password managers, hardware keys, etc."
 msgstr "Allows authenticating using biometrics, password managers, hardware keys, etc."
@@ -1680,14 +1638,6 @@ msgstr "An admin has deleted your document \"{documentName}\"."
 #: packages/email/template-components/template-admin-user-created.tsx
 msgid "An administrator has created a Documenso account for you."
 msgstr "An administrator has created a Documenso account for you."
-
-#: apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
-msgid "An electronic signature provided by you on our platform, achieved through clicking through to a document and entering your name, or any other electronic signing method we provide, is legally binding. It carries the same weight and enforceability as a manual signature written with ink on paper."
-msgstr "An electronic signature provided by you on our platform, achieved through clicking through to a document and entering your name, or any other electronic signing method we provide, is legally binding. It carries the same weight and enforceability as a manual signature written with ink on paper."
-
-#: apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
-msgid "An email account"
-msgstr "An email account"
 
 #: apps/remix/app/components/dialogs/organisation-member-invite-dialog.tsx
 msgid "An email containing an invitation will be sent to each member."
@@ -2103,10 +2053,6 @@ msgstr "Approving"
 msgid "Are you sure you want to complete the document? This action cannot be undone. Please ensure that you have completed prefilling all relevant fields before proceeding."
 msgstr "Are you sure you want to complete the document? This action cannot be undone. Please ensure that you have completed prefilling all relevant fields before proceeding."
 
-#: apps/remix/app/components/dialogs/claim-delete-dialog.tsx
-msgid "Are you sure you want to delete the following claim?"
-msgstr "Are you sure you want to delete the following claim?"
-
 #: apps/remix/app/components/dialogs/email-transport-delete-dialog.tsx
 msgid "Are you sure you want to delete the following transport?"
 msgstr "Are you sure you want to delete the following transport?"
@@ -2301,10 +2247,6 @@ msgstr "Awaiting email confirmation"
 msgid "Back"
 msgstr "Back"
 
-#: apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
-msgid "Back home"
-msgstr "Back home"
-
 #: apps/remix/app/components/forms/branding-preferences-form.tsx
 msgid "Background"
 msgstr "Background"
@@ -2316,10 +2258,6 @@ msgstr "Background Color"
 #: apps/remix/app/components/tables/admin-document-jobs-table.tsx
 msgid "Background Jobs"
 msgstr "Background Jobs"
-
-#: apps/remix/app/components/dialogs/claim-update-dialog.tsx
-msgid "Backport email transport"
-msgstr "Backport email transport"
 
 #: apps/remix/app/components/forms/2fa/disable-authenticator-app-dialog.tsx
 #: apps/remix/app/components/forms/signin.tsx
@@ -2503,10 +2441,6 @@ msgstr "By deleting this document, the following will occur:"
 msgid "By enabling 2FA, you will be required to enter a code from your authenticator app every time you sign in using email password."
 msgstr "By enabling 2FA, you will be required to enter a code from your authenticator app every time you sign in using email password."
 
-#: apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
-msgid "By proceeding to use the electronic signature service provided by Documenso, you affirm that you have read and understood this disclosure. You agree to all terms and conditions related to the use of electronic signatures and electronic transactions as outlined herein."
-msgstr "By proceeding to use the electronic signature service provided by Documenso, you affirm that you have read and understood this disclosure. You agree to all terms and conditions related to the use of electronic signatures and electronic transactions as outlined herein."
-
 #: apps/remix/app/components/general/document-signing/document-signing-disclosure.tsx
 msgid "By proceeding with your electronic signature, you acknowledge and consent that it will be used to sign the given document and holds the same legal validity as a handwritten signature. By completing the electronic signing process, you affirm your understanding and acceptance of these conditions."
 msgstr "By proceeding with your electronic signature, you acknowledge and consent that it will be used to sign the given document and holds the same legal validity as a handwritten signature. By completing the electronic signing process, you affirm your understanding and acceptance of these conditions."
@@ -2514,10 +2448,6 @@ msgstr "By proceeding with your electronic signature, you acknowledge and consen
 #: apps/remix/app/components/forms/signup.tsx
 msgid "By proceeding, you agree to our <0>Terms of Service</0> and <1>Privacy Policy</1>."
 msgstr "By proceeding, you agree to our <0>Terms of Service</0> and <1>Privacy Policy</1>."
-
-#: apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
-msgid "By using the electronic signature feature, you are consenting to conduct transactions and receive disclosures electronically. You acknowledge that your electronic signature on documents is binding and that you accept the terms outlined in the documents you are signing."
-msgstr "By using the electronic signature feature, you are consenting to conduct transactions and receive disclosures electronically. You acknowledge that your electronic signature on documents is binding and that you accept the terms outlined in the documents you are signing."
 
 #: apps/remix/app/components/general/document-signing/ua-kep-signature-tab.tsx
 msgid "CA / QTSP"
@@ -2535,16 +2465,11 @@ msgstr "Can't find someone?"
 #: apps/remix/app/components/dialogs/admin-organisation-delete-dialog.tsx
 #: apps/remix/app/components/dialogs/admin-organisation-member-delete-dialog.tsx
 #: apps/remix/app/components/dialogs/admin-organisation-member-update-dialog.tsx
-#: apps/remix/app/components/dialogs/admin-organisation-sync-subscription-dialog.tsx
-#: apps/remix/app/components/dialogs/admin-swap-subscription-dialog.tsx
 #: apps/remix/app/components/dialogs/admin-team-member-delete-dialog.tsx
 #: apps/remix/app/components/dialogs/admin-user-create-dialog.tsx
 #: apps/remix/app/components/dialogs/ai-field-detection-dialog.tsx
 #: apps/remix/app/components/dialogs/ai-recipient-detection-dialog.tsx
 #: apps/remix/app/components/dialogs/assistant-confirmation-dialog.tsx
-#: apps/remix/app/components/dialogs/claim-create-dialog.tsx
-#: apps/remix/app/components/dialogs/claim-delete-dialog.tsx
-#: apps/remix/app/components/dialogs/claim-update-dialog.tsx
 #: apps/remix/app/components/dialogs/email-transport-create-dialog.tsx
 #: apps/remix/app/components/dialogs/email-transport-delete-dialog.tsx
 #: apps/remix/app/components/dialogs/email-transport-send-test-dialog.tsx
@@ -2794,17 +2719,9 @@ msgstr "Choose your preferred authentication method:"
 msgid "Choose..."
 msgstr "Choose..."
 
-#: apps/remix/app/components/tables/admin-organisation-stats-table.tsx
-msgid "Claim"
-msgstr "Claim"
-
 #: apps/remix/app/components/general/claim-account.tsx
 msgid "Claim account"
 msgstr "Claim account"
-
-#: apps/remix/app/routes/_authenticated+/admin+/_layout.tsx
-msgid "Claims"
-msgstr "Claims"
 
 #: packages/ui/primitives/data-table.tsx
 msgid "Clear filters"
@@ -3085,14 +3002,6 @@ msgstr "Confirm email"
 msgid "Confirmation email sent"
 msgstr "Confirmation email sent"
 
-#: apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
-msgid "Consent to Electronic Transactions"
-msgstr "Consent to Electronic Transactions"
-
-#: apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
-msgid "Contact Information"
-msgstr "Contact Information"
-
 #: apps/remix/app/components/dialogs/organisation-create-dialog.tsx
 msgid "Contact sales here"
 msgstr "Contact sales here"
@@ -3348,14 +3257,6 @@ msgstr "Create as draft"
 msgid "Create as pending"
 msgstr "Create as pending"
 
-#: apps/remix/app/components/dialogs/claim-create-dialog.tsx
-msgid "Create claim"
-msgstr "Create claim"
-
-#: apps/remix/app/components/dialogs/claim-create-dialog.tsx
-msgid "Create Claim"
-msgstr "Create Claim"
-
 #: apps/remix/app/components/dialogs/template-direct-link-dialog.tsx
 msgid "Create Direct Link"
 msgstr "Create Direct Link"
@@ -3426,10 +3327,6 @@ msgstr "Create separate organisation"
 #: apps/remix/app/components/dialogs/template-use-dialog.tsx
 msgid "Create signing links"
 msgstr "Create signing links"
-
-#: apps/remix/app/components/dialogs/claim-create-dialog.tsx
-msgid "Create Subscription Claim"
-msgstr "Create Subscription Claim"
 
 #: apps/remix/app/components/dialogs/team-create-dialog.tsx
 #: apps/remix/app/components/dialogs/team-create-dialog.tsx
@@ -3650,8 +3547,6 @@ msgstr "David is the Employee, Lucas is the Manager"
 msgid "Decline"
 msgstr "Decline"
 
-#: apps/remix/app/components/forms/subscription-claim-form.tsx
-#: apps/remix/app/components/forms/subscription-claim-form.tsx
 #: apps/remix/app/routes/_authenticated+/admin+/organisations.$id.tsx
 #: apps/remix/app/routes/_authenticated+/admin+/organisations.$id.tsx
 msgid "Default (system mailer)"
@@ -3742,7 +3637,6 @@ msgstr "delete"
 
 #: apps/remix/app/components/dialogs/admin-organisation-delete-dialog.tsx
 #: apps/remix/app/components/dialogs/admin-organisation-delete-dialog.tsx
-#: apps/remix/app/components/dialogs/claim-delete-dialog.tsx
 #: apps/remix/app/components/dialogs/email-transport-delete-dialog.tsx
 #: apps/remix/app/components/dialogs/envelope-delete-dialog.tsx
 #: apps/remix/app/components/dialogs/envelope-item-delete-dialog.tsx
@@ -3762,7 +3656,6 @@ msgstr "delete"
 #: apps/remix/app/components/dialogs/webhook-delete-dialog.tsx
 #: apps/remix/app/components/general/document/document-page-view-dropdown.tsx
 #: apps/remix/app/components/general/folder/folder-card.tsx
-#: apps/remix/app/components/tables/admin-claims-table.tsx
 #: apps/remix/app/components/tables/admin-email-transports-table.tsx
 #: apps/remix/app/components/tables/documents-table-action-dropdown.tsx
 #: apps/remix/app/components/tables/envelopes-table-bulk-action-bar.tsx
@@ -3870,10 +3763,6 @@ msgstr "Delete organisation member"
 #: apps/remix/app/components/tables/settings-security-passkey-table-actions.tsx
 msgid "Delete passkey"
 msgstr "Delete passkey"
-
-#: apps/remix/app/components/dialogs/claim-delete-dialog.tsx
-msgid "Delete Subscription Claim"
-msgstr "Delete Subscription Claim"
 
 #: apps/remix/app/routes/_authenticated+/t.$teamUrl+/settings._index.tsx
 msgid "Delete team"
@@ -4657,10 +4546,6 @@ msgstr "Don't transfer (Delete all documents)"
 msgid "Download"
 msgstr "Download"
 
-#: apps/remix/app/components/general/document-signing/ua-kep-signature-tab.tsx
-msgid "Download archive"
-msgstr "Download archive"
-
 #: apps/remix/app/components/general/document/document-audit-log-download-button.tsx
 #: apps/remix/app/routes/_authenticated+/admin+/documents.$id.tsx
 msgid "Download Audit Logs"
@@ -4849,14 +4734,6 @@ msgstr "eg. Legal"
 #: apps/remix/app/components/dialogs/passkey-create-dialog.tsx
 msgid "eg. Mac"
 msgstr "eg. Mac"
-
-#: apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
-msgid "Electronic Delivery of Documents"
-msgstr "Electronic Delivery of Documents"
-
-#: apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
-msgid "Electronic Signature Disclosure"
-msgstr "Electronic Signature Disclosure"
 
 #: apps/remix/app/components/dialogs/admin-user-create-dialog.tsx
 #: apps/remix/app/components/dialogs/ai-field-detection-dialog.tsx
@@ -5065,7 +4942,6 @@ msgstr "Email the owner when the document is completed"
 msgid "Email the signer if the document is still pending"
 msgstr "Email the signer if the document is still pending"
 
-#: apps/remix/app/components/forms/subscription-claim-form.tsx
 #: apps/remix/app/routes/_authenticated+/admin+/organisations.$id.tsx
 msgid "Email transport"
 msgstr "Email transport"
@@ -5248,10 +5124,6 @@ msgstr "Enter a new title"
 msgid "Enter a window, e.g. 5m"
 msgstr "Enter a window, e.g. 5m"
 
-#: apps/remix/app/components/forms/subscription-claim-form.tsx
-msgid "Enter claim name"
-msgstr "Enter claim name"
-
 #: apps/remix/app/components/dialogs/sign-field-email-dialog.tsx
 msgid "Enter Email"
 msgstr "Enter Email"
@@ -5343,7 +5215,6 @@ msgstr "Envelope distributed"
 msgid "Envelope ID"
 msgstr "Envelope ID"
 
-#: apps/remix/app/components/forms/subscription-claim-form.tsx
 #: apps/remix/app/routes/_authenticated+/admin+/organisations.$id.tsx
 msgid "Envelope Item Count"
 msgstr "Envelope Item Count"
@@ -5380,7 +5251,6 @@ msgstr "Envelope Title"
 msgid "Envelope updated"
 msgstr "Envelope updated"
 
-#: apps/remix/app/components/dialogs/admin-swap-subscription-dialog.tsx
 #: apps/remix/app/components/dialogs/admin-user-delete-dialog.tsx
 #: apps/remix/app/components/dialogs/admin-user-disable-dialog.tsx
 #: apps/remix/app/components/dialogs/admin-user-enable-dialog.tsx
@@ -5568,10 +5438,6 @@ msgstr "Failed to create document. Please try again."
 msgid "Failed to create folder"
 msgstr "Failed to create folder"
 
-#: apps/remix/app/components/dialogs/claim-create-dialog.tsx
-msgid "Failed to create subscription claim."
-msgstr "Failed to create subscription claim."
-
 #: apps/remix/app/components/forms/support-ticket-form.tsx
 msgid "Failed to create support ticket"
 msgstr "Failed to create support ticket"
@@ -5583,10 +5449,6 @@ msgstr "Failed to create transport."
 #: apps/remix/app/components/dialogs/folder-delete-dialog.tsx
 msgid "Failed to delete folder"
 msgstr "Failed to delete folder"
-
-#: apps/remix/app/components/dialogs/claim-delete-dialog.tsx
-msgid "Failed to delete subscription claim."
-msgstr "Failed to delete subscription claim."
 
 #: apps/remix/app/components/dialogs/email-transport-delete-dialog.tsx
 msgid "Failed to delete transport."
@@ -5603,10 +5465,6 @@ msgstr "Failed to load document"
 #: apps/remix/app/components/dialogs/folder-move-dialog.tsx
 msgid "Failed to move folder"
 msgstr "Failed to move folder"
-
-#: apps/remix/app/components/dialogs/admin-swap-subscription-dialog.tsx
-msgid "Failed to move subscription. Please try again."
-msgstr "Failed to move subscription. Please try again."
 
 #: apps/remix/app/routes/_authenticated+/admin+/email-domains.$id.tsx
 msgid "Failed to re-register email domain"
@@ -5640,10 +5498,6 @@ msgstr "Failed to save transport."
 msgid "Failed to sign out all sessions"
 msgstr "Failed to sign out all sessions"
 
-#: apps/remix/app/components/dialogs/admin-organisation-sync-subscription-dialog.tsx
-msgid "Failed to sync subscription"
-msgstr "Failed to sync subscription"
-
 #: apps/remix/app/routes/_authenticated+/admin+/unsealed-documents._index.tsx
 msgid "Failed to trigger seal"
 msgstr "Failed to trigger seal"
@@ -5668,10 +5522,6 @@ msgstr "Failed to update item"
 msgid "Failed to update recipient"
 msgstr "Failed to update recipient"
 
-#: apps/remix/app/components/dialogs/claim-update-dialog.tsx
-msgid "Failed to update subscription claim."
-msgstr "Failed to update subscription claim."
-
 #: apps/remix/app/routes/embed+/v1+/authoring+/template.edit.$id.tsx
 msgid "Failed to update template"
 msgstr "Failed to update template"
@@ -5693,15 +5543,9 @@ msgstr "Failed: {failedCount}"
 msgid "Fair use limit exceeded"
 msgstr "Fair use limit exceeded"
 
-#: apps/remix/app/components/forms/subscription-claim-form.tsx
-#: apps/remix/app/components/tables/admin-claims-table.tsx
 #: apps/remix/app/routes/_authenticated+/admin+/organisations.$id.tsx
 msgid "Feature Flags"
 msgstr "Feature Flags"
-
-#: apps/remix/app/components/dialogs/admin-organisation-sync-subscription-dialog.tsx
-msgid "Fetch the latest subscription data from Stripe and apply it to this organisation."
-msgstr "Fetch the latest subscription data from Stripe and apply it to this organisation."
 
 #: packages/ui/primitives/document-flow/field-items-advanced-settings/text-field.tsx
 msgid "Field character limit"
@@ -5779,10 +5623,6 @@ msgstr "File size exceeds the limit of {APP_DOCUMENT_UPLOAD_SIZE_LIMIT} MB"
 msgid "Fill in the details to create a new email transport."
 msgstr "Fill in the details to create a new email transport."
 
-#: apps/remix/app/components/dialogs/claim-create-dialog.tsx
-msgid "Fill in the details to create a new subscription claim."
-msgstr "Fill in the details to create a new subscription claim."
-
 #: apps/remix/app/routes/_authenticated+/admin+/email-domains._index.tsx
 msgid "Filter by status"
 msgstr "Filter by status"
@@ -5835,17 +5675,9 @@ msgstr "Folder updated successfully"
 msgid "Font Size"
 msgstr "Font Size"
 
-#: apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
-msgid "For any questions regarding this disclosure, electronic signatures, or any related process, please contact us at: <0>{SUPPORT_EMAIL}</0>"
-msgstr "For any questions regarding this disclosure, electronic signatures, or any related process, please contact us at: <0>{SUPPORT_EMAIL}</0>"
-
 #: apps/remix/app/components/dialogs/template-bulk-send-dialog.tsx
 msgid "For each recipient, provide their email (required) and name (optional) in separate columns. Download the template CSV below for the correct format."
 msgstr "For each recipient, provide their email (required) and name (optional) in separate columns. Download the template CSV below for the correct format."
-
-#: apps/remix/app/routes/_authenticated+/admin+/organisations.$id.tsx
-msgid "For example, if the claim has a new flag \"FLAG_1\" set to true, then this organisation will get that flag added."
-msgstr "For example, if the claim has a new flag \"FLAG_1\" set to true, then this organisation will get that flag added."
 
 #: apps/remix/app/components/forms/branding-preferences-form.tsx
 msgid "Foreground"
@@ -5874,7 +5706,6 @@ msgctxt "Plan price"
 msgid "Free"
 msgstr "Free"
 
-#: apps/remix/app/components/tables/admin-organisations-table.tsx
 #: apps/remix/app/components/tables/user-billing-organisations-table.tsx
 msgctxt "Subscription status"
 msgid "Free"
@@ -6228,16 +6059,11 @@ msgstr "I understand that I am providing my credentials to a 3rd party service c
 msgid "I'm sure! Delete it"
 msgstr "I'm sure! Delete it"
 
-#: apps/remix/app/components/tables/admin-claims-table.tsx
 #: apps/remix/app/components/tables/admin-dashboard-users-table.tsx
 #: apps/remix/app/components/tables/admin-document-recipient-item-table.tsx
 #: apps/remix/app/routes/_authenticated+/admin+/email-domains.$id.tsx
 msgid "ID"
 msgstr "ID"
-
-#: apps/remix/app/components/tables/admin-claims-table.tsx
-msgid "ID copied to clipboard"
-msgstr "ID copied to clipboard"
 
 #: apps/remix/app/components/dialogs/ai-field-detection-dialog.tsx
 msgid "Identifying input fields"
@@ -6373,11 +6199,6 @@ msgstr "Inherit organisation members"
 #: apps/remix/app/components/general/admin-global-settings-section.tsx
 msgid "Inherited"
 msgstr "Inherited"
-
-#: apps/remix/app/routes/_authenticated+/admin+/organisations.$id.tsx
-#: apps/remix/app/routes/_authenticated+/admin+/organisations.$id.tsx
-msgid "Inherited subscription claim"
-msgstr "Inherited subscription claim"
 
 #: apps/remix/app/components/dialogs/ai-field-detection-dialog.tsx
 #: apps/remix/app/components/dialogs/sign-field-initials-dialog.tsx
@@ -6521,10 +6342,6 @@ msgstr "Irreversible actions for this organisation"
 #: apps/remix/app/routes/_authenticated+/o.$orgUrl.settings.sso.tsx
 msgid "Issuer URL"
 msgstr "Issuer URL"
-
-#: apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
-msgid "It is crucial to keep your contact information, especially your email address, up to date with us. Please notify us immediately of any changes to ensure that you continue to receive all necessary communications."
-msgstr "It is crucial to keep your contact information, especially your email address, up to date with us. Please notify us immediately of any changes to ensure that you continue to receive all necessary communications."
 
 #. placeholder {0}: publicProfile.name
 #: apps/remix/app/routes/_profile+/p.$url.tsx
@@ -6707,10 +6524,6 @@ msgstr "Leave organisation"
 msgid "Left"
 msgstr "Left"
 
-#: apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
-msgid "Legality of Electronic Signatures"
-msgstr "Legality of Electronic Signatures"
-
 #: apps/remix/app/components/forms/editor/editor-field-generic-field-forms.tsx
 msgid "Letter spacing"
 msgstr "Letter spacing"
@@ -6855,10 +6668,6 @@ msgstr "Manage all email transports"
 #: apps/remix/app/routes/_authenticated+/settings+/organisations.tsx
 msgid "Manage all organisations you are currently associated with."
 msgstr "Manage all organisations you are currently associated with."
-
-#: apps/remix/app/routes/_authenticated+/admin+/claims.tsx
-msgid "Manage all subscription claims"
-msgstr "Manage all subscription claims"
 
 #: apps/remix/app/routes/_authenticated+/t.$teamUrl+/templates.$id._index.tsx
 msgid "Manage and view template"
@@ -7039,12 +6848,10 @@ msgstr "Max requests"
 msgid "Maximum file size: 4MB. Maximum 100 rows per upload. Blank values will use template defaults."
 msgstr "Maximum file size: 4MB. Maximum 100 rows per upload. Blank values will use template defaults."
 
-#: apps/remix/app/components/forms/subscription-claim-form.tsx
 #: apps/remix/app/routes/_authenticated+/admin+/organisations.$id.tsx
 msgid "Maximum number of recipients per document allowed. 0 = Unlimited"
 msgstr "Maximum number of recipients per document allowed. 0 = Unlimited"
 
-#: apps/remix/app/components/forms/subscription-claim-form.tsx
 #: apps/remix/app/routes/_authenticated+/admin+/organisations.$id.tsx
 msgid "Maximum number of uploaded files per envelope allowed. 0 = Unlimited"
 msgstr "Maximum number of uploaded files per envelope allowed. 0 = Unlimited"
@@ -7062,7 +6869,6 @@ msgstr "Maximum number of uploaded files per envelope allowed. 0 = Unlimited"
 msgid "Member"
 msgstr "Member"
 
-#: apps/remix/app/components/forms/subscription-claim-form.tsx
 #: apps/remix/app/routes/_authenticated+/admin+/organisations.$id.tsx
 msgid "Member Count"
 msgstr "Member Count"
@@ -7137,10 +6943,6 @@ msgstr "Modify recipients"
 msgid "Modify the details of the email transport."
 msgstr "Modify the details of the email transport."
 
-#: apps/remix/app/components/dialogs/claim-update-dialog.tsx
-msgid "Modify the details of the subscription claim."
-msgstr "Modify the details of the subscription claim."
-
 #: apps/remix/app/components/dialogs/organisation-create-dialog.tsx
 #: apps/remix/app/components/general/billing-plans.tsx
 msgid "Monthly"
@@ -7176,19 +6978,9 @@ msgstr "Move Documents to Folder"
 msgid "Move Folder"
 msgstr "Move Folder"
 
-#: apps/remix/app/components/dialogs/admin-swap-subscription-dialog.tsx
-#: apps/remix/app/components/dialogs/admin-swap-subscription-dialog.tsx
-#: apps/remix/app/components/tables/admin-organisations-table.tsx
-msgid "Move Subscription"
-msgstr "Move Subscription"
-
 #: apps/remix/app/components/dialogs/envelopes-bulk-move-dialog.tsx
 msgid "Move Templates to Folder"
 msgstr "Move Templates to Folder"
-
-#: apps/remix/app/components/dialogs/admin-swap-subscription-dialog.tsx
-msgid "Move the subscription from \"{sourceOrganisationName}\" to another organisation owned by this user."
-msgstr "Move the subscription from \"{sourceOrganisationName}\" to another organisation owned by this user."
 
 #: apps/remix/app/components/tables/documents-table-action-dropdown.tsx
 #: apps/remix/app/components/tables/envelopes-table-bulk-action-bar.tsx
@@ -7222,12 +7014,10 @@ msgstr "N/A"
 #: apps/remix/app/components/embed/authoring/configure-document-recipients.tsx
 #: apps/remix/app/components/embed/authoring/configure-document-recipients.tsx
 #: apps/remix/app/components/forms/email-transport-form.tsx
-#: apps/remix/app/components/forms/subscription-claim-form.tsx
 #: apps/remix/app/components/general/claim-account.tsx
 #: apps/remix/app/components/general/document-signing/document-signing-name-field.tsx
 #: apps/remix/app/components/general/envelope-editor/envelope-editor-fields-drag-drop.tsx
 #: apps/remix/app/components/general/envelope-editor/envelope-editor-recipient-form.tsx
-#: apps/remix/app/components/tables/admin-claims-table.tsx
 #: apps/remix/app/components/tables/admin-dashboard-users-table.tsx
 #: apps/remix/app/components/tables/admin-document-jobs-table.tsx
 #: apps/remix/app/components/tables/admin-document-recipient-item-table.tsx
@@ -7354,10 +7144,6 @@ msgstr "No document selected"
 msgid "No documents found"
 msgstr "No documents found"
 
-#: apps/remix/app/components/dialogs/admin-swap-subscription-dialog.tsx
-msgid "No eligible organisations found. The target must be on the free plan."
-msgstr "No eligible organisations found. The target must be on the free plan."
-
 #: apps/remix/app/components/dialogs/ai-recipient-detection-dialog.tsx
 msgid "No email detected"
 msgstr "No email detected"
@@ -7396,10 +7182,6 @@ msgstr "No further action is required from you at this time."
 #: apps/remix/app/components/general/organisation-groups-multiselect-combobox.tsx
 msgid "No groups found"
 msgstr "No groups found"
-
-#: apps/remix/app/routes/_authenticated+/admin+/organisations.$id.tsx
-msgid "No inherited claim"
-msgstr "No inherited claim"
 
 #: apps/remix/app/components/general/organisation-members-multiselect-combobox.tsx
 msgid "No members found"
@@ -7518,8 +7300,6 @@ msgstr "No worries, it happens! Enter your email and we'll email you a special l
 #: apps/remix/app/components/dialogs/envelope-distribute-dialog.tsx
 #: apps/remix/app/components/embed/authoring/configure-document-advanced-settings.tsx
 #: apps/remix/app/components/forms/editor/editor-field-number-form.tsx
-#: apps/remix/app/components/tables/admin-claims-table.tsx
-#: apps/remix/app/components/tables/admin-organisations-table.tsx
 #: packages/lib/constants/document.ts
 #: packages/ui/primitives/document-flow/add-subject.tsx
 msgid "None"
@@ -7579,12 +7359,10 @@ msgstr "Number format"
 msgid "Number needs to be formatted as {numberFormat}"
 msgstr "Number needs to be formatted as {numberFormat}"
 
-#: apps/remix/app/components/forms/subscription-claim-form.tsx
 #: apps/remix/app/routes/_authenticated+/admin+/organisations.$id.tsx
 msgid "Number of members allowed. 0 = Unlimited"
 msgstr "Number of members allowed. 0 = Unlimited"
 
-#: apps/remix/app/components/forms/subscription-claim-form.tsx
 #: apps/remix/app/routes/_authenticated+/admin+/organisations.$id.tsx
 msgid "Number of teams allowed. 0 = Unlimited"
 msgstr "Number of teams allowed. 0 = Unlimited"
@@ -7957,11 +7735,6 @@ msgstr "Page {0} of {1}"
 msgid "Page {pageNumber} of {numPages}"
 msgstr "Page {pageNumber} of {numPages}"
 
-#: apps/remix/app/components/tables/admin-organisations-table.tsx
-msgctxt "Subscription status"
-msgid "Paid"
-msgstr "Paid"
-
 #: apps/remix/app/components/dialogs/envelope-download-dialog.tsx
 msgctxt "Partially signed document (adjective)"
 msgid "Partial"
@@ -8182,10 +7955,6 @@ msgstr "Place and configure form fields in the document"
 #: packages/ui/primitives/document-flow/field-items-advanced-settings/text-field.tsx
 msgid "Placeholder"
 msgstr "Placeholder"
-
-#: apps/remix/app/components/forms/subscription-claim-form.tsx
-msgid "Plans without a transport use the system default mailer."
-msgstr "Plans without a transport use the system default mailer."
 
 #. placeholder {0}: _(actionVerb).toLowerCase()
 #: packages/email/template-components/template-document-invite.tsx
@@ -8735,7 +8504,6 @@ msgstr "Recipient CC'd the document"
 msgid "Recipient completed their task"
 msgstr "Recipient completed their task"
 
-#: apps/remix/app/components/forms/subscription-claim-form.tsx
 #: apps/remix/app/routes/_authenticated+/admin+/organisations.$id.tsx
 msgid "Recipient Count"
 msgstr "Recipient Count"
@@ -9252,10 +9020,6 @@ msgstr "Rest assured, your document is strictly confidential and will never be s
 msgid "Restricted Access"
 msgstr "Restricted Access"
 
-#: apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
-msgid "Retention of Documents"
-msgstr "Retention of Documents"
-
 #: apps/remix/app/components/tables/admin-document-jobs-table.tsx
 msgid "Retried"
 msgstr "Retried"
@@ -9414,10 +9178,6 @@ msgstr "Search"
 msgid "Search and manage all organisations"
 msgstr "Search and manage all organisations"
 
-#: apps/remix/app/routes/_authenticated+/admin+/claims.tsx
-msgid "Search by claim ID or name"
-msgstr "Search by claim ID or name"
-
 #: apps/remix/app/routes/_authenticated+/admin+/documents._index.tsx
 msgid "Search by document title, team:123 or user:123"
 msgstr "Search by document title, team:123 or user:123"
@@ -9554,10 +9314,6 @@ msgstr "Select an event type"
 #: packages/ui/primitives/combobox.tsx
 msgid "Select an option"
 msgstr "Select an option"
-
-#: apps/remix/app/components/dialogs/admin-swap-subscription-dialog.tsx
-msgid "Select an organisation"
-msgstr "Select an organisation"
 
 #: apps/remix/app/components/general/org-menu-switcher.tsx
 msgid "Select an organisation to view teams"
@@ -10104,7 +9860,6 @@ msgctxt "Signed document (adjective)"
 msgid "Signed"
 msgstr "Signed"
 
-#: apps/remix/app/components/general/document-signing/ua-kep-signature-tab.tsx
 #: apps/remix/app/routes/_authenticated+/t.$teamUrl+/documents.$id.logs.tsx
 #: apps/remix/app/routes/_recipient+/sign.$token+/complete.tsx
 msgid "Signed PDF (PAdES)"
@@ -10409,7 +10164,6 @@ msgstr "Stats"
 #: apps/remix/app/components/general/template/template-page-view-documents-table.tsx
 #: apps/remix/app/components/general/webhook-logs-sheet.tsx
 #: apps/remix/app/components/tables/admin-document-jobs-table.tsx
-#: apps/remix/app/components/tables/admin-organisations-table.tsx
 #: apps/remix/app/components/tables/documents-table.tsx
 #: apps/remix/app/components/tables/inbox-table.tsx
 #: apps/remix/app/components/tables/organisation-billing-invoices-table.tsx
@@ -10434,10 +10188,6 @@ msgstr "Step {0}/{1}"
 #: packages/ui/primitives/document-flow/document-flow-root.tsx
 msgid "Step <0>{step} of {maxStep}</0>"
 msgstr "Step <0>{step} of {maxStep}</0>"
-
-#: apps/remix/app/components/tables/admin-organisations-table.tsx
-msgid "Stripe"
-msgstr "Stripe"
 
 #: apps/remix/app/routes/_authenticated+/admin+/unsealed-documents._index.tsx
 msgid "Stuck For"
@@ -10469,46 +10219,17 @@ msgstr "Submitted"
 msgid "Subscribe"
 msgstr "Subscribe"
 
-#: apps/remix/app/components/tables/admin-organisations-table.tsx
-msgid "Subscription"
-msgstr "Subscription"
-
-#: apps/remix/app/components/dialogs/claim-create-dialog.tsx
-msgid "Subscription claim created successfully."
-msgstr "Subscription claim created successfully."
-
-#: apps/remix/app/components/dialogs/claim-delete-dialog.tsx
-msgid "Subscription claim deleted successfully."
-msgstr "Subscription claim deleted successfully."
-
-#: apps/remix/app/components/dialogs/claim-update-dialog.tsx
-msgid "Subscription claim updated successfully."
-msgstr "Subscription claim updated successfully."
-
-#: apps/remix/app/routes/_authenticated+/admin+/claims.tsx
-msgid "Subscription Claims"
-msgstr "Subscription Claims"
-
 #: apps/remix/app/components/general/organisations/organisation-billing-banner.tsx
 msgid "Subscription invalid"
 msgstr "Subscription invalid"
-
-#: apps/remix/app/components/dialogs/admin-swap-subscription-dialog.tsx
-msgid "Subscription moved successfully"
-msgstr "Subscription moved successfully"
 
 #: apps/remix/app/components/tables/user-billing-organisations-table.tsx
 msgid "Subscription Status"
 msgstr "Subscription Status"
 
-#: apps/remix/app/components/dialogs/admin-organisation-sync-subscription-dialog.tsx
-msgid "Subscription synced"
-msgstr "Subscription synced"
-
 #: apps/remix/app/components/dialogs/admin-organisation-create-dialog.tsx
 #: apps/remix/app/components/dialogs/admin-organisation-member-delete-dialog.tsx
 #: apps/remix/app/components/dialogs/admin-organisation-member-update-dialog.tsx
-#: apps/remix/app/components/dialogs/admin-swap-subscription-dialog.tsx
 #: apps/remix/app/components/dialogs/admin-team-member-delete-dialog.tsx
 #: apps/remix/app/components/dialogs/admin-user-create-dialog.tsx
 #: apps/remix/app/components/dialogs/envelope-item-delete-dialog.tsx
@@ -10596,14 +10317,9 @@ msgstr "Support"
 msgid "Support ticket created"
 msgstr "Support ticket created"
 
-#: apps/remix/app/components/dialogs/admin-organisation-sync-subscription-dialog.tsx
 #: apps/remix/app/components/tables/organisation-email-domains-table.tsx
 msgid "Sync"
 msgstr "Sync"
-
-#: apps/remix/app/components/dialogs/admin-organisation-sync-subscription-dialog.tsx
-msgid "Sync claims. This will overwrite the current claim with the one resolved from the Stripe subscription."
-msgstr "Sync claims. This will overwrite the current claim with the one resolved from the Stripe subscription."
 
 #: apps/remix/app/components/tables/organisation-email-domains-table.tsx
 msgid "Sync Email Domains"
@@ -10613,11 +10329,6 @@ msgstr "Sync Email Domains"
 msgid "Sync failed, changes not saved"
 msgstr "Sync failed, changes not saved"
 
-#: apps/remix/app/components/dialogs/admin-organisation-sync-subscription-dialog.tsx
-#: apps/remix/app/components/dialogs/admin-organisation-sync-subscription-dialog.tsx
-msgid "Sync Stripe subscription"
-msgstr "Sync Stripe subscription"
-
 #: packages/lib/utils/document-audit-logs.ts
 #: packages/lib/utils/document-audit-logs.ts
 #: packages/lib/utils/document-audit-logs.ts
@@ -10625,17 +10336,9 @@ msgctxt "Audit log format"
 msgid "System auto inserted fields"
 msgstr "System auto inserted fields"
 
-#: apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
-msgid "System Requirements"
-msgstr "System Requirements"
-
 #: apps/remix/app/components/general/app-command-menu.tsx
 msgid "System Theme"
 msgstr "System Theme"
-
-#: apps/remix/app/components/dialogs/admin-swap-subscription-dialog.tsx
-msgid "Target Organisation"
-msgstr "Target Organisation"
 
 #: apps/remix/app/components/tables/admin-user-teams-table.tsx
 #: apps/remix/app/components/tables/organisation-insights-table.tsx
@@ -10659,7 +10362,6 @@ msgstr "Team Admin"
 msgid "Team Assignments"
 msgstr "Team Assignments"
 
-#: apps/remix/app/components/forms/subscription-claim-form.tsx
 #: apps/remix/app/routes/_authenticated+/admin+/organisations.$id.tsx
 msgid "Team Count"
 msgstr "Team Count"
@@ -11010,10 +10712,6 @@ msgstr "Thank you for completing the signing process."
 msgid "Thank you for letting us know, we have flagged this sender for review. If you have any concerns please feel free to reach out to our <0>support team</0>."
 msgstr "Thank you for letting us know, we have flagged this sender for review. If you have any concerns please feel free to reach out to our <0>support team</0>."
 
-#: apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
-msgid "Thank you for using Documenso to perform your electronic document signing. The purpose of this disclosure is to inform you about the process, legality, and your rights regarding the use of electronic signatures on our platform. By opting to use an electronic signature, you are agreeing to the terms and conditions outlined below."
-msgstr "Thank you for using Documenso to perform your electronic document signing. The purpose of this disclosure is to inform you about the process, legality, and your rights regarding the use of electronic signatures on our platform. By opting to use an electronic signature, you are agreeing to the terms and conditions outlined below."
-
 #: packages/email/template-components/template-forgot-password.tsx
 msgid "That's okay, it happens! Click the button below to reset your password."
 msgstr "That's okay, it happens! Click the button below to reset your password."
@@ -11246,10 +10944,6 @@ msgstr "The organisation group you are looking for may have been removed, rename
 #: apps/remix/app/routes/_authenticated+/o.$orgUrl.settings.groups.$id.tsx
 msgid "The organisation role that will be applied to all members in this group."
 msgstr "The organisation role that will be applied to all members in this group."
-
-#: apps/remix/app/components/dialogs/admin-organisation-sync-subscription-dialog.tsx
-msgid "The organisation subscription has been synced with Stripe."
-msgstr "The organisation subscription has been synced with Stripe."
 
 #: apps/remix/app/components/dialogs/admin-organisation-delete-dialog.tsx
 msgid "The organisation will be deleted in the background. Documents will be orphaned, not deleted."
@@ -11521,10 +11215,6 @@ msgstr "This action is reversible, but please be careful as the account may be a
 msgid "This can take a minute or two depending on the size of your document."
 msgstr "This can take a minute or two depending on the size of your document."
 
-#: apps/remix/app/components/dialogs/claim-delete-dialog.tsx
-msgid "This claim is locked and cannot be deleted."
-msgstr "This claim is locked and cannot be deleted."
-
 #: packages/email/template-components/template-document-super-delete.tsx
 msgid "This document can not be recovered, if you would like to dispute the reason for future documents please contact support."
 msgstr "This document can not be recovered, if you would like to dispute the reason for future documents please contact support."
@@ -11665,10 +11355,6 @@ msgstr "This folder contains multiple items. Deleting it will remove all subfold
 msgid "This is how the document will reach the recipients once the document is ready for signing."
 msgstr "This is how the document will reach the recipients once the document is ready for signing."
 
-#: apps/remix/app/routes/_authenticated+/admin+/organisations.$id.tsx
-msgid "This is the claim that this organisation was initially created with. Any feature flag changes to this claim will be backported into this organisation."
-msgstr "This is the claim that this organisation was initially created with. Any feature flag changes to this claim will be backported into this organisation."
-
 #: apps/remix/app/routes/_authenticated+/o.$orgUrl.settings.sso.tsx
 msgid "This is the required scopes you must set in your provider's settings"
 msgstr "This is the required scopes you must set in your provider's settings"
@@ -11781,15 +11467,6 @@ msgstr "This will check and sync the status of all email domains for this organi
 #: apps/remix/app/routes/_authenticated+/admin+/email-domains.$id.tsx
 msgid "This will delete the existing SES identity for <0>{0}</0> and recreate it using the same DKIM keys. The user will not need to update their DNS records. The domain status will be reset to Pending."
 msgstr "This will delete the existing SES identity for <0>{0}</0> and recreate it using the same DKIM keys. The user will not need to update their DNS records. The domain status will be reset to Pending."
-
-#. placeholder {0}: selectedOrg.name
-#: apps/remix/app/components/dialogs/admin-swap-subscription-dialog.tsx
-msgid "This will move the subscription from \"{sourceOrganisationName}\" to \"{0}\". The source organisation will be reset to the free plan."
-msgstr "This will move the subscription from \"{sourceOrganisationName}\" to \"{0}\". The source organisation will be reset to the free plan."
-
-#: apps/remix/app/routes/_authenticated+/admin+/organisations.$id.tsx
-msgid "This will ONLY backport feature flags which are set to true, anything disabled in the initial claim will not be backported"
-msgstr "This will ONLY backport feature flags which are set to true, anything disabled in the initial claim will not be backported"
 
 #: apps/remix/app/routes/_authenticated+/o.$orgUrl.settings.email-domains.$id.tsx
 msgid "This will remove all emails associated with this email domain"
@@ -11950,10 +11627,6 @@ msgstr "To sign this field, you need to be logged in as <0>{0}</0>"
 msgid "To sign this field, you need to be logged in."
 msgstr "To sign this field, you need to be logged in."
 
-#: apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
-msgid "To use our electronic signature service, you must have access to:"
-msgstr "To use our electronic signature service, you must have access to:"
-
 #: apps/remix/app/components/embed/embed-authentication-required.tsx
 msgid "To view this document you need to be signed into your account, please sign in to continue."
 msgstr "To view this document you need to be signed into your account, please sign in to continue."
@@ -12042,6 +11715,10 @@ msgstr "Total"
 #: apps/remix/app/routes/_authenticated+/admin+/stats.tsx
 msgid "Total Documents"
 msgstr "Total Documents"
+
+#: apps/remix/app/routes/_authenticated+/admin+/stats.tsx
+msgid "Total Organisations"
+msgstr "Total Organisations"
 
 #: apps/remix/app/routes/_authenticated+/admin+/stats.tsx
 msgid "Total Recipients"
@@ -12298,7 +11975,6 @@ msgstr "Unknown name"
 
 #: apps/remix/app/components/general/claim-limit-fields.tsx
 #: apps/remix/app/components/general/organisation-usage-panel.tsx
-#: apps/remix/app/components/tables/admin-claims-table.tsx
 msgid "Unlimited"
 msgstr "Unlimited"
 
@@ -12340,7 +12016,6 @@ msgstr "Untitled Group"
 #: apps/remix/app/components/dialogs/webhook-edit-dialog.tsx
 #: apps/remix/app/components/forms/public-profile-form.tsx
 #: apps/remix/app/components/general/envelope-editor/envelope-editor-settings-dialog.tsx
-#: apps/remix/app/components/tables/admin-claims-table.tsx
 #: apps/remix/app/components/tables/settings-public-profile-templates-table.tsx
 #: apps/remix/app/components/tables/settings-security-passkey-table-actions.tsx
 #: apps/remix/app/routes/_authenticated+/admin+/organisations.$id.tsx
@@ -12367,10 +12042,6 @@ msgstr "Update Billing"
 #: apps/remix/app/components/general/admin-email-blocklist-section.tsx
 msgid "Update Blocklist"
 msgstr "Update Blocklist"
-
-#: apps/remix/app/components/dialogs/claim-update-dialog.tsx
-msgid "Update Claim"
-msgstr "Update Claim"
 
 #: apps/remix/app/components/general/billing-plans.tsx
 msgid "Update current organisation"
@@ -12419,10 +12090,6 @@ msgstr "Update Recipient"
 msgid "Update role"
 msgstr "Update role"
 
-#: apps/remix/app/components/dialogs/claim-update-dialog.tsx
-msgid "Update Subscription Claim"
-msgstr "Update Subscription Claim"
-
 #: apps/remix/app/components/dialogs/team-email-update-dialog.tsx
 #: apps/remix/app/components/dialogs/team-email-update-dialog.tsx
 msgid "Update team email"
@@ -12469,10 +12136,6 @@ msgstr "Updating password..."
 #: apps/remix/app/routes/embed+/v2+/authoring+/envelope.edit.$id.tsx
 msgid "Updating Template"
 msgstr "Updating Template"
-
-#: apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
-msgid "Updating Your Information"
-msgstr "Updating Your Information"
 
 #: packages/ui/primitives/document-dropzone.tsx
 #: packages/ui/primitives/document-upload-button.tsx
@@ -12613,10 +12276,6 @@ msgstr "Use Authenticator"
 msgid "Use Backup Code"
 msgstr "Use Backup Code"
 
-#: apps/remix/app/components/general/document-signing/ua-kep-signature-tab.tsx
-msgid "Use signature"
-msgstr "Use signature"
-
 #: apps/remix/app/components/dialogs/template-use-dialog.tsx
 #: apps/remix/app/components/general/envelope-editor/envelope-editor-header.tsx
 msgid "Use Template"
@@ -12631,8 +12290,8 @@ msgid "Use your passkey for authentication"
 msgstr "Use your passkey for authentication"
 
 #: apps/remix/app/components/tables/admin-email-transports-table.tsx
-msgid "Used by claims"
-msgstr "Used by claims"
+msgid "Used by profiles"
+msgstr "Used by profiles"
 
 #: apps/remix/app/components/tables/admin-document-logs-table.tsx
 #: apps/remix/app/components/tables/document-logs-table.tsx
@@ -12951,6 +12610,10 @@ msgstr "Viewers"
 msgctxt "Recipient role progressive verb"
 msgid "Viewing"
 msgstr "Viewing"
+
+#: apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
+msgid "VilnoEDO орієнтується на український режим електронного документообігу, у якому електронний документ може мати юридичну силу нарівні з паперовим, якщо він створений, підписаний і зберігається відповідно до застосовного законодавства."
+msgstr "VilnoEDO орієнтується на український режим електронного документообігу, у якому електронний документ може мати юридичну силу нарівні з паперовим, якщо він створений, підписаний і зберігається відповідно до застосовного законодавства."
 
 #: apps/remix/app/components/dialogs/folder-update-dialog.tsx
 msgid "Visibility"
@@ -13431,10 +13094,6 @@ msgstr "Webhook URL"
 msgid "Webhooks"
 msgstr "Webhooks"
 
-#: apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
-msgid "Welcome"
-msgstr "Welcome"
-
 #: apps/remix/app/routes/_unauthenticated+/signin.tsx
 msgid "Welcome back, we are lucky to have you."
 msgstr "Welcome back, we are lucky to have you."
@@ -13487,10 +13146,6 @@ msgstr "When you click continue, you will be prompted to add the first available
 msgid "When you sign a document, we can automatically fill in and sign the following fields using information that has already been provided. You can also manually sign or remove any automatically signed fields afterwards if you desire."
 msgstr "When you sign a document, we can automatically fill in and sign the following fields using information that has already been provided. You can also manually sign or remove any automatically signed fields afterwards if you desire."
 
-#: apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
-msgid "When you use our platform to affix your electronic signature to documents, you are consenting to do so under the Electronic Signatures in Global and National Commerce Act (E-Sign Act) and other applicable laws. This action indicates your agreement to use electronic means to sign documents and receive notifications."
-msgstr "When you use our platform to affix your electronic signature to documents, you are consenting to do so under the Electronic Signatures in Global and National Commerce Act (E-Sign Act) and other applicable laws. This action indicates your agreement to use electronic means to sign documents and receive notifications."
-
 #: apps/remix/app/routes/_authenticated+/o.$orgUrl.settings.sso.tsx
 msgid "Whether to enable the SSO portal for your organisation"
 msgstr "Whether to enable the SSO portal for your organisation"
@@ -13511,10 +13166,6 @@ msgstr "Width:"
 #: apps/remix/app/components/general/rate-limit-array-input.tsx
 msgid "Window"
 msgstr "Window"
-
-#: apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
-msgid "Withdrawing Consent"
-msgstr "Withdrawing Consent"
 
 #: apps/remix/app/components/general/organisation-usage-panel.tsx
 msgid "Within limit"
@@ -13761,6 +13412,10 @@ msgstr "You can also copy and paste this link into your browser: {resetPasswordL
 #: apps/remix/app/routes/_authenticated+/t.$teamUrl+/settings.public-profile.tsx
 msgid "You can choose to enable or disable the profile for public view."
 msgstr "You can choose to enable or disable the profile for public view."
+
+#: apps/remix/app/components/dialogs/admin-organisation-create-dialog.tsx
+msgid "You can configure organisation limits and capabilities after creating this organisation"
+msgstr "You can configure organisation limits and capabilities after creating this organisation"
 
 #: apps/remix/app/components/general/document/document-recipient-link-copy-dialog.tsx
 msgid "You can copy and share these links to recipients so they can action the document."
@@ -14058,10 +13713,6 @@ msgstr "You have successfully removed this user from the team."
 msgid "You have successfully revoked access."
 msgstr "You have successfully revoked access."
 
-#: apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
-msgid "You have the right to withdraw your consent to use electronic signatures at any time before completing the signing process. To withdraw your consent, please contact the sender of the document. In failing to contact the sender you may reach out to <0>{SUPPORT_EMAIL}</0> for assistance. Be aware that withdrawing consent may delay or halt the completion of the related transaction or service."
-msgstr "You have the right to withdraw your consent to use electronic signatures at any time before completing the signing process. To withdraw your consent, please contact the sender of the document. In failing to contact the sender you may reach out to <0>{SUPPORT_EMAIL}</0> for assistance. Be aware that withdrawing consent may delay or halt the completion of the related transaction or service."
-
 #: apps/remix/app/components/forms/form-sticky-save-bar.tsx
 msgid "You have unsaved changes"
 msgstr "You have unsaved changes"
@@ -14302,10 +13953,6 @@ msgstr "You validated a 2FA token for the document"
 #: packages/lib/utils/document-audit-logs.ts
 msgid "You viewed the document"
 msgstr "You viewed the document"
-
-#: apps/remix/app/components/dialogs/admin-organisation-create-dialog.tsx
-msgid "You will need to configure any claims or subscription after creating this organisation"
-msgstr "You will need to configure any claims or subscription after creating this organisation"
 
 #: apps/remix/app/components/forms/2fa/enable-authenticator-app-dialog.tsx
 msgid "You will now be required to enter a code from your authenticator app when signing in."
@@ -14740,3 +14387,191 @@ msgstr "Your verification code:"
 #: apps/remix/app/routes/_authenticated+/o.$orgUrl.settings.sso.tsx
 msgid "your-domain.com another-domain.com"
 msgstr "your-domain.com another-domain.com"
+
+#: apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
+msgid "валідаційний звіт або результат перевірки;"
+msgstr "валідаційний звіт або результат перевірки;"
+
+#: apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
+msgid "вбудований підпис або окремий файл підпису;"
+msgstr "вбудований підпис або окремий файл підпису;"
+
+#: apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
+msgid "Ви можете відмовитися від електронного підписання до завершення процесу. Для цього зверніться до відправника документа. Якщо зв’язатися з відправником неможливо, напишіть нам на <0>{SUPPORT_EMAIL}</0>."
+msgstr "Ви можете відмовитися від електронного підписання до завершення процесу. Для цього зверніться до відправника документа. Якщо зв’язатися з відправником неможливо, напишіть нам на <0>{SUPPORT_EMAIL}</0>."
+
+#: apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
+msgid "Визнання"
+msgstr "Визнання"
+
+#: apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
+msgid "Використовуючи сервіс електронного підпису VilnoEDO, ви підтверджуєте, що ознайомилися з цим розкриттям, розумієте особливості електронного підписання та погоджуєтеся виконати підписання в електронній формі для відповідного документа."
+msgstr "Використовуючи сервіс електронного підпису VilnoEDO, ви підтверджуєте, що ознайомилися з цим розкриттям, розумієте особливості електронного підписання та погоджуєтеся виконати підписання в електронній формі для відповідного документа."
+
+#: apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
+msgid "відповідність сертифіката особі підписувача;"
+msgstr "відповідність сертифіката особі підписувача;"
+
+#: apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
+msgid "дані сертифіката та сертифікатного ланцюга;"
+msgstr "дані сертифіката та сертифікатного ланцюга;"
+
+#: apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
+msgid "Для відокремленого підпису необхідно зберігати і файл-оригінал, і файл підпису, наприклад .p7s, оскільки перевірка виконується щодо цієї пари файлів."
+msgstr "Для відокремленого підпису необхідно зберігати і файл-оригінал, і файл підпису, наприклад .p7s, оскільки перевірка виконується щодо цієї пари файлів."
+
+#: apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
+msgid "Для доказовості підписаного документа важливо зберігати повний контекст підписання, а не лише PDF або візуальну копію. До такого контексту можуть входити:"
+msgstr "Для доказовості підписаного документа важливо зберігати повний контекст підписання, а не лише PDF або візуальну копію. До такого контексту можуть входити:"
+
+#: apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
+msgid "Для електронного підпису та електронного документообігу в Україні ключовими є Закон України «Про електронні документи та електронний документообіг», Закон України «Про електронну ідентифікацію та електронні довірчі послуги», процесуальні кодекси щодо електронних доказів, правила бухгалтерського та архівного зберігання документів, а також нормативні акти щодо форматів, перевірки і використання електронних довірчих послуг."
+msgstr "Для електронного підпису та електронного документообігу в Україні ключовими є Закон України «Про електронні документи та електронний документообіг», Закон України «Про електронну ідентифікацію та електронні довірчі послуги», процесуальні кодекси щодо електронних доказів, правила бухгалтерського та архівного зберігання документів, а також нормативні акти щодо форматів, перевірки і використання електронних довірчих послуг."
+
+#: apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
+msgid "Електронний документ — це документ, інформація в якому зафіксована у вигляді електронних даних і який містить обов’язкові реквізити. Оригіналом вважається електронний примірник документа з такими реквізитами, а в потрібних випадках — з електронним підписом автора або підписом, прирівняним до власноручного."
+msgstr "Електронний документ — це документ, інформація в якому зафіксована у вигляді електронних даних і який містить обов’язкові реквізити. Оригіналом вважається електронний примірник документа з такими реквізитами, а в потрібних випадках — з електронним підписом автора або підписом, прирівняним до власноручного."
+
+#: apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
+msgid "Електронними доказами можуть бути не лише файли документів, а й метадані, журнали дій, повідомлення, записи в базах даних, дані на серверах і резервні копії. У разі спору може знадобитися саме оригінал електронного документа або набір даних, який дозволяє перевірити незмінність документа і зв’язок підпису з підписувачем."
+msgstr "Електронними доказами можуть бути не лише файли документів, а й метадані, журнали дій, повідомлення, записи в базах даних, дані на серверах і резервні копії. У разі спору може знадобитися саме оригінал електронного документа або набір даних, який дозволяє перевірити незмінність документа і зв’язок підпису з підписувачем."
+
+#: apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
+msgid "Електронні докази"
+msgstr "Електронні докази"
+
+#: apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
+msgid "журнал дій, IP-адреси, ідентифікатори сесій та інші технічні метадані;"
+msgstr "журнал дій, IP-адреси, ідентифікатори сесій та інші технічні метадані;"
+
+#: apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
+msgid "Загальна інформація"
+msgstr "Загальна інформація"
+
+#: apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
+msgid "Зберігання документів"
+msgstr "Зберігання документів"
+
+#: apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
+msgid "Згода на електронний підпис"
+msgstr "Згода на електронний підпис"
+
+#: apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
+msgid "Історичний термін «ЕЦП» не слід використовувати як актуальну правову категорію, оскільки закон про електронний цифровий підпис втратив чинність у 2018 році."
+msgstr "Історичний термін «ЕЦП» не слід використовувати як актуальну правову категорію, оскільки закон про електронний цифровий підпис втратив чинність у 2018 році."
+
+#: apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
+msgid "КЕП варто використовувати для документів з підвищеним юридичним ризиком, документів для державних органів, бухгалтерських і податково значущих документів, а також для випадків, де закон, договір або внутрішні правила прямо вимагають кваліфіковані електронні довірчі послуги."
+msgstr "КЕП варто використовувати для документів з підвищеним юридичним ризиком, документів для державних органів, бухгалтерських і податково значущих документів, а також для випадків, де закон, договір або внутрішні правила прямо вимагають кваліфіковані електронні довірчі послуги."
+
+#: apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
+msgid "КЕП і кваліфікований електронний підпис — це одна й та сама актуальна категорія в українському праві. Саме КЕП має презумпцію відповідності власноручному підпису. Удосконалений електронний підпис може використовуватися там, де це допускає закон або домовленість сторін."
+msgstr "КЕП і кваліфікований електронний підпис — це одна й та сама актуальна категорія в українському праві. Саме КЕП має презумпцію відповідності власноручному підпису. Удосконалений електронний підпис може використовуватися там, де це допускає закон або домовленість сторін."
+
+#: apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
+msgid "Коли КЕП є особливо важливим"
+msgstr "Коли КЕП є особливо важливим"
+
+#: apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
+msgid "Контакти"
+msgstr "Контакти"
+
+#: apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
+msgid "контрольні хеші файлів і пакет доказів для експорту."
+msgstr "контрольні хеші файлів і пакет доказів для експорту."
+
+#: apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
+msgid "криптографічну цілісність документа;"
+msgstr "криптографічну цілісність документа;"
+
+#: apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
+msgid "На головну"
+msgstr "На головну"
+
+#: apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
+msgid "Нормативна база"
+msgstr "Нормативна база"
+
+#: apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
+msgid "Обмеження"
+msgstr "Обмеження"
+
+#: apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
+msgid "оригінальний файл документа;"
+msgstr "оригінальний файл документа;"
+
+#: apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
+msgid "Перевірка підпису може охоплювати:"
+msgstr "Перевірка підпису може охоплювати:"
+
+#: apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
+msgid "перевірку надавача довірчих послуг через довірчий список;"
+msgstr "перевірку надавача довірчих послуг через довірчий список;"
+
+#: apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
+msgid "перевірку часової мітки, якщо вона наявна;"
+msgstr "перевірку часової мітки, якщо вона наявна;"
+
+#: apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
+msgid "Після підписання рекомендуємо завантажити та зберегти власну копію підписаного документа і, якщо доступно, пакет доказів або архів підписання."
+msgstr "Після підписання рекомендуємо завантажити та зберегти власну копію підписаного документа і, якщо доступно, пакет доказів або архів підписання."
+
+#: apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
+msgid "Продовжуючи підписання у VilnoEDO, ви погоджуєтеся використовувати електронну форму взаємодії для відповідного документа та підтверджуєте намір підписати документ обраним електронним підписом."
+msgstr "Продовжуючи підписання у VilnoEDO, ви погоджуєтеся використовувати електронну форму взаємодії для відповідного документа та підтверджуєте намір підписати документ обраним електронним підписом."
+
+#: apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
+msgid "Розкриття щодо електронного підпису"
+msgstr "Розкриття щодо електронного підпису"
+
+#: apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
+msgid "Строк зберігання електронного документа залежить від його категорії, змісту, ролі сторін, вимог договору та застосовного законодавства. Для багатьох податково значущих документів можуть застосовуватися спеціальні строки зберігання, а для інших категорій — правила архівного, бухгалтерського або галузевого зберігання."
+msgstr "Строк зберігання електронного документа залежить від його категорії, змісту, ролі сторін, вимог договору та застосовного законодавства. Для багатьох податково значущих документів можуть застосовуватися спеціальні строки зберігання, а для інших категорій — правила архівного, бухгалтерського або галузевого зберігання."
+
+#: apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
+msgid "формування або збереження результату перевірки для подальшого аудиту."
+msgstr "формування або збереження результату перевірки для подальшого аудиту."
+
+#: apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
+msgid "Це розкриття має інформаційний характер і не є юридичною консультацією. Юридична сила конкретного електронного документа залежить від його змісту, виду підпису, повноважень підписувачів, домовленостей сторін, вимог закону та можливості перевірити цілісність і автентичність документа."
+msgstr "Це розкриття має інформаційний характер і не є юридичною консультацією. Юридична сила конкретного електронного документа залежить від його змісту, виду підпису, повноважень підписувачів, домовленостей сторін, вимог закону та можливості перевірити цілісність і автентичність документа."
+
+#: apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
+msgid "часові мітки та час завершення підписання;"
+msgstr "часові мітки та час завершення підписання;"
+
+#: apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
+msgid "чинність сертифіката підписувача;"
+msgstr "чинність сертифіката підписувача;"
+
+#: apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
+msgid "Що вважається електронним документом"
+msgstr "Що вважається електронним документом"
+
+#: apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
+msgid "Що зберігати як доказ"
+msgstr "Що зберігати як доказ"
+
+#: apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
+msgid "Щоб електронний документ був придатним для перевірки і доказування, має бути можливо встановити його цілісність, справжність, автора підпису та контекст підписання."
+msgstr "Щоб електронний документ був придатним для перевірки і доказування, має бути можливо встановити його цілісність, справжність, автора підпису та контекст підписання."
+
+#: apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
+msgid "Юридична сила документа та його допустимість як доказу не можуть заперечуватися лише тому, що документ має електронну форму. Для документів, які потребують підпису, важливо зберігати не тільки візуальне представлення, а й оригінальний електронний файл, підписний артефакт, часові дані та результат перевірки."
+msgstr "Юридична сила документа та його допустимість як доказу не можуть заперечуватися лише тому, що документ має електронну форму. Для документів, які потребують підпису, важливо зберігати не тільки візуальне представлення, а й оригінальний електронний файл, підписний артефакт, часові дані та результат перевірки."
+
+#: apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
+msgid "Як VilnoEDO перевіряє підпис"
+msgstr "Як VilnoEDO перевіряє підпис"
+
+#: apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
+msgid "Який підпис обирати"
+msgstr "Який підпис обирати"
+
+#: apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
+msgid "Якщо електронний правочин підлягає нотаріальному посвідченню або державній реєстрації, можуть застосовуватися окремі вимоги до виду підпису, довірчої послуги та формату документа."
+msgstr "Якщо електронний правочин підлягає нотаріальному посвідченню або державній реєстрації, можуть застосовуватися окремі вимоги до виду підпису, довірчої послуги та формату документа."
+
+#: apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
+msgid "Якщо у вас є питання щодо цього розкриття, електронного підпису або процесу підписання, напишіть нам на <0>{SUPPORT_EMAIL}</0>."
+msgstr "Якщо у вас є питання щодо цього розкриття, електронного підпису або процесу підписання, напишіть нам на <0>{SUPPORT_EMAIL}</0>."

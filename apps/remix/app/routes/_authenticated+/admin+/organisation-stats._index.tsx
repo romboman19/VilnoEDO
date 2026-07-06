@@ -1,6 +1,5 @@
 import { useDebouncedValue } from '@documenso/lib/client-only/hooks/use-debounced-value';
 import { currentMonthlyPeriod } from '@documenso/lib/universal/monthly-period';
-import { trpc } from '@documenso/trpc/react';
 import { Alert, AlertDescription } from '@documenso/ui/primitives/alert';
 import { Input } from '@documenso/ui/primitives/input';
 import { RadioGroup, RadioGroupItem } from '@documenso/ui/primitives/radio-group';
@@ -14,8 +13,6 @@ import {
   AdminOrganisationStatsTable,
   type OrganisationStatsDisplayMode,
 } from '~/components/tables/admin-organisation-stats-table';
-
-const ALL_CLAIMS_VALUE = 'all';
 
 /**
  * The earliest UTC calendar month for which stats exist (the month the feature launched).
@@ -63,13 +60,6 @@ export default function OrganisationStats() {
   const periodOptions = useMemo(() => generatePeriodOptions(), []);
 
   const selectedPeriod = searchParams?.get('period') ?? currentMonthlyPeriod();
-  const selectedClaim = searchParams?.get('claimId') ?? ALL_CLAIMS_VALUE;
-
-  const { data: claimsData, isLoading: isLoadingClaims } = trpc.admin.claims.find.useQuery({
-    perPage: 100,
-  });
-
-  const claimOptions = claimsData?.data ?? [];
 
   /**
    * Handle debouncing the search query.
@@ -104,20 +94,6 @@ export default function OrganisationStats() {
     setSearchParams(params);
   };
 
-  const onClaimChange = (value: string) => {
-    const params = new URLSearchParams(searchParams?.toString());
-
-    if (value === ALL_CLAIMS_VALUE) {
-      params.delete('claimId');
-    } else {
-      params.set('claimId', value);
-    }
-
-    params.delete('page');
-
-    setSearchParams(params);
-  };
-
   return (
     <div>
       <SettingsHeader
@@ -133,20 +109,6 @@ export default function OrganisationStats() {
           placeholder={t`Search by organisation name, URL or ID`}
           className="flex-1"
         />
-
-        <Select value={selectedClaim} onValueChange={onClaimChange}>
-          <SelectTrigger className="w-full sm:w-48" loading={isLoadingClaims}>
-            <SelectValue placeholder={t`All claims`} />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value={ALL_CLAIMS_VALUE}>{t`All claims`}</SelectItem>
-            {claimOptions.map((claim) => (
-              <SelectItem key={claim.id} value={claim.id}>
-                {claim.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
 
         <Select value={selectedPeriod} onValueChange={onPeriodChange}>
           <SelectTrigger className="w-full sm:w-48">

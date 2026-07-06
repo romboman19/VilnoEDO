@@ -14,7 +14,6 @@ import {
   Settings,
   Trophy,
   Users,
-  Wallet2,
 } from 'lucide-react';
 import { Link, Outlet, redirect, useLocation } from 'react-router';
 
@@ -70,17 +69,6 @@ export default function AdminLayout() {
             <Link to="/admin/organisations">
               <Building2Icon className="mr-2 h-5 w-5" />
               <Trans>Organisations</Trans>
-            </Link>
-          </Button>
-
-          <Button
-            variant="ghost"
-            className={cn('justify-start md:w-full', pathname?.startsWith('/admin/claims') && 'bg-secondary')}
-            asChild
-          >
-            <Link to="/admin/claims">
-              <Wallet2 className="mr-2 h-5 w-5" />
-              <Trans>Claims</Trans>
             </Link>
           </Button>
 

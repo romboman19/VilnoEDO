@@ -73,7 +73,6 @@ export const AdminOrganisationStatsTable = ({ displayMode = 'usage' }: AdminOrga
 
   // Default to the current month.
   const period = searchParams?.get('period') ?? currentMonthlyPeriod();
-  const claimId = searchParams?.get('claimId') || undefined;
   const orderByColumn = parseOrderByColumn(searchParams?.get('orderByColumn') ?? undefined);
   const orderByDirection = parseOrderByDirection(searchParams?.get('orderByDirection') ?? undefined);
 
@@ -82,7 +81,6 @@ export const AdminOrganisationStatsTable = ({ displayMode = 'usage' }: AdminOrga
     page: parsedSearchParams.page,
     perPage: parsedSearchParams.perPage,
     period,
-    claimId,
     orderByColumn,
     orderByDirection,
   });
@@ -97,9 +95,7 @@ export const AdminOrganisationStatsTable = ({ displayMode = 'usage' }: AdminOrga
   const handleColumnSort = (column: OrderByColumn) => {
     const nextDirection = orderByColumn === column && orderByDirection === 'desc' ? 'asc' : 'desc';
 
-    // Use the functional updater so we merge onto the latest params. Reading the
-    // captured `searchParams` here would drop filters (e.g. claimId) that changed
-    // after this handler was memoised into the column definitions.
+    // Use the functional updater so we merge onto the latest params.
     setSearchParams((previous) => {
       const next = new URLSearchParams(previous);
 
@@ -174,11 +170,6 @@ export const AdminOrganisationStatsTable = ({ displayMode = 'usage' }: AdminOrga
         ),
       },
       {
-        header: t`Claim`,
-        accessorKey: 'originalClaimId',
-        cell: ({ row }) => <span className="text-muted-foreground text-sm">{row.original.originalClaimId ?? '—'}</span>,
-      },
-      {
         header: t`Period`,
         accessorKey: 'period',
         cell: ({ row }) => <span className="text-sm">{row.original.period}</span>,
@@ -209,10 +200,7 @@ export const AdminOrganisationStatsTable = ({ displayMode = 'usage' }: AdminOrga
         cell: ({ row }) => <span className="font-medium">{row.original.totalCount}</span>,
       },
     ] satisfies DataTableColumnDef<(typeof results)['data'][number]>[];
-    // `searchParams` must be a dependency: `handleColumnSort` closes over `setSearchParams`,
-    // whose functional updater is bound to the `searchParams` captured at creation time.
-    // Without this, changing a filter (e.g. claimId) wouldn't refresh the memoised handler,
-    // and sorting would merge onto stale params and drop the active filter.
+    // `searchParams` must be a dependency: `handleColumnSort` closes over `setSearchParams`.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [t, orderByColumn, orderByDirection, period, displayMode, searchParams]);
 
@@ -236,9 +224,6 @@ export const AdminOrganisationStatsTable = ({ displayMode = 'usage' }: AdminOrga
             <>
               <TableCell className="py-4 pr-4">
                 <Skeleton className="h-4 w-32 rounded-full" />
-              </TableCell>
-              <TableCell>
-                <Skeleton className="h-4 w-24 rounded-full" />
               </TableCell>
               <TableCell>
                 <Skeleton className="h-4 w-16 rounded-full" />

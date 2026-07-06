@@ -128,7 +128,7 @@ export const AdminOrganisationCreateDialog = ({ trigger, ownerUserId, ...props }
 
               <Alert variant="neutral">
                 <AlertDescription className="mt-0">
-                  <Trans>You will need to configure any claims or subscription after creating this organisation</Trans>
+                  <Trans>You can configure organisation limits and capabilities after creating this organisation</Trans>
                 </AlertDescription>
               </Alert>
 

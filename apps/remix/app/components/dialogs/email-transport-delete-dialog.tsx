@@ -80,13 +80,17 @@ export const EmailTransportDeleteDialog = ({
               <ul className="mt-2 list-disc pl-5">
                 {subscriptionClaimCount > 0 && (
                   <li>
-                    <Plural value={subscriptionClaimCount} one="# Subscription claim" other="# Subscription claims" />
+                    <Plural value={subscriptionClaimCount} one="# Capability profile" other="# Capability profiles" />
                   </li>
                 )}
 
                 {organisationClaimCount > 0 && (
                   <li>
-                    <Plural value={organisationClaimCount} one="# Organisation claim" other="# Organisation claims" />
+                    <Plural
+                      value={organisationClaimCount}
+                      one="# Organisation profile"
+                      other="# Organisation profiles"
+                    />
                   </li>
                 )}
               </ul>

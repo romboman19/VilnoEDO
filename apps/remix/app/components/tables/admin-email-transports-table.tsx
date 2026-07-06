@@ -65,7 +65,7 @@ export const AdminEmailTransportsTable = () => {
         cell: ({ row }) => `${row.original.fromName} <${row.original.fromAddress}>`,
       },
       {
-        header: t`Used by claims`,
+        header: t`Used by profiles`,
         cell: ({ row }) => row.original._count.subscriptionClaims + row.original._count.organisationClaims,
       },
       {
