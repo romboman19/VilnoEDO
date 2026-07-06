@@ -1,4 +1,9 @@
-import { UA_KEP_SIGNING_PROTOCOL_TITLE } from '@documenso/lib/constants/ua-kep';
+import {
+  UA_KEP_LEGACY_SIGNING_PROTOCOL_TITLE,
+  UA_KEP_SIGNING_INSTRUCTION_TITLE,
+  UA_KEP_SIGNING_PROTOCOL_TITLE,
+} from '@documenso/lib/constants/ua-kep';
+import { generateUaKepSigningInstructionPdf } from '@documenso/lib/server-only/ua-kep/signing-instruction';
 import { getFileServerSide } from '@documenso/lib/universal/upload/get-file.server';
 import type { PrismaClient } from '@documenso/prisma/client';
 import { zipSync } from 'fflate';
@@ -200,7 +205,9 @@ export const buildUaKepEvidenceArchive = async ({
   const signingProtocolItem = await prisma.envelopeItem.findFirst({
     where: {
       envelopeId: recipient.envelopeId,
-      title: UA_KEP_SIGNING_PROTOCOL_TITLE,
+      title: {
+        in: [UA_KEP_SIGNING_PROTOCOL_TITLE, UA_KEP_LEGACY_SIGNING_PROTOCOL_TITLE],
+      },
     },
     select: {
       documentData: {
@@ -259,15 +266,27 @@ export const buildUaKepEvidenceArchive = async ({
     });
 
     addBinaryEntry(`original/${baseName}`, documentBytes);
+    addBinaryEntry(baseName, documentBytes);
 
     for (const artifact of group) {
       if (artifact.artifactType.startsWith('PADES')) {
-        addBinaryEntry(`signatures/pades/${baseName}.pdf`, decodeSignatureBase64(artifact.signatureBase64));
+        const padesName = baseName.toLowerCase().endsWith('.pdf')
+          ? `${baseName.slice(0, -4)} PAdES.pdf`
+          : `${baseName} PAdES.pdf`;
+        const padesBytes = decodeSignatureBase64(artifact.signatureBase64);
+
+        addBinaryEntry(`signatures/pades/${padesName}`, padesBytes);
+        addBinaryEntry(padesName, padesBytes);
       } else {
-        addBinaryEntry(`signatures/cades-detached/${baseName}.p7s`, decodeSignatureBase64(artifact.signatureBase64));
+        const signatureBytes = decodeSignatureBase64(artifact.signatureBase64);
+
+        addBinaryEntry(`signatures/cades-detached/${baseName}.p7s`, signatureBytes);
+        addBinaryEntry(`${baseName}.p7s`, signatureBytes);
       }
     }
   }
+
+  addBinaryEntry(UA_KEP_SIGNING_INSTRUCTION_TITLE, await generateUaKepSigningInstructionPdf());
 
   addJsonEntry('manifest.json', evidencePackage.manifestJson);
 
@@ -288,10 +307,12 @@ export const buildUaKepEvidenceArchive = async ({
       'original/': 'Exact document bytes covered by the detached signatures',
       'signatures/cades-detached/': 'Detached CAdES signatures (.p7s)',
       'signatures/pades/': 'PDF documents with embedded PAdES signature',
+      [UA_KEP_SIGNING_INSTRUCTION_TITLE]: 'Ukrainian verification instructions for detached CAdES and PAdES files',
       'validation/report.json': 'Structured validation reports',
       'audit/audit-log.json': 'Envelope audit log events',
       'trust/trust-material.json': 'Trust material snapshot used for validation',
-      'protocol/signing-protocol.pdf': 'Human-readable UA KEP signing protocol PDF',
+      [UA_KEP_SIGNING_PROTOCOL_TITLE]: 'Human-readable Ukrainian signing receipt PDF',
+      'protocol/signing-protocol.pdf': 'Technical alias for the signing receipt PDF',
       'manifest.json': 'Canonical evidence manifest (SHA-256 = packageSha256)',
     },
   });
@@ -321,6 +342,7 @@ export const buildUaKepEvidenceArchive = async ({
     });
 
     addBinaryEntry('protocol/signing-protocol.pdf', protocolBytes);
+    addBinaryEntry(UA_KEP_SIGNING_PROTOCOL_TITLE, protocolBytes);
   }
 
   const zipBytes = zipSync(entries);

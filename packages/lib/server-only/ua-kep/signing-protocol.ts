@@ -1,5 +1,9 @@
 import { DEFAULT_DOCUMENT_TIME_ZONE } from '@documenso/lib/constants/time-zones';
-import { UA_KEP_SIGNING_PROTOCOL_TITLE } from '@documenso/lib/constants/ua-kep';
+import {
+  UA_KEP_LEGACY_SIGNING_PROTOCOL_TITLE,
+  UA_KEP_SIGNING_INSTRUCTION_TITLE,
+  UA_KEP_SIGNING_PROTOCOL_TITLE,
+} from '@documenso/lib/constants/ua-kep';
 import { DOCUMENT_AUDIT_LOG_TYPE } from '@documenso/lib/types/document-audit-logs';
 import type { RequestMetadata } from '@documenso/lib/universal/extract-request-metadata';
 import { prefixedId } from '@documenso/lib/universal/id';
@@ -39,6 +43,11 @@ const accentColor = '#65a30d';
 const fontFamily = 'Noto Sans';
 const textLineHeight = 15;
 const smallLineHeight = 13;
+const protocolEnvelopeItemTitles = [
+  UA_KEP_SIGNING_PROTOCOL_TITLE,
+  UA_KEP_LEGACY_SIGNING_PROTOCOL_TITLE,
+  UA_KEP_SIGNING_INSTRUCTION_TITLE,
+];
 
 const getProtocolEnvelope = (envelopeId: string) => {
   return prisma.envelope.findUnique({
@@ -67,7 +76,7 @@ const getProtocolEnvelope = (envelopeId: string) => {
       envelopeItems: {
         where: {
           title: {
-            not: UA_KEP_SIGNING_PROTOCOL_TITLE,
+            notIn: protocolEnvelopeItemTitles,
           },
         },
         select: {
@@ -77,6 +86,32 @@ const getProtocolEnvelope = (envelopeId: string) => {
         },
         orderBy: {
           order: 'asc',
+        },
+      },
+      auditLogs: {
+        where: {
+          type: {
+            in: [
+              DOCUMENT_AUDIT_LOG_TYPE.DOCUMENT_CREATED,
+              DOCUMENT_AUDIT_LOG_TYPE.DOCUMENT_SENT,
+              DOCUMENT_AUDIT_LOG_TYPE.DOCUMENT_OPENED,
+              DOCUMENT_AUDIT_LOG_TYPE.DOCUMENT_VIEWED,
+              DOCUMENT_AUDIT_LOG_TYPE.DOCUMENT_FIELD_INSERTED,
+              DOCUMENT_AUDIT_LOG_TYPE.DOCUMENT_RECIPIENT_COMPLETED,
+              DOCUMENT_AUDIT_LOG_TYPE.DOCUMENT_COMPLETED,
+            ],
+          },
+        },
+        select: {
+          id: true,
+          type: true,
+          createdAt: true,
+          name: true,
+          email: true,
+          data: true,
+        },
+        orderBy: {
+          createdAt: 'asc',
         },
       },
     },
@@ -135,6 +170,7 @@ const getProtocolSessions = (envelopeId: string) => {
               validator: true,
               certificateStatus: true,
               checkedAt: true,
+              signerInfo: true,
             },
           },
         },
@@ -171,25 +207,38 @@ const getStringFromRecord = (value: unknown, keys: string[]) => {
 
 const formatDate = (value: Date | null | undefined, timeZone: string | null | undefined) => {
   if (!value) {
-    return 'N/A';
+    return 'Н/Д';
   }
 
   const zone = timeZone || DEFAULT_DOCUMENT_TIME_ZONE;
   const date = DateTime.fromJSDate(value).setZone(zone);
 
   if (!date.isValid) {
-    return 'N/A';
+    return 'Н/Д';
   }
 
-  return date.toFormat('yyyy-LL-dd HH:mm:ss ZZZZ');
+  return date.toFormat('HH:mm:ss dd.LL.yyyy ZZZZ');
 };
 
 const humanizeValue = (value: string | null | undefined) => {
   if (!value) {
-    return 'N/A';
+    return 'Н/Д';
   }
 
-  return value.replace(/[_-]+/g, ' ').replace(/\s+/g, ' ').trim().toUpperCase();
+  const labels: Record<string, string> = {
+    CADES_DETACHED: 'Detached CAdES (.p7s)',
+    PADES: 'PAdES PDF',
+    PADES_B_T: 'PAdES B-T PDF',
+    PADES_B_LT: 'PAdES B-LT PDF',
+    passed: 'Перевірку пройдено',
+    failed: 'Перевірку не пройдено',
+    pending: 'Очікує перевірки',
+    stored_companion: 'Супровідний файл збережено',
+    within_validity_window: 'Сертифікат діє',
+    outside_validity_window: 'Сертифікат поза строком дії',
+  };
+
+  return labels[value] ?? value.replace(/[_-]+/g, ' ').replace(/\s+/g, ' ').trim();
 };
 
 const setFont = (context: CanvasContext, size: number, weight = '400') => {
@@ -323,8 +372,8 @@ const createProtocolPage = (pageNumber: number, envelopeId: string) => {
 
   setFont(context, 8);
   context.fillStyle = mutedTextColor;
-  context.fillText(`Envelope ID: ${envelopeId}`, pageMargin, pageHeight - 20);
-  context.fillText(`Page ${pageNumber}`, pageWidth - pageMargin - 34, pageHeight - 20);
+  context.fillText(`ID документа: ${envelopeId}`, pageMargin, pageHeight - 20);
+  context.fillText(`Стор. ${pageNumber}`, pageWidth - pageMargin - 44, pageHeight - 20);
 
   return {
     canvas,
@@ -370,34 +419,121 @@ const drawCard = ({
 };
 
 const getSignerInfoValue = (session: ProtocolSession, keys: string[]) => {
+  const artifact = session.signatureArtifacts[0];
+
   return (
     getStringFromRecord(session.signerInfo, keys) ??
-    getStringFromRecord(session.signatureArtifacts[0]?.signerInfo, keys)
+    getStringFromRecord(artifact?.signerInfo, keys) ??
+    getStringFromRecord(artifact?.structuredValidationReport?.signerInfo, keys)
   );
 };
 
-const measureSessionCardHeight = (context: CanvasContext, session: ProtocolSession, valueWidth: number) => {
-  const signerName =
-    getUaKepSignerCommonName(session.signerInfo) ?? (session.recipient.name || session.recipient.email);
-  const rows = [
-    ['Recipient', `${session.recipient.name || 'N/A'} <${session.recipient.email}>`],
-    ['Role', session.recipient.role],
-    ['Signer', signerName],
-    ['Signed at', formatUaKepSigningTime(session.signedAt, DEFAULT_DOCUMENT_TIME_ZONE)],
-    ['Method', getUaKepSigningMethodDisplayLabel(session.signingMethod)],
-    ['Issuer', getSignerInfoValue(session, ['issuerCN', 'certIssuerCn']) ?? 'N/A'],
-    ['EDRPOU / RNOKPP', getSignerInfoValue(session, ['edrpou', 'rnokpp']) ?? 'N/A'],
-    ['Serial', getSignerInfoValue(session, ['serial', 'certSerial']) ?? 'N/A'],
-    ['Evidence package', session.evidencePackage?.packageSha256 ?? 'N/A'],
-  ];
+const getArtifactSignerInfoValue = (artifact: ProtocolSession['signatureArtifacts'][number], keys: string[]) => {
+  return (
+    getStringFromRecord(artifact.signerInfo, keys) ??
+    getStringFromRecord(artifact.structuredValidationReport?.signerInfo, keys)
+  );
+};
 
+const getDisplayValue = (value: string | null | undefined) => {
+  return value && value.length > 0 ? value : 'Н/Д';
+};
+
+const getRecipientLabel = (session: ProtocolSession) => {
+  const name = session.recipient.name || 'Н/Д';
+
+  return `${name} <${session.recipient.email}>`;
+};
+
+const getSignerLabel = (session: ProtocolSession) => {
+  return (
+    getUaKepSignerCommonName(session.signerInfo) ??
+    getUaKepSignerCommonName(session.signatureArtifacts[0]?.signerInfo) ??
+    getUaKepSignerCommonName(session.signatureArtifacts[0]?.structuredValidationReport?.signerInfo) ??
+    session.recipient.name ??
+    session.recipient.email
+  );
+};
+
+const getRecipientRoleLabel = (role: string) => {
+  const labels: Record<string, string> = {
+    SIGNER: 'Підписант',
+    APPROVER: 'Погоджувач',
+    VIEWER: 'Переглядач',
+    CC: 'Копія',
+  };
+
+  return labels[role] ?? role;
+};
+
+const getAuditLogLabel = (type: string) => {
+  const labels: Record<string, string> = {
+    [DOCUMENT_AUDIT_LOG_TYPE.DOCUMENT_CREATED]: 'Документ створено',
+    [DOCUMENT_AUDIT_LOG_TYPE.DOCUMENT_SENT]: 'Документ відправлено',
+    [DOCUMENT_AUDIT_LOG_TYPE.DOCUMENT_OPENED]: 'Документ відкрито',
+    [DOCUMENT_AUDIT_LOG_TYPE.DOCUMENT_VIEWED]: 'Документ переглянуто',
+    [DOCUMENT_AUDIT_LOG_TYPE.DOCUMENT_FIELD_INSERTED]: 'Поле підпису заповнено',
+    [DOCUMENT_AUDIT_LOG_TYPE.DOCUMENT_RECIPIENT_COMPLETED]: 'Підписант завершив дію',
+    [DOCUMENT_AUDIT_LOG_TYPE.DOCUMENT_COMPLETED]: 'Документ завершено',
+  };
+
+  return labels[type] ?? type;
+};
+
+const getSessionRows = (session: ProtocolSession, timeZone: string | null) => {
+  const validationReport = session.signatureArtifacts.find(
+    (artifact) => artifact.structuredValidationReport,
+  )?.structuredValidationReport;
+
+  return [
+    ['Отримувач документа', getRecipientLabel(session)],
+    ['Роль', getRecipientRoleLabel(session.recipient.role)],
+    ['Підписант', getSignerLabel(session)],
+    ['Час підписання', formatUaKepSigningTime(session.signedAt, timeZone)],
+    ['Метод підпису', getUaKepSigningMethodDisplayLabel(session.signingMethod)],
+    ['АЦСК / КНЕДП', getDisplayValue(getSignerInfoValue(session, ['issuerCN', 'certIssuerCn', 'cryptoIssuerCn']))],
+    ['ЄДРПОУ / РНОКПП', getDisplayValue(getSignerInfoValue(session, ['edrpou', 'rnokpp']))],
+    [
+      'Серійний номер',
+      getDisplayValue(getSignerInfoValue(session, ['serial', 'certSerial', 'certSerialHex', 'cryptoCertSerial'])),
+    ],
+    ['Статус сертифіката', humanizeValue(validationReport?.certificateStatus)],
+    ['Пакет доказів', session.evidencePackage?.packageSha256 ?? 'Н/Д'],
+  ];
+};
+
+const getArtifactRows = (artifact: ProtocolSession['signatureArtifacts'][number], timeZone: string | null) => {
+  return [
+    ['Документ', artifact.envelopeItem.title],
+    ['Артефакт', humanizeValue(artifact.artifactType)],
+    ['Статус перевірки', humanizeValue(artifact.structuredValidationReport?.status ?? artifact.verificationStatus)],
+    ['Статус сертифіката', humanizeValue(artifact.structuredValidationReport?.certificateStatus)],
+    ['Час перевірки', formatDate(artifact.structuredValidationReport?.checkedAt, timeZone)],
+    [
+      'Серійний номер',
+      getDisplayValue(
+        getArtifactSignerInfoValue(artifact, ['serial', 'certSerial', 'certSerialHex', 'cryptoCertSerial']),
+      ),
+    ],
+    ['Хеш документа', artifact.documentHashB64],
+    ['SHA-256 підпису', artifact.signatureSha256],
+  ];
+};
+
+const measureSessionCardHeight = (
+  context: CanvasContext,
+  session: ProtocolSession,
+  valueWidth: number,
+  timeZone: string | null,
+) => {
+  const rows = getSessionRows(session, timeZone);
   setFont(context, 9);
 
   const rowsHeight = rows.reduce((height, [, value]) => {
     return height + Math.max(smallLineHeight, measureWrappedText(context, value, valueWidth, smallLineHeight)) + 4;
   }, 0);
 
-  return rowsHeight + 30;
+  return rowsHeight + 48;
 };
 
 const drawSessionCard = ({
@@ -413,9 +549,9 @@ const drawSessionCard = ({
 }) => {
   const cardX = pageMargin;
   const cardWidth = pageWidth - pageMargin * 2;
-  const labelWidth = 104;
+  const labelWidth = 140;
   const valueWidth = cardWidth - labelWidth - 28;
-  const cardHeight = measureSessionCardHeight(context, session, valueWidth);
+  const cardHeight = measureSessionCardHeight(context, session, valueWidth, timeZone);
 
   drawCard({
     context,
@@ -425,20 +561,12 @@ const drawSessionCard = ({
     height: cardHeight,
   });
 
-  let currentY = y + 20;
-  const signerName =
-    getUaKepSignerCommonName(session.signerInfo) ?? (session.recipient.name || session.recipient.email);
-  const rows = [
-    ['Recipient', `${session.recipient.name || 'N/A'} <${session.recipient.email}>`],
-    ['Role', session.recipient.role],
-    ['Signer', signerName],
-    ['Signed at', formatUaKepSigningTime(session.signedAt, timeZone)],
-    ['Method', getUaKepSigningMethodDisplayLabel(session.signingMethod)],
-    ['Issuer', getSignerInfoValue(session, ['issuerCN', 'certIssuerCn']) ?? 'N/A'],
-    ['EDRPOU / RNOKPP', getSignerInfoValue(session, ['edrpou', 'rnokpp']) ?? 'N/A'],
-    ['Serial', getSignerInfoValue(session, ['serial', 'certSerial']) ?? 'N/A'],
-    ['Evidence package', session.evidencePackage?.packageSha256 ?? 'N/A'],
-  ];
+  setFont(context, 10, '700');
+  context.fillStyle = accentColor;
+  context.fillText('Електронний підпис', cardX + 14, y + 20);
+
+  let currentY = y + 42;
+  const rows = getSessionRows(session, timeZone);
 
   for (const [label, value] of rows) {
     const nextY = drawLabelValue({
@@ -457,16 +585,13 @@ const drawSessionCard = ({
   return y + cardHeight;
 };
 
-const measureArtifactCardHeight = (context: CanvasContext, artifact: ProtocolSession['signatureArtifacts'][number]) => {
-  const valueWidth = pageWidth - pageMargin * 2 - 132;
-  const rows = [
-    ['Document', artifact.envelopeItem.title],
-    ['Artifact', humanizeValue(artifact.artifactType)],
-    ['Verification', humanizeValue(artifact.structuredValidationReport?.status ?? artifact.verificationStatus)],
-    ['Certificate', humanizeValue(artifact.structuredValidationReport?.certificateStatus)],
-    ['Document hash', artifact.documentHashB64],
-    ['Signature SHA-256', artifact.signatureSha256],
-  ];
+const measureArtifactCardHeight = (
+  context: CanvasContext,
+  artifact: ProtocolSession['signatureArtifacts'][number],
+  timeZone: string | null,
+) => {
+  const valueWidth = pageWidth - pageMargin * 2 - 160;
+  const rows = getArtifactRows(artifact, timeZone);
 
   setFont(context, 9);
 
@@ -474,23 +599,25 @@ const measureArtifactCardHeight = (context: CanvasContext, artifact: ProtocolSes
     return height + Math.max(smallLineHeight, measureWrappedText(context, value, valueWidth, smallLineHeight)) + 4;
   }, 0);
 
-  return rowsHeight + 30;
+  return rowsHeight + 48;
 };
 
 const drawArtifactCard = ({
   context,
   artifact,
   y,
+  timeZone,
 }: {
   context: CanvasContext;
   artifact: ProtocolSession['signatureArtifacts'][number];
   y: number;
+  timeZone: string | null;
 }) => {
   const cardX = pageMargin;
   const cardWidth = pageWidth - pageMargin * 2;
-  const labelWidth = 118;
+  const labelWidth = 140;
   const valueWidth = cardWidth - labelWidth - 28;
-  const cardHeight = measureArtifactCardHeight(context, artifact);
+  const cardHeight = measureArtifactCardHeight(context, artifact, timeZone);
 
   drawCard({
     context,
@@ -500,15 +627,12 @@ const drawArtifactCard = ({
     height: cardHeight,
   });
 
-  let currentY = y + 20;
-  const rows = [
-    ['Document', artifact.envelopeItem.title],
-    ['Artifact', humanizeValue(artifact.artifactType)],
-    ['Verification', humanizeValue(artifact.structuredValidationReport?.status ?? artifact.verificationStatus)],
-    ['Certificate', humanizeValue(artifact.structuredValidationReport?.certificateStatus)],
-    ['Document hash', artifact.documentHashB64],
-    ['Signature SHA-256', artifact.signatureSha256],
-  ];
+  setFont(context, 10, '700');
+  context.fillStyle = accentColor;
+  context.fillText('Артефакт підпису', cardX + 14, y + 20);
+
+  let currentY = y + 42;
+  const rows = getArtifactRows(artifact, timeZone);
 
   for (const [label, value] of rows) {
     const nextY = drawLabelValue({
@@ -561,16 +685,23 @@ const generateUaKepSigningProtocolPdf = async ({
     await pushPage();
   };
 
-  setFont(context, 22, '700');
+  setFont(context, 20, '700');
   context.fillStyle = textColor;
-  context.fillText('UA KEP Signing Protocol', pageMargin, y);
-  y += 30;
+  y = drawWrappedText({
+    context,
+    text: 'Документ підписано у сервісі VilnoEDO',
+    x: pageMargin,
+    y,
+    maxWidth: pageWidth - pageMargin * 2,
+    lineHeight: 24,
+  });
+  y += 16;
 
   setFont(context, 10);
   context.fillStyle = mutedTextColor;
   y = drawWrappedText({
     context,
-    text: 'Human-readable protocol for QES/AES signature evidence captured during this envelope completion.',
+    text: 'Квитанція підтверджує факт накладення КЕП/УЕП і містить дані, потрібні для перевірки підписів та архіву доказів.',
     x: pageMargin,
     y,
     maxWidth: pageWidth - pageMargin * 2,
@@ -578,18 +709,18 @@ const generateUaKepSigningProtocolPdf = async ({
   });
   y += 18;
 
-  y = drawSectionTitle(context, 'Envelope', y);
+  y = drawSectionTitle(context, 'Документ', y);
 
   const overviewRows = [
-    ['Title', envelope.title],
-    ['Envelope ID', envelope.id],
-    ['Status', 'COMPLETED'],
-    ['Created at', formatDate(envelope.createdAt, timeZone)],
-    ['Completed at', formatDate(envelope.completedAt ?? generatedAt, timeZone)],
-    ['Generated at', formatDate(generatedAt, timeZone)],
-    ['Time zone', timeZone],
-    ['Owner', `${envelope.user.name || 'N/A'} <${envelope.user.email}>`],
-    ['Documents covered', String(envelope.envelopeItems.length)],
+    ['Назва документа', envelope.title],
+    ['Номер документа', envelope.id],
+    ['Статус', 'Завершено'],
+    ['Дата створення', formatDate(envelope.createdAt, timeZone)],
+    ['Дата завершення', formatDate(envelope.completedAt ?? generatedAt, timeZone)],
+    ['Квитанцію сформовано', formatDate(generatedAt, timeZone)],
+    ['Часовий пояс', timeZone],
+    ['Відправник документа', `${envelope.user.name || 'Н/Д'} <${envelope.user.email}>`],
+    ['Документів в архіві', String(envelope.envelopeItems.length)],
   ];
 
   for (const [label, value] of overviewRows) {
@@ -607,12 +738,35 @@ const generateUaKepSigningProtocolPdf = async ({
     y = Math.max(y + textLineHeight, nextY) + 5;
   }
 
+  if (envelope.auditLogs.length > 0) {
+    y += 12;
+    await ensureSpace(44);
+    y = drawSectionTitle(context, 'Події документа', y);
+
+    for (const log of envelope.auditLogs) {
+      await ensureSpace(30);
+
+      const actor = log.name || log.email ? ` · ${log.name || log.email}` : '';
+      const nextY = drawLabelValue({
+        context,
+        label: formatDate(log.createdAt, timeZone),
+        value: `${getAuditLogLabel(log.type)}${actor}`,
+        x: pageMargin,
+        y,
+        labelWidth: 150,
+        valueWidth: pageWidth - pageMargin * 2 - 150,
+      });
+
+      y = Math.max(y + textLineHeight, nextY) + 5;
+    }
+  }
+
   y += 12;
   await ensureSpace(44);
-  y = drawSectionTitle(context, 'Signers', y);
+  y = drawSectionTitle(context, 'Підписи', y);
 
   for (const session of sessions) {
-    const cardHeight = measureSessionCardHeight(context, session, pageWidth - pageMargin * 2 - 132);
+    const cardHeight = measureSessionCardHeight(context, session, pageWidth - pageMargin * 2 - 168, timeZone);
     await ensureSpace(cardHeight + 12);
     y = drawSessionCard({
       context,
@@ -624,17 +778,18 @@ const generateUaKepSigningProtocolPdf = async ({
   }
 
   await ensureSpace(44);
-  y = drawSectionTitle(context, 'Signature Artifacts', y);
+  y = drawSectionTitle(context, 'Файли та технічна перевірка', y);
 
   const artifacts = sessions.flatMap((session) => session.signatureArtifacts);
 
   for (const artifact of artifacts) {
-    const cardHeight = measureArtifactCardHeight(context, artifact);
+    const cardHeight = measureArtifactCardHeight(context, artifact, timeZone);
     await ensureSpace(cardHeight + 12);
     y = drawArtifactCard({
       context,
       artifact,
       y,
+      timeZone,
     });
     y += 12;
   }

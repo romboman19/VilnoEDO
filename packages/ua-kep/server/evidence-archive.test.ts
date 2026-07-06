@@ -7,6 +7,10 @@ vi.mock('@documenso/lib/universal/upload/get-file.server', () => ({
   }),
 }));
 
+vi.mock('@documenso/lib/server-only/ua-kep/signing-instruction', () => ({
+  generateUaKepSigningInstructionPdf: vi.fn(async () => new Uint8Array(Buffer.from('instruction pdf'))),
+}));
+
 import { buildUaKepEvidenceArchive } from './evidence-archive';
 
 type TArchivePrisma = Parameters<typeof buildUaKepEvidenceArchive>[0]['prisma'];
@@ -137,7 +141,9 @@ const buildPrismaMock = ({ recipientFound = true } = {}) => {
         },
       ]),
     },
-    envelopeItem: {},
+    envelopeItem: {
+      findFirst: vi.fn(async () => null),
+    },
   };
 };
 
@@ -176,7 +182,12 @@ describe('buildUaKepEvidenceArchive', () => {
 
     expect(entryNames).toEqual(
       [
+        '01-Договір 1_2026 (оренда).pdf',
+        '01-Договір 1_2026 (оренда).pdf.p7s',
+        '02-Додаток.pdf',
+        '02-Додаток.pdf.p7s',
         'audit/audit-log.json',
+        'Інструкція з перевірки підпису.pdf',
         'manifest.json',
         'original/01-Договір 1_2026 (оренда).pdf',
         'original/02-Додаток.pdf',

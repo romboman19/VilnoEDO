@@ -11,19 +11,19 @@ type CreateUaKepSignatureAppearanceImageOptions = {
 };
 
 export const UA_KEP_SIGNING_METHOD_DISPLAY_LABELS: Record<string, string> = {
-  'file-key': 'File QES/AES key',
-  'iit-token': 'Hardware QES/AES key',
-  'privatbank-smartid': 'Cloud signature PrivatBank SmartID',
-  'diia-signature': 'Cloud signature Diia.Signature',
-  depositsign: 'Cloud signature DepositSign',
-  vchasno: 'Cloud signature Vchasno',
-  vchasnoQR: 'Cloud signature Vchasno (QR)',
-  cloudkey: 'Cloud signature CloudKey',
-  esign: 'Cloud signature ESign',
-  smartsigntax: 'Cloud signature State Tax Service',
-  pumb: 'Cloud signature PUMB',
-  ugb: 'Cloud signature Ukrgasbank EcoSign',
-  alliance: 'Cloud signature Bank Alliance',
+  'file-key': 'Файловий ключ КЕП/УЕП',
+  'iit-token': 'Апаратний ключ КЕП/УЕП',
+  'privatbank-smartid': 'Хмарний підпис PrivatBank SmartID',
+  'diia-signature': 'Хмарний підпис Дія.Підпис',
+  depositsign: 'Хмарний підпис DepositSign',
+  vchasno: 'Хмарний підпис Вчасно',
+  vchasnoQR: 'Хмарний підпис Вчасно (QR)',
+  cloudkey: 'Хмарний підпис CloudKey',
+  esign: 'Хмарний підпис ESign',
+  smartsigntax: 'Хмарний підпис ДПС',
+  pumb: 'Хмарний підпис ПУМБ',
+  ugb: 'Хмарний підпис Укргазбанк EcoSign',
+  alliance: 'Хмарний підпис Банк Альянс',
 };
 
 const getStringValue = (value: unknown) => (typeof value === 'string' && value.length > 0 ? value : null);
@@ -47,7 +47,7 @@ export const getUaKepSigningMethodDisplayLabel = (signingMethod: string | null |
     return UA_KEP_SIGNING_METHOD_DISPLAY_LABELS[signingMethod];
   }
 
-  return 'QES/AES';
+  return 'КЕП/УЕП';
 };
 
 export const formatUaKepSigningTime = (
@@ -57,16 +57,16 @@ export const formatUaKepSigningTime = (
   const zone = timeZone || DEFAULT_DOCUMENT_TIME_ZONE;
 
   if (!value) {
-    return DateTime.now().setZone(zone).toFormat('yyyy-LL-dd HH:mm:ss ZZZZ');
+    return DateTime.now().setZone(zone).toFormat('HH:mm:ss dd.LL.yyyy ZZZZ');
   }
 
   const dateTime = value instanceof Date ? DateTime.fromJSDate(value) : DateTime.fromISO(value);
 
   if (!dateTime.isValid) {
-    return typeof value === 'string' ? value : DateTime.now().setZone(zone).toFormat('yyyy-LL-dd HH:mm:ss ZZZZ');
+    return typeof value === 'string' ? value : DateTime.now().setZone(zone).toFormat('HH:mm:ss dd.LL.yyyy ZZZZ');
   }
 
-  return dateTime.setZone(zone).toFormat('yyyy-LL-dd HH:mm:ss ZZZZ');
+  return dateTime.setZone(zone).toFormat('HH:mm:ss dd.LL.yyyy ZZZZ');
 };
 
 export const createUaKepSignatureAppearanceImage = async ({
@@ -80,7 +80,7 @@ export const createUaKepSignatureAppearanceImage = async ({
   canvas.gpu = false;
 
   const context = canvas.getContext('2d');
-  const signerName = getUaKepSignerCommonName(signerInfo) ?? 'Signer defined by the signature manifest';
+  const signerName = getUaKepSignerCommonName(signerInfo) ?? 'Підписант визначений у маніфесті підпису';
   const signedAtText = formatUaKepSigningTime(signedAt, timeZone);
   const signingMethodLabel = getUaKepSigningMethodDisplayLabel(signingMethod);
 
@@ -91,19 +91,19 @@ export const createUaKepSignatureAppearanceImage = async ({
 
   context.fillStyle = '#1f2937';
   context.font = '700 42px Arial, sans-serif';
-  context.fillText('QES/AES', 44, 72);
+  context.fillText('КЕП/УЕП', 44, 72);
 
   context.font = '600 30px Arial, sans-serif';
-  context.fillText(`Signer: ${signerName}`, 44, 128, 952);
+  context.fillText(`Підписант: ${signerName}`, 44, 128, 952);
 
   context.fillStyle = '#4b5563';
   context.font = '25px Arial, sans-serif';
-  context.fillText(`Signing time: ${signedAtText}`, 44, 184, 952);
-  context.fillText(`Signed with: ${signingMethodLabel}`, 44, 232, 952);
+  context.fillText(`Час підписання: ${signedAtText}`, 44, 184, 952);
+  context.fillText(`Метод підпису: ${signingMethodLabel}`, 44, 232, 952);
 
   if (manifestSha256) {
     context.font = '20px Arial, sans-serif';
-    context.fillText(`Manifest: ${manifestSha256.slice(0, 24)}`, 44, 284, 952);
+    context.fillText(`Маніфест: ${manifestSha256.slice(0, 24)}`, 44, 284, 952);
   }
 
   const png = await canvas.toBuffer('png');

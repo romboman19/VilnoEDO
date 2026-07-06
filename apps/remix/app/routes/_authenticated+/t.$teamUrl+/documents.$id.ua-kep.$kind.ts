@@ -1,6 +1,7 @@
 import { getSession } from '@documenso/auth/server/lib/utils/get-session';
 import { getEnvelopeById } from '@documenso/lib/server-only/envelope/get-envelope-by-id';
 import { getTeamByUrl } from '@documenso/lib/server-only/team/get-team';
+import { ensureUaKepSigningProtocolEnvelopeItem } from '@documenso/lib/server-only/ua-kep/signing-protocol';
 import { prisma } from '@documenso/prisma';
 import { EnvelopeType } from '@prisma/client';
 import { buildUaKepEvidenceArchive } from '@vilnoedo/ua-kep/server/evidence-archive';
@@ -120,6 +121,10 @@ export async function loader({ params, request }: Route.LoaderArgs) {
   if (!recipient) {
     throw new Response('Not Found', { status: 404 });
   }
+
+  await ensureUaKepSigningProtocolEnvelopeItem({
+    envelopeId: envelope.id,
+  });
 
   const archive = await buildUaKepEvidenceArchive({
     prisma,

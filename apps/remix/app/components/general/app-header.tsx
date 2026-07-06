@@ -4,6 +4,7 @@ import { getRootHref } from '@documenso/lib/utils/params';
 import { trpc } from '@documenso/trpc/react';
 import { cn } from '@documenso/ui/lib/utils';
 import { Button } from '@documenso/ui/primitives/button';
+import { ThemeSwitcher } from '@documenso/ui/primitives/theme-switcher';
 import { ReadStatus } from '@prisma/client';
 import { InboxIcon, MenuIcon, SearchIcon } from 'lucide-react';
 import { type HTMLAttributes, useEffect, useState } from 'react';
@@ -66,8 +67,12 @@ export const Header = ({ className, ...props }: HeaderProps) => {
 
         <AppNavDesktop setIsCommandMenuOpen={setIsCommandMenuOpen} />
 
+        <div className="hidden md:block">
+          <ThemeSwitcher />
+        </div>
+
         <Button asChild variant="outline" className="relative hidden h-10 w-10 rounded-lg md:flex">
-          <Link to="/inbox" className="relative block h-10 w-10">
+          <Link to="/inbox" className="relative flex h-10 w-10 items-center justify-center">
             <InboxIcon className="h-5 w-5 flex-shrink-0 text-muted-foreground transition-colors hover:text-foreground" />
 
             {unreadCountData && unreadCountData.count > 0 && (
