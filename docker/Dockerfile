@@ -42,6 +42,7 @@ WORKDIR /app
 ENV HUSKY 0
 ENV DOCKER_OUTPUT 1
 ENV NEXT_TELEMETRY_DISABLED 1
+ENV NODE_OPTIONS="--max-old-space-size=6144"
 
 # Encryption keys
 ARG NEXT_PRIVATE_ENCRYPTION_KEY="CAFEBABE"
@@ -101,6 +102,9 @@ ENV NEXT_PRIVATE_TELEMETRY_HOST="$NEXT_PRIVATE_TELEMETRY_HOST"
 # Don't run production as root
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nodejs
+
+# The legacy builder creates WORKDIR as root, so pre-create /app owned by nodejs
+RUN mkdir -p /app && chown nodejs:nodejs /app
 
 USER nodejs
 

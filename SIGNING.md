@@ -1,9 +1,14 @@
-# Signing Certificate
+# Сертифікат для запечатування документів
 
-Documenso needs a signing certificate to digitally sign documents. For full, up-to-date instructions on generating, converting, and configuring a certificate, see the official documentation:
+VilnoEDO використовує сертифікат `.p12` для криптографічного запечатування (sealing) завершених документів. Без нього застосунок запускається, але запечатування недоступне.
 
-- [Signing Certificate](https://docs.documenso.com/docs/self-hosting/configuration/signing-certificate): Overview and all certificate options
-- [Local Certificate](https://docs.documenso.com/docs/self-hosting/configuration/signing-certificate/local): Generate a self-signed `.p12` certificate with OpenSSL
-- [Google Cloud HSM](https://docs.documenso.com/docs/self-hosting/configuration/signing-certificate/google-cloud-hsm): Sign using Google Cloud KMS
+Самопідписаний сертифікат для тестування:
 
-For deploying Documenso with Docker, see the [Docker Deployment](https://docs.documenso.com/docs/self-hosting/deployment/docker) and [Docker Compose](https://docs.documenso.com/docs/self-hosting/deployment/docker-compose) guides.
+```bash
+openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 730 -nodes
+openssl pkcs12 -export -out cert.p12 -inkey key.pem -in cert.pem
+```
+
+Шлях до сертифіката задається змінною `NEXT_PRIVATE_SIGNING_LOCAL_FILE_PATH` (у проді монтується як `/opt/documenso/cert.p12`, див. [deploy/compose.yml](deploy/compose.yml)), пароль — `NEXT_PRIVATE_SIGNING_PASSPHRASE`.
+
+Для юридично значущого підписання КЕП/УЕП використовується окремий UA KEP signing flow (див. [README](README.md)) — сертифікат запечатування його не замінює.

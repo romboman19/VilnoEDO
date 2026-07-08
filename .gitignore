@@ -19,6 +19,9 @@ build
 .DS_Store
 *.pem
 
+# signing certificate (production, never commit)
+/cert.p12
+
 # debug
 npm-debug.log*
 yarn-debug.log*
