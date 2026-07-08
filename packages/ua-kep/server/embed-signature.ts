@@ -8,13 +8,9 @@ import { persistUaKepSignatureArtifacts } from './artifacts';
 import { getCaRegistry } from './ca-registry';
 import { createUaKepEvidencePackage } from './evidence-package';
 import { markUaKepSessionSigned, verifyUaKepPreparedSession } from './session';
-import {
-  isSignServiceConfigured,
-  type TRemoteVerificationResult,
-  verifyDetachedSignatureRemote,
-} from './sign-service-client';
 import { collectRegistryIssuerCns, runUaKepStructuralValidation } from './structural-validation';
 import { createUaKepValidationReports } from './validation';
+import { resolveFullVerifier, type TFullVerificationResult } from './verification';
 
 export const completeUaKepSigning = async ({
   prisma,
@@ -124,22 +120,25 @@ export const completeUaKepSigning = async ({
     throw new Error(`UA KEP signature rejected by structural validation: ${failureCodes}`);
   }
 
-  // Second stage: full cryptographic verification through VilnoCheck-SignService
-  // (DSTU-4145, chain, trust material).
+  // Second stage: full cryptographic verification (DSTU-4145, chain, trust
+  // material) through the pluggable "full" verification engine. Structural
+  // validation above is the always-on acceptance floor; this engine is dormant
+  // until an external authoritative validation service is configured.
   //
-  // NEXT_PRIVATE_UA_KEP_REMOTE_VERIFY controls strictness:
+  // NEXT_PRIVATE_UA_KEP_VERIFY_MODE controls strictness:
   // - required (production default): any invalid or unverifiable signature rejects.
-  // - optional: a cryptographic rejection still fails, but a transport
-  //   failure (service down/unreachable) degrades to structural validation
-  //   so local signing keeps working while SignService is offline.
-  // - off: skip remote verification entirely.
-  // Development defaults to optional so a local SignService auth/config issue
-  // does not block browser-key integration testing.
-  const defaultRemoteVerifyMode = env('NODE_ENV') === 'production' ? 'required' : 'optional';
-  const remoteVerifyMode = (env('NEXT_PRIVATE_UA_KEP_REMOTE_VERIFY') ?? defaultRemoteVerifyMode).trim().toLowerCase();
-  const cryptoResults = new Map<string, TRemoteVerificationResult>();
+  // - optional: a cryptographic rejection still fails, but an engine outage
+  //   (service down/unreachable) degrades to structural validation so signing
+  //   keeps working while the verification service is offline.
+  // - off: skip full verification entirely.
+  // Development defaults to optional so a verification-service config issue does
+  // not block browser-key integration testing.
+  const defaultVerifyMode = env('NODE_ENV') === 'production' ? 'required' : 'optional';
+  const verifyMode = (env('NEXT_PRIVATE_UA_KEP_VERIFY_MODE') ?? defaultVerifyMode).trim().toLowerCase();
+  const cryptoResults = new Map<string, TFullVerificationResult>();
+  const fullVerifier = resolveFullVerifier();
 
-  if (isSignServiceConfigured() && remoteVerifyMode !== 'off') {
+  if (fullVerifier && verifyMode !== 'off') {
     const envelopeItems = await prisma.envelopeItem.findMany({
       where: {
         id: {
@@ -165,14 +164,14 @@ export const completeUaKepSigning = async ({
         data: envelopeItem.documentData.data,
       });
 
-      const result = await verifyDetachedSignatureRemote({
+      const result = await fullVerifier.verify({
         documentBytes,
         signatureBase64: signature.signatureB64,
       });
 
       if (!result.valid) {
-        if (remoteVerifyMode === 'optional' && result.transportFailure) {
-          // SignService is down, not the signature — fall back to the
+        if (verifyMode === 'optional' && result.unavailable) {
+          // The engine could not run, not the signature — fall back to the
           // structural verdict for this item instead of blocking signing.
           continue;
         }

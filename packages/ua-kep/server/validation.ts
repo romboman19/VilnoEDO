@@ -2,14 +2,14 @@ import type { PrismaClient } from '@documenso/prisma/client';
 import type { Prisma } from '@prisma/client';
 
 import type { TUaKepPersistedArtifact } from './artifacts';
-import type { TRemoteVerificationResult } from './sign-service-client';
-import { toLegalClass } from './sign-service-client';
 import type { TStructuralVerdict } from './structural-validation';
 import { UA_KEP_STRUCTURAL_VALIDATOR_ID } from './structural-validation';
+import type { TFullVerificationResult } from './verification';
+import { toLegalClass } from './verification';
 
 type TValidationPrismaClient = Pick<PrismaClient, 'uaKepTrustMaterialSnapshot' | 'uaKepValidationReport'>;
 
-const UA_KEP_CRYPTO_VALIDATOR_ID = 'vilnocheck-sign-service';
+const UA_KEP_CRYPTO_VALIDATOR_ID = 'external-verification-service';
 
 type TCreateReportsInput = {
   session: {
@@ -17,7 +17,7 @@ type TCreateReportsInput = {
   };
   artifacts: TUaKepPersistedArtifact[];
   verdicts: TStructuralVerdict[];
-  cryptoResults?: Map<string, TRemoteVerificationResult>;
+  cryptoResults?: Map<string, TFullVerificationResult>;
   validationTime: Date;
 };
 
@@ -62,7 +62,7 @@ export const createUaKepValidationReports = async ({
       rawSnapshot: {
         caRegistryUrl: UA_KEP_CA_REGISTRY_URL,
         caBundleUrl: UA_KEP_CA_BUNDLE_URL,
-        note: 'Issuer CNs from the bundled registry were used for structural validation; chain and revocation checks are pending signing service integration.',
+        note: 'Issuer CNs from the bundled registry were used for structural validation; chain and revocation checks are performed by the external verification service when configured.',
       },
     },
   });

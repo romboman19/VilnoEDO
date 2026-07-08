@@ -34,13 +34,14 @@ export const UA_KEP_STRUCTURAL_VALIDATOR_ID = 'vilnoedo-ua-kep-structural-v1';
 /// with SHA-256, so a byte-for-byte messageDigest comparison is only valid
 /// when the signature also used SHA-256. Ukrainian КЕП almost always hashes
 /// with DSTU GOST 34.311 / DSTU 7564, which Node cannot compute — for those
-/// the digest match is delegated to the signing service, not failed here.
+/// the digest match is delegated to the external verification service, not
+/// failed here.
 const OID_DIGEST_SHA256 = '2.16.840.1.101.3.4.2.1';
 
 const CRYPTO_DELEGATED_WARNING: TValidationIssue = {
   code: 'CRYPTOGRAPHIC_VALIDATION_DELEGATED',
   message:
-    'Structural checks passed; DSTU-4145 signature math, certificate chain and OCSP/TSP evidence are delegated to the signing service integration.',
+    'Structural checks passed; DSTU-4145 signature math, certificate chain and OCSP/TSP evidence are delegated to the external verification service (not run when it is not configured).',
 };
 
 export const collectRegistryIssuerCns = (caRegistry: Array<Record<string, unknown>>) => {
@@ -124,7 +125,7 @@ const validateOneSignature = ({
     // document-binding check is delegated to the cryptographic signing service.
     warnings.push({
       code: 'MESSAGE_DIGEST_ALGORITHM_DELEGATED',
-      message: `messageDigest uses digest algorithm ${parsed.digestAlgorithmOid}; structural SHA-256 comparison is not applicable, document binding is delegated to the signing service.`,
+      message: `messageDigest uses digest algorithm ${parsed.digestAlgorithmOid}; structural SHA-256 comparison is not applicable, document binding is delegated to the external verification service.`,
     });
   }
 

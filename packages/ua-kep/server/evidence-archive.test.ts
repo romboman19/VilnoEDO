@@ -99,7 +99,7 @@ const buildPrismaMock = ({ recipientFound = true } = {}) => {
           artifactId: 'art_1',
           trustMaterialSnapshotId: 'tms_1',
           status: 'pending',
-          validator: 'vilnocheck',
+          validator: 'external-verification-service',
           validationKind: 'CADES_DETACHED',
           checkedAt: null,
           signerInfo: null,
