@@ -1,23 +1,36 @@
 import { mailer } from '@documenso/email/mailer';
 import { OrganisationAccountLinkConfirmationTemplate } from '@documenso/email/templates/organisation-account-link-confirmation';
-import { getI18nInstance } from '@documenso/lib/client-only/providers/i18n-server';
-import { NEXT_PUBLIC_WEBAPP_URL } from '@documenso/lib/constants/app';
-import { DOCUMENSO_INTERNAL_EMAIL } from '@documenso/lib/constants/email';
-import { ORGANISATION_ACCOUNT_LINK_VERIFICATION_TOKEN_IDENTIFIER } from '@documenso/lib/constants/organisations';
-import { AppError, AppErrorCode } from '@documenso/lib/errors/app-error';
-import { getEmailContext } from '@documenso/lib/server-only/email/get-email-context';
-import type { TOrganisationAccountLinkMetadata } from '@documenso/lib/types/organisation';
-import { renderEmailWithI18N } from '@documenso/lib/utils/render-email-with-i18n';
 import { prisma } from '@documenso/prisma';
 import { msg } from '@lingui/core/macro';
 import crypto from 'crypto';
 import { DateTime } from 'luxon';
 import { createElement } from 'react';
 
+import { getI18nInstance } from '../../client-only/providers/i18n-server';
+import { NEXT_PUBLIC_WEBAPP_URL } from '../../constants/app';
+import { DOCUMENSO_INTERNAL_EMAIL } from '../../constants/email';
+import { ORGANISATION_ACCOUNT_LINK_VERIFICATION_TOKEN_IDENTIFIER } from '../../constants/organisations';
+import { AppError, AppErrorCode } from '../../errors/app-error';
+import type { TOrganisationAccountLinkMetadata } from '../../types/organisation';
+import { renderEmailWithI18N } from '../../utils/render-email-with-i18n';
+import { getEmailContext } from '../email/get-email-context';
+
 export type SendOrganisationAccountLinkConfirmationEmailProps = TOrganisationAccountLinkMetadata & {
   organisationName: string;
 };
 
+const RESEND_THROTTLE_MINUTES = 5;
+const TOKEN_TTL_MINUTES = 30;
+
+/**
+ * Mint a short-lived verification token and email the user a link to confirm
+ * creating/linking their account against an organisation SSO provider.
+ *
+ * Throttled to one mail per {@link RESEND_THROTTLE_MINUTES} to avoid spamming.
+ * The mail always goes through the trusted instance mailer/sender rather than
+ * the organisation's own transport, so a misconfigured org transport can never
+ * lock a user out of completing their own SSO linking.
+ */
 export const sendOrganisationAccountLinkConfirmationEmail = async ({
   type,
   userId,
@@ -50,11 +63,11 @@ export const sendOrganisationAccountLinkConfirmationEmail = async ({
 
   const [previousVerificationToken] = user.verificationTokens;
 
-  // If we've sent a token in the last 5 minutes, don't send another one
-  if (
+  const wasRecentlySent =
     previousVerificationToken?.createdAt &&
-    DateTime.fromJSDate(previousVerificationToken.createdAt).diffNow('minutes').minutes > -5
-  ) {
+    DateTime.fromJSDate(previousVerificationToken.createdAt).diffNow('minutes').minutes > -RESEND_THROTTLE_MINUTES;
+
+  if (wasRecentlySent) {
     return;
   }
 
@@ -64,7 +77,7 @@ export const sendOrganisationAccountLinkConfirmationEmail = async ({
     data: {
       identifier: ORGANISATION_ACCOUNT_LINK_VERIFICATION_TOKEN_IDENTIFIER,
       token,
-      expires: DateTime.now().plus({ minutes: 30 }).toJSDate(),
+      expires: DateTime.now().plus({ minutes: TOKEN_TTL_MINUTES }).toJSDate(),
       metadata: {
         type,
         userId,
@@ -75,13 +88,8 @@ export const sendOrganisationAccountLinkConfirmationEmail = async ({
     },
   });
 
-  // We only take `emailLanguage` here and intentionally ignore the resolved
-  // `emailTransport`/`senderEmail`. Unlike other INTERNAL emails, this is an
-  // auth-critical SSO account creation/linking confirmation: it must always be
-  // delivered from trusted Documenso infrastructure (see the `mailer.sendMail`
-  // below). Routing it through the organisation's own (potentially
-  // misconfigured) transport could block account linking and lock users out of
-  // their own SSO setup.
+  // Only the resolved language is used here; the org's transport/sender are
+  // intentionally ignored (see the function doc comment).
   const { emailLanguage } = await getEmailContext({
     emailType: 'INTERNAL',
     source: {
@@ -108,10 +116,6 @@ export const sendOrganisationAccountLinkConfirmationEmail = async ({
 
   const i18n = await getI18nInstance(emailLanguage);
 
-  // Deliberately uses the global Documenso mailer + internal sender (not the
-  // organisation's configured email transport) so auth/SSO confirmation mail is
-  // always sent from trusted, controlled infrastructure. See the note on the
-  // getEmailContext call above.
   return mailer.sendMail({
     to: {
       address: user.email,

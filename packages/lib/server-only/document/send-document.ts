@@ -1,4 +1,3 @@
-import { materializeTspAnchorsForEnvelope } from '@documenso/ee/server-only/signing/csc/materialize-anchors';
 import { resolveExpiresAt } from '@documenso/lib/constants/envelope-expiration';
 import { DOCUMENT_AUDIT_LOG_TYPE } from '@documenso/lib/types/document-audit-logs';
 import type { ApiRequestMetadata } from '@documenso/lib/universal/extract-request-metadata';
@@ -247,8 +246,10 @@ export const sendDocument = async ({ id, userId, teamId, sendEmail, requestMetad
   }
 
   if (isTspEnvelope(envelope) && envelope.status === DocumentStatus.DRAFT) {
-    await materializeTspAnchorsForEnvelope({
-      envelopeId: envelope.id,
+    // CSC TSP (AES/QES) signing was removed along with the commercial
+    // @documenso/ee package, so these envelopes can no longer be sent.
+    throw new AppError(AppErrorCode.NOT_SETUP, {
+      message: `Sending '${envelope.signatureLevel}' envelopes is not supported — CSC TSP signing is not available on this instance.`,
     });
   }
 

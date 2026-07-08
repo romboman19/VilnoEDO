@@ -1,21 +1,22 @@
 import { DeleteEmailIdentityCommand } from '@aws-sdk/client-sesv2';
-import { DOCUMENSO_ENCRYPTION_KEY } from '@documenso/lib/constants/crypto';
-import { AppError, AppErrorCode } from '@documenso/lib/errors/app-error';
-import { symmetricDecrypt } from '@documenso/lib/universal/crypto';
 import { prisma } from '@documenso/prisma';
 import { EmailDomainStatus } from '@prisma/client';
 
-import { getSesClient, verifyDomainWithDKIM } from './create-email-domain';
+import { DOCUMENSO_ENCRYPTION_KEY } from '../../constants/crypto';
+import { AppError, AppErrorCode } from '../../errors/app-error';
+import { symmetricDecrypt } from '../../universal/crypto';
+import { getSesClient, registerDomainIdentityWithDkim } from './ses-client';
 
 type ReregisterEmailDomainOptions = {
   emailDomainId: string;
 };
 
 /**
- * Re-register an email domain in SES using the same DKIM key pair.
+ * Re-register an email domain in SES using the stored DKIM key pair.
  *
- * This deletes the existing SES identity and recreates it with the same
- * selector and private key, so the user does not need to update their DNS records.
+ * Deletes the current SES identity and recreates it with the same selector and
+ * private key, so the operator's existing DNS records keep working. Status is
+ * reset to PENDING until the next verification poll confirms it.
  *
  * Permission is assumed to be checked in the caller.
  */
@@ -38,10 +39,7 @@ export const reregisterEmailDomain = async ({ emailDomainId }: ReregisterEmailDo
     });
   }
 
-  const sesClient = getSesClient();
-
-  // Delete the existing SES identity, ignoring if it no longer exists.
-  await sesClient
+  await getSesClient()
     .send(
       new DeleteEmailIdentityCommand({
         EmailIdentity: emailDomain.domain,
@@ -55,7 +53,6 @@ export const reregisterEmailDomain = async ({ emailDomainId }: ReregisterEmailDo
       throw err;
     });
 
-  // Decrypt the stored private key.
   const decryptedPrivateKeyBytes = symmetricDecrypt({
     key: encryptionKey,
     data: emailDomain.privateKey,
@@ -63,10 +60,9 @@ export const reregisterEmailDomain = async ({ emailDomainId }: ReregisterEmailDo
 
   const decryptedPrivateKey = new TextDecoder().decode(decryptedPrivateKeyBytes);
 
-  // The selector field in the DB is the full record name (e.g. "documenso-orgid._domainkey.example.com").
-  // We need to extract just the selector part (before "._domainkey.").
-  const selectorParts = emailDomain.selector.split('._domainkey.');
-  const selector = selectorParts[0];
+  // The stored `selector` is the full record name
+  // ("documenso-<org>._domainkey.<domain>"); SES wants just the leading label.
+  const selector = emailDomain.selector.split('._domainkey.')[0];
 
   if (!selector) {
     throw new AppError(AppErrorCode.UNKNOWN_ERROR, {
@@ -74,11 +70,9 @@ export const reregisterEmailDomain = async ({ emailDomainId }: ReregisterEmailDo
     });
   }
 
-  // Recreate the SES identity with the same DKIM key pair.
-  await verifyDomainWithDKIM(emailDomain.domain, selector, decryptedPrivateKey);
+  await registerDomainIdentityWithDkim(emailDomain.domain, selector, decryptedPrivateKey);
 
-  // Reset status to PENDING and update lastVerifiedAt.
-  const updatedEmailDomain = await prisma.emailDomain.update({
+  return prisma.emailDomain.update({
     where: {
       id: emailDomainId,
     },
@@ -87,6 +81,4 @@ export const reregisterEmailDomain = async ({ emailDomainId }: ReregisterEmailDo
       lastVerifiedAt: new Date(),
     },
   });
-
-  return updatedEmailDomain;
 };

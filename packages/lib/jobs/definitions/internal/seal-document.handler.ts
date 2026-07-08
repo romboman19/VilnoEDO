@@ -1,6 +1,5 @@
 import path from 'node:path';
 import { PDFDocument } from '@cantoo/pdf-lib';
-import { finalizeTspEnvelopeCompletion } from '@documenso/ee/server-only/signing/csc/finalize-tsp-completion';
 import { addRejectionStampToPdf } from '@documenso/lib/server-only/pdf/add-rejection-stamp-to-pdf';
 import { generateAuditLogPdf } from '@documenso/lib/server-only/pdf/generate-audit-log-pdf';
 import { generateCertificatePdf } from '@documenso/lib/server-only/pdf/generate-certificate-pdf';
@@ -187,30 +186,13 @@ export const run = async ({ payload, io }: { payload: TSealDocumentJobDefinition
       envelope.recipients.some((recipient) => recipient.uaKepSession?.status === 'signed');
 
     if (isTspEnvelope(envelope)) {
-      if (isResealing) {
-        throw new AppError(AppErrorCode.NOT_SETUP, {
-          message: 'Re-sealing TSP envelopes is not supported — recipient signatures cannot be regenerated externally.',
-        });
-      }
-
-      if (isRejected) {
-        throw new AppError(AppErrorCode.NOT_SETUP, {
-          message:
-            'TSP envelope rejection is not supported in V1 — rejection stamps would invalidate PAdES signatures.',
-        });
-      }
-
-      await finalizeTspEnvelopeCompletion({
-        envelope,
-        envelopeCompletedAuditLog,
-        requestMetadata,
+      // CSC TSP (AES/QES) signing was removed along with the commercial
+      // @documenso/ee package. Envelopes at these levels cannot be created on
+      // this instance; refuse to seal any legacy row rather than emit an
+      // instance-sealed PDF that misrepresents the legal tier.
+      throw new AppError(AppErrorCode.NOT_SETUP, {
+        message: `Sealing '${envelope.signatureLevel}' envelopes is not supported — CSC TSP signing is not available on this instance.`,
       });
-
-      return {
-        envelopeId: envelope.id,
-        envelopeStatus: envelope.status,
-        isRejected,
-      };
     }
 
     if (hasUaKepEvidence) {

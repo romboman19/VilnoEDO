@@ -1,7 +1,7 @@
-import { deleteEmailDomain } from '@documenso/ee/server-only/lib/delete-email-domain';
 import { IS_BILLING_ENABLED } from '@documenso/lib/constants/app';
 import { ORGANISATION_MEMBER_ROLE_PERMISSIONS_MAP } from '@documenso/lib/constants/organisations';
 import { AppError, AppErrorCode } from '@documenso/lib/errors/app-error';
+import { deleteEmailDomain } from '@documenso/lib/server-only/email-domain/delete-email-domain';
 import { buildOrganisationWhereQuery } from '@documenso/lib/utils/organisations';
 import { prisma } from '@documenso/prisma';
 

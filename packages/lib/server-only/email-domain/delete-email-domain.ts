@@ -1,18 +1,19 @@
 import { DeleteEmailIdentityCommand } from '@aws-sdk/client-sesv2';
 
-import { AppError, AppErrorCode } from '@documenso/lib/errors/app-error';
 import { prisma } from '@documenso/prisma';
 
-import { getSesClient } from './create-email-domain';
+import { AppError, AppErrorCode } from '../../errors/app-error';
+import { getSesClient } from './ses-client';
 
 type DeleteEmailDomainOptions = {
   emailDomainId: string;
 };
 
 /**
- * Delete the email domain and SES email identity.
+ * Delete the email domain and its SES identity.
  *
- * Permission is assumed to be checked in the caller.
+ * Permission is assumed to be checked in the caller. A missing SES identity is
+ * treated as already gone so the DB row is still removed.
  */
 export const deleteEmailDomain = async ({ emailDomainId }: DeleteEmailDomainOptions) => {
   const emailDomain = await prisma.emailDomain.findUnique({
@@ -27,21 +28,18 @@ export const deleteEmailDomain = async ({ emailDomainId }: DeleteEmailDomainOpti
     });
   }
 
-  const sesClient = getSesClient();
-
-  await sesClient
+  await getSesClient()
     .send(
       new DeleteEmailIdentityCommand({
         EmailIdentity: emailDomain.domain,
       }),
     )
     .catch((err) => {
-      console.error(err);
-
-      // Do nothing if it no longer exists in SES.
       if (err.name === 'NotFoundException') {
         return;
       }
+
+      console.error(err);
     });
 
   await prisma.emailDomain.delete({

@@ -5,15 +5,7 @@ import { cn } from '@documenso/ui/lib/utils';
 import { Button } from '@documenso/ui/primitives/button';
 import { msg } from '@lingui/core/macro';
 import { Trans, useLingui } from '@lingui/react/macro';
-import {
-  Building2Icon,
-  CreditCardIcon,
-  GroupIcon,
-  MailboxIcon,
-  Settings2Icon,
-  ShieldCheckIcon,
-  Users2Icon,
-} from 'lucide-react';
+import { Building2Icon, GroupIcon, MailboxIcon, Settings2Icon, ShieldCheckIcon, Users2Icon } from 'lucide-react';
 import { FaUsers } from 'react-icons/fa6';
 import { Link, NavLink, Outlet } from 'react-router';
 
@@ -82,16 +74,7 @@ export default function SettingsLayout() {
       label: t`SSO`,
       icon: ShieldCheckIcon,
     },
-    {
-      path: `/o/${organisation.url}/settings/billing`,
-      label: t`Billing`,
-      icon: CreditCardIcon,
-    },
   ].filter((route) => {
-    if (!isBillingEnabled && route.path.includes('/billing')) {
-      return false;
-    }
-
     if (
       (!isBillingEnabled || !organisation.organisationClaim.flags.emailDomains) &&
       route.path.includes('/email-domains')

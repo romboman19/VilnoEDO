@@ -1,4 +1,3 @@
-import { getServerLimits } from '@documenso/ee/server-only/limits/server';
 import { NEXT_PUBLIC_WEBAPP_URL } from '@documenso/lib/constants/app';
 import { DATE_FORMATS, DEFAULT_DOCUMENT_DATE_FORMAT } from '@documenso/lib/constants/date-formats';
 import { DocumentDataType, DocumentStatus, EnvelopeType, SigningStatus } from '@prisma/client';
@@ -355,17 +354,6 @@ export const ApiContractV1Implementation = tsr.router(ApiContractV1, {
           status: 500,
           body: {
             message: 'Create document is not available without S3 transport.',
-          },
-        };
-      }
-
-      const { remaining } = await getServerLimits({ userId: user.id, teamId: team.id });
-
-      if (remaining.documents <= 0) {
-        return {
-          status: 400,
-          body: {
-            message: 'You have reached the maximum number of documents allowed for this month',
           },
         };
       }
@@ -730,17 +718,6 @@ export const ApiContractV1Implementation = tsr.router(ApiContractV1, {
       },
     });
 
-    const { remaining } = await getServerLimits({ userId: user.id, teamId: team.id });
-
-    if (remaining.documents <= 0) {
-      return {
-        status: 400,
-        body: {
-          message: 'You have reached the maximum number of documents allowed for this month',
-        },
-      };
-    }
-
     const templateId = Number(params.templateId);
 
     const fileName = body.title.endsWith('.pdf') ? body.title : `${body.title}.pdf`;
@@ -873,17 +850,6 @@ export const ApiContractV1Implementation = tsr.router(ApiContractV1, {
         templateId: params.templateId,
       },
     });
-
-    const { remaining } = await getServerLimits({ userId: user.id, teamId: team.id });
-
-    if (remaining.documents <= 0) {
-      return {
-        status: 400,
-        body: {
-          message: 'You have reached the maximum number of documents allowed for this month',
-        },
-      };
-    }
 
     const templateId = Number(params.templateId);
 

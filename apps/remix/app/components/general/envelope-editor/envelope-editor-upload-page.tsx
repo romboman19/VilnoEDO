@@ -1,4 +1,3 @@
-import { useLimits } from '@documenso/ee/server-only/limits/provider/client';
 import { useEnvelopeAutosave } from '@documenso/lib/client-only/hooks/use-envelope-autosave';
 import { useCurrentEnvelopeEditor } from '@documenso/lib/client-only/providers/envelope-editor-provider';
 import { useCurrentOrganisation } from '@documenso/lib/client-only/providers/organisation';
@@ -18,11 +17,11 @@ import { DocumentDropzone } from '@documenso/ui/primitives/document-dropzone';
 import { useToast } from '@documenso/ui/primitives/use-toast';
 import type { DropResult } from '@hello-pangea/dnd';
 import { DragDropContext, Draggable, Droppable } from '@hello-pangea/dnd';
-import { msg, plural } from '@lingui/core/macro';
+import { msg } from '@lingui/core/macro';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { FileWarningIcon, GripVerticalIcon, Loader2Icon, PencilIcon, XIcon } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { ErrorCode as DropzoneErrorCode, type FileRejection, useDropzone } from 'react-dropzone';
+import { type FileRejection, useDropzone } from 'react-dropzone';
 
 import { EnvelopeItemDeleteDialog } from '~/components/dialogs/envelope-item-delete-dialog';
 
@@ -42,8 +41,6 @@ export const EnvelopeEditorUploadPage = () => {
   const organisation = useCurrentOrganisation();
 
   const { t, i18n } = useLingui();
-  const { maximumEnvelopeItemCount, remaining } = useLimits();
-  const hasEnvelopeItemLimit = maximumEnvelopeItemCount > 0;
   const { toast } = useToast();
 
   const {
@@ -404,41 +401,11 @@ export const EnvelopeEditorUploadPage = () => {
       return msg`Cannot upload items after the document has been sent`;
     }
 
-    if (organisation.subscription && remaining.documents === 0) {
-      return msg`Document upload disabled due to unpaid invoices`;
-    }
-
-    if (hasEnvelopeItemLimit && maximumEnvelopeItemCount <= localFiles.length) {
-      return msg({
-        message: plural(maximumEnvelopeItemCount, {
-          one: `You cannot upload more than # item per envelope.`,
-          other: `You cannot upload more than # items per envelope.`,
-        }),
-      });
-    }
-
     return null;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [hasEnvelopeItemLimit, localFiles.length, maximumEnvelopeItemCount, remaining.documents]);
+  }, []);
 
   const onFileDropRejected = (fileRejections: FileRejection[]) => {
-    const maxItemsReached = fileRejections.some((fileRejection) =>
-      fileRejection.errors.some((error) => error.code === DropzoneErrorCode.TooManyFiles),
-    );
-
-    if (maxItemsReached) {
-      toast({
-        title: plural(maximumEnvelopeItemCount, {
-          one: `You cannot upload more than # item per envelope.`,
-          other: `You cannot upload more than # items per envelope.`,
-        }),
-        duration: 5000,
-        variant: 'destructive',
-      });
-
-      return;
-    }
-
     toast({
       title: t`Upload failed`,
       description: i18n._(buildDropzoneRejectionDescription(fileRejections)),
@@ -470,7 +437,6 @@ export const EnvelopeEditorUploadPage = () => {
               disabled={dropzoneDisabledMessage !== null}
               disabledMessage={dropzoneDisabledMessage || undefined}
               disabledHeading={msg`Upload disabled`}
-              maxFiles={hasEnvelopeItemLimit ? maximumEnvelopeItemCount - localFiles.length : undefined}
               onDropRejected={onFileDropRejected}
             />
           )}

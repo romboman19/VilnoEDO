@@ -1,5 +1,3 @@
-import { getServerLimits } from '@documenso/ee/server-only/limits/server';
-import { AppError, AppErrorCode } from '@documenso/lib/errors/app-error';
 import { convertToPdf } from '@documenso/lib/server-only/document-conversion';
 import { createEnvelope } from '@documenso/lib/server-only/envelope/create-envelope';
 import { insertFormValuesInPdf } from '@documenso/lib/server-only/pdf/insert-form-values-in-pdf';
@@ -57,15 +55,6 @@ export const createDocumentRoute = authenticatedProcedure
         folderId,
       },
     });
-
-    const { remaining } = await getServerLimits({ userId: user.id, teamId });
-
-    if (remaining.documents <= 0) {
-      throw new AppError(AppErrorCode.LIMIT_EXCEEDED, {
-        message: 'You have reached your document limit for this month. Please upgrade your plan.',
-        statusCode: 400,
-      });
-    }
 
     const document = await createEnvelope({
       userId: user.id,

@@ -1,7 +1,3 @@
-import {
-  assertMemberCountWithinCap,
-  syncMemberCountWithStripeSeatPlan,
-} from '@documenso/ee/server-only/stripe/update-subscription-item-quantity';
 import { OrganisationInviteEmailTemplate } from '@documenso/email/templates/organisation-invite';
 import { NEXT_PUBLIC_WEBAPP_URL } from '@documenso/lib/constants/app';
 import { ORGANISATION_MEMBER_ROLE_PERMISSIONS_MAP } from '@documenso/lib/constants/organisations';
@@ -125,13 +121,6 @@ export const createOrganisationMemberInvites = async ({
   const numberOfNewInvites = organisationMemberInvites.length;
 
   const totalMemberCountWithInvites = numberOfCurrentMembers + numberOfCurrentInvites + numberOfNewInvites;
-
-  // Enforce the seat cap and sync billing for seat based plans.
-  if (subscription) {
-    await assertMemberCountWithinCap(subscription, organisationClaim, totalMemberCountWithInvites);
-
-    await syncMemberCountWithStripeSeatPlan(subscription, organisationClaim, totalMemberCountWithInvites);
-  }
 
   await prisma.organisationMemberInvite.createMany({
     data: organisationMemberInvites,

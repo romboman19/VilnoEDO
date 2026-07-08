@@ -1,4 +1,4 @@
-import { prepareCscRecipientSigning } from '@documenso/ee/server-only/signing/csc/prepare-recipient-signing';
+import { AppError, AppErrorCode } from '@documenso/lib/errors/app-error';
 import { completeDocumentWithToken } from '@documenso/lib/server-only/document/complete-document-with-token';
 import { rejectDocumentWithToken } from '@documenso/lib/server-only/document/reject-document-with-token';
 import { createEnvelopeRecipients } from '@documenso/lib/server-only/recipient/create-envelope-recipients';
@@ -574,10 +574,8 @@ export const recipientRouter = router({
         },
       });
 
-      // Branch on TSP envelopes before any SES side effects: TSP recipients
-      // can't complete via this route — they go through the CSC sync sign
-      // flow (`enterprise.csc.signEnvelope`). This route returns the redirect URL
-      // for the credential-scope OAuth round-trip.
+      // TSP (AES/QES) envelopes can't complete via this route — CSC TSP
+      // signing was removed along with the commercial @documenso/ee package.
       const envelope = await prisma.envelope.findFirstOrThrow({
         where: {
           ...unsafeBuildEnvelopeIdQuery({ type: 'documentId', id: documentId }, EnvelopeType.DOCUMENT),
@@ -587,9 +585,8 @@ export const recipientRouter = router({
       });
 
       if (isTspEnvelope(envelope)) {
-        return await prepareCscRecipientSigning({
-          recipientToken: token,
-          requestMetadata: ctx.metadata.requestMetadata,
+        throw new AppError(AppErrorCode.NOT_SETUP, {
+          message: `Completing '${envelope.signatureLevel}' envelopes is not supported — CSC TSP signing is not available on this instance.`,
         });
       }
 

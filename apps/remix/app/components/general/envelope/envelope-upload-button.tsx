@@ -1,5 +1,3 @@
-import { useLimits } from '@documenso/ee/server-only/limits/provider/client';
-import { useCurrentOrganisation } from '@documenso/lib/client-only/providers/organisation';
 import { useSession } from '@documenso/lib/client-only/providers/session';
 import { TIME_ZONES } from '@documenso/lib/constants/time-zones';
 import { AppError } from '@documenso/lib/errors/app-error';
@@ -9,13 +7,12 @@ import type { TCreateEnvelopePayload } from '@documenso/trpc/server/envelope-rou
 import { buildDropzoneRejectionDescription } from '@documenso/ui/lib/handle-dropzone-rejection';
 import { cn } from '@documenso/ui/lib/utils';
 import { DocumentUploadButton } from '@documenso/ui/primitives/document-upload-button';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@documenso/ui/primitives/tooltip';
 import { useToast } from '@documenso/ui/primitives/use-toast';
-import { msg, plural } from '@lingui/core/macro';
-import { Trans, useLingui } from '@lingui/react/macro';
+import { msg } from '@lingui/core/macro';
+import { useLingui } from '@lingui/react/macro';
 import { EnvelopeType } from '@prisma/client';
 import { useMemo, useState } from 'react';
-import { ErrorCode as DropzoneErrorCode, type FileRejection } from 'react-dropzone';
+import type { FileRejection } from 'react-dropzone';
 import { useNavigate } from 'react-router';
 
 import { useCurrentTeam } from '~/providers/team';
@@ -38,32 +35,20 @@ export const EnvelopeUploadButton = ({ className, type, folderId }: EnvelopeUplo
   const team = useCurrentTeam();
 
   const navigate = useNavigate();
-  const organisation = useCurrentOrganisation();
 
   const userTimezone = TIME_ZONES.find((timezone) => timezone === Intl.DateTimeFormat().resolvedOptions().timeZone);
-
-  const { quota, remaining, refreshLimits, maximumEnvelopeItemCount } = useLimits();
-  const hasEnvelopeItemLimit = maximumEnvelopeItemCount > 0;
 
   const [isLoading, setIsLoading] = useState(false);
 
   const { mutateAsync: createEnvelope } = trpc.envelope.create.useMutation();
 
   const disabledMessage = useMemo(() => {
-    if (organisation.subscription && remaining.documents === 0) {
-      return msg`Document upload disabled due to unpaid invoices`;
-    }
-
-    if (remaining.documents === 0) {
-      return msg`You have reached your document limit.`;
-    }
-
     if (!user.emailVerified) {
       return msg`Verify your email to upload documents.`;
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [remaining.documents, user.emailVerified, team]);
+  }, [user.emailVerified, team]);
 
   const onFileDrop = async (files: File[]) => {
     try {
@@ -91,8 +76,6 @@ export const EnvelopeUploadButton = ({ className, type, folderId }: EnvelopeUplo
 
         throw error;
       });
-
-      void refreshLimits();
 
       const pathPrefix = type === EnvelopeType.DOCUMENT ? formatDocumentsPath(team.url) : formatTemplatesPath(team.url);
 
@@ -127,23 +110,6 @@ export const EnvelopeUploadButton = ({ className, type, folderId }: EnvelopeUplo
   };
 
   const onFileDropRejected = (fileRejections: FileRejection[]) => {
-    const maxItemsReached = fileRejections.some((fileRejection) =>
-      fileRejection.errors.some((error) => error.code === DropzoneErrorCode.TooManyFiles),
-    );
-
-    if (maxItemsReached) {
-      toast({
-        title: plural(maximumEnvelopeItemCount, {
-          one: `You cannot upload more than # item per envelope.`,
-          other: `You cannot upload more than # items per envelope.`,
-        }),
-        duration: 5000,
-        variant: 'destructive',
-      });
-
-      return;
-    }
-
     toast({
       title: t`Upload failed`,
       description: i18n._(buildDropzoneRejectionDescription(fileRejections)),
@@ -154,34 +120,15 @@ export const EnvelopeUploadButton = ({ className, type, folderId }: EnvelopeUplo
 
   return (
     <div className={cn('relative', className)}>
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <div>
-              <DocumentUploadButton
-                loading={isLoading}
-                disabled={remaining.documents === 0 || !user.emailVerified}
-                disabledMessage={disabledMessage}
-                onDrop={onFileDrop}
-                onDropRejected={onFileDropRejected}
-                type={type}
-                internalVersion="2"
-                maxFiles={hasEnvelopeItemLimit ? maximumEnvelopeItemCount : undefined}
-              />
-            </div>
-          </TooltipTrigger>
-
-          {type === EnvelopeType.DOCUMENT && remaining.documents > 0 && Number.isFinite(remaining.documents) && (
-            <TooltipContent>
-              <p className="text-sm">
-                <Trans>
-                  {remaining.documents} of {quota.documents} documents remaining this month.
-                </Trans>
-              </p>
-            </TooltipContent>
-          )}
-        </Tooltip>
-      </TooltipProvider>
+      <DocumentUploadButton
+        loading={isLoading}
+        disabled={!user.emailVerified}
+        disabledMessage={disabledMessage}
+        onDrop={onFileDrop}
+        onDropRejected={onFileDropRejected}
+        type={type}
+        internalVersion="2"
+      />
     </div>
   );
 };

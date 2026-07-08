@@ -1,8 +1,6 @@
-import { useLimits } from '@documenso/ee/server-only/limits/provider/client';
 import { useAnalytics } from '@documenso/lib/client-only/hooks/use-analytics';
-import { useCurrentOrganisation } from '@documenso/lib/client-only/providers/organisation';
 import { useSession } from '@documenso/lib/client-only/providers/session';
-import { APP_DOCUMENT_UPLOAD_SIZE_LIMIT, IS_BILLING_ENABLED } from '@documenso/lib/constants/app';
+import { APP_DOCUMENT_UPLOAD_SIZE_LIMIT } from '@documenso/lib/constants/app';
 import { getAllowedUploadMimeTypes } from '@documenso/lib/constants/document-conversion';
 import { DEFAULT_DOCUMENT_TIME_ZONE, TIME_ZONES } from '@documenso/lib/constants/time-zones';
 import { AppError } from '@documenso/lib/errors/app-error';
@@ -13,13 +11,12 @@ import type { TCreateEnvelopePayload } from '@documenso/trpc/server/envelope-rou
 import { buildDropzoneRejectionDescription } from '@documenso/ui/lib/handle-dropzone-rejection';
 import { cn } from '@documenso/ui/lib/utils';
 import { useToast } from '@documenso/ui/primitives/use-toast';
-import { plural } from '@lingui/core/macro';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { EnvelopeType } from '@prisma/client';
 import { Loader } from 'lucide-react';
 import { type ReactNode, useState } from 'react';
-import { ErrorCode as DropzoneErrorCode, type FileRejection, useDropzone } from 'react-dropzone';
-import { Link, useNavigate, useParams } from 'react-router';
+import { type FileRejection, useDropzone } from 'react-dropzone';
+import { useNavigate, useParams } from 'react-router';
 
 import { useCurrentTeam } from '~/providers/team';
 import { getUploadErrorMessage } from '~/utils/toast-error-messages';
@@ -40,7 +37,6 @@ export const EnvelopeDropZoneWrapper = ({ children, type, className }: EnvelopeD
 
   const navigate = useNavigate();
   const analytics = useAnalytics();
-  const organisation = useCurrentOrganisation();
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -48,19 +44,9 @@ export const EnvelopeDropZoneWrapper = ({ children, type, className }: EnvelopeD
     TIME_ZONES.find((timezone) => timezone === Intl.DateTimeFormat().resolvedOptions().timeZone) ??
     DEFAULT_DOCUMENT_TIME_ZONE;
 
-  const { quota, remaining, refreshLimits, maximumEnvelopeItemCount } = useLimits();
-  const hasEnvelopeItemLimit = maximumEnvelopeItemCount > 0;
-
   const { mutateAsync: createEnvelope } = trpc.envelope.create.useMutation();
 
-  const isUploadDisabled = remaining.documents === 0 || !user.emailVerified;
-
   const onFileDrop = async (files: File[]) => {
-    if (isUploadDisabled && IS_BILLING_ENABLED()) {
-      await navigate(`/o/${organisation.url}/settings/billing`);
-      return;
-    }
-
     try {
       setIsLoading(true);
 
@@ -82,8 +68,6 @@ export const EnvelopeDropZoneWrapper = ({ children, type, className }: EnvelopeD
       }
 
       const { id } = await createEnvelope(formData);
-
-      void refreshLimits();
 
       toast({
         title: type === EnvelopeType.DOCUMENT ? t`Document uploaded` : t`Template uploaded`,
@@ -128,23 +112,6 @@ export const EnvelopeDropZoneWrapper = ({ children, type, className }: EnvelopeD
       return;
     }
 
-    const maxItemsReached = fileRejections.some((fileRejection) =>
-      fileRejection.errors.some((error) => error.code === DropzoneErrorCode.TooManyFiles),
-    );
-
-    if (maxItemsReached) {
-      toast({
-        title: plural(maximumEnvelopeItemCount, {
-          one: `You cannot upload more than # item per envelope.`,
-          other: `You cannot upload more than # items per envelope.`,
-        }),
-        duration: 5000,
-        variant: 'destructive',
-      });
-
-      return;
-    }
-
     toast({
       title: t`Upload failed`,
       description: i18n._(buildDropzoneRejectionDescription(fileRejections)),
@@ -156,7 +123,6 @@ export const EnvelopeDropZoneWrapper = ({ children, type, className }: EnvelopeD
     accept: getAllowedUploadMimeTypes(),
     multiple: true,
     maxSize: megabytesToBytes(APP_DOCUMENT_UPLOAD_SIZE_LIMIT),
-    maxFiles: hasEnvelopeItemLimit ? maximumEnvelopeItemCount : undefined,
     onDrop: (files) => void onFileDrop(files),
     onDropRejected: onFileDropRejected,
     noClick: true,
@@ -178,26 +144,6 @@ export const EnvelopeDropZoneWrapper = ({ children, type, className }: EnvelopeD
             <p className="mt-4 text-md text-muted-foreground">
               <Trans>Drag and drop your document here</Trans>
             </p>
-
-            {isUploadDisabled && IS_BILLING_ENABLED() && (
-              <Link
-                to={`/o/${organisation.url}/settings/billing`}
-                className="mt-4 text-amber-500 text-sm hover:underline dark:text-amber-400"
-              >
-                <Trans>Upgrade your plan to upload more documents</Trans>
-              </Link>
-            )}
-
-            {!isUploadDisabled &&
-              team?.id === undefined &&
-              remaining.documents > 0 &&
-              Number.isFinite(remaining.documents) && (
-                <p className="mt-4 text-muted-foreground/80 text-sm">
-                  <Trans>
-                    {remaining.documents} of {quota.documents} documents remaining this month.
-                  </Trans>
-                </p>
-              )}
           </div>
         </div>
       )}

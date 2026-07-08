@@ -1,12 +1,10 @@
 import { useCurrentOrganisation } from '@documenso/lib/client-only/providers/organisation';
 import { useSession } from '@documenso/lib/client-only/providers/session';
 import { IS_BILLING_ENABLED } from '@documenso/lib/constants/app';
-import { canExecuteOrganisationAction, isPersonalLayout } from '@documenso/lib/utils/organisations';
+import { isPersonalLayout } from '@documenso/lib/utils/organisations';
 import { Alert, AlertDescription, AlertTitle } from '@documenso/ui/primitives/alert';
-import { Button } from '@documenso/ui/primitives/button';
 import { msg } from '@lingui/core/macro';
 import { Trans, useLingui } from '@lingui/react/macro';
-import { Link } from 'react-router';
 
 import { OrganisationEmailDomainCreateDialog } from '~/components/dialogs/organisation-email-domain-create-dialog';
 import { SettingsHeader } from '~/components/general/settings-header';
@@ -52,14 +50,6 @@ export default function OrganisationSettingsEmailDomains() {
               <Trans>Currently email domains can only be configured for Platform and above plans.</Trans>
             </AlertDescription>
           </div>
-
-          {canExecuteOrganisationAction('MANAGE_BILLING', organisation.currentOrganisationRole) && (
-            <Button asChild variant="outline">
-              <Link to={isPersonalLayoutMode ? '/settings/billing' : `/o/${organisation.url}/settings/billing`}>
-                <Trans>Update Billing</Trans>
-              </Link>
-            </Button>
-          )}
         </Alert>
       )}
     </div>

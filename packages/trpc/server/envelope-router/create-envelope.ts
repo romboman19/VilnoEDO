@@ -1,4 +1,3 @@
-import { getServerLimits } from '@documenso/ee/server-only/limits/server';
 import { AppError, AppErrorCode } from '@documenso/lib/errors/app-error';
 import { convertToPdf } from '@documenso/lib/server-only/document-conversion';
 import { createEnvelope } from '@documenso/lib/server-only/envelope/create-envelope';
@@ -86,25 +85,6 @@ export const createEnvelopeRouteCaller = async ({
     attachments,
     delegatedDocumentOwner,
   } = payload;
-
-  const { remaining, maximumEnvelopeItemCount } = await getServerLimits({
-    userId,
-    teamId,
-  });
-
-  if (remaining.documents <= 0) {
-    throw new AppError(AppErrorCode.LIMIT_EXCEEDED, {
-      message: 'You have reached your document limit for this month. Please upgrade your plan.',
-      statusCode: 400,
-    });
-  }
-
-  if (maximumEnvelopeItemCount > 0 && files.length > maximumEnvelopeItemCount) {
-    throw new AppError('ENVELOPE_ITEM_LIMIT_EXCEEDED', {
-      message: `You cannot upload more than ${maximumEnvelopeItemCount} envelope items per envelope`,
-      statusCode: 400,
-    });
-  }
 
   // For each file: convert to PDF if needed, normalize, extract & clean placeholders, then upload.
   const envelopeItems = await Promise.all(

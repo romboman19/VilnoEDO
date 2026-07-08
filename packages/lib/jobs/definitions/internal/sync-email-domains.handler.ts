@@ -1,5 +1,5 @@
-import { reregisterEmailDomain } from '@documenso/ee/server-only/lib/reregister-email-domain';
-import { verifyEmailDomain } from '@documenso/ee/server-only/lib/verify-email-domain';
+import { reregisterEmailDomain } from '@documenso/lib/server-only/email-domain/reregister-email-domain';
+import { verifyEmailDomain } from '@documenso/lib/server-only/email-domain/verify-email-domain';
 import { prisma } from '@documenso/prisma';
 import { DateTime } from 'luxon';
 

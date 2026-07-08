@@ -1,12 +1,10 @@
 import { useSession } from '@documenso/lib/client-only/providers/session';
-import { IS_BILLING_ENABLED } from '@documenso/lib/constants/app';
-import { canExecuteOrganisationAction, isPersonalLayout } from '@documenso/lib/utils/organisations';
+import { isPersonalLayout } from '@documenso/lib/utils/organisations';
 import { cn } from '@documenso/ui/lib/utils';
 import { Button } from '@documenso/ui/primitives/button';
 import { Trans } from '@lingui/react/macro';
 import {
   BracesIcon,
-  CreditCardIcon,
   Globe2Icon,
   Lock,
   MailIcon,
@@ -27,10 +25,6 @@ export const SettingsMobileNav = ({ className, ...props }: SettingsMobileNavProp
   const { organisations } = useSession();
 
   const isPersonalLayoutMode = isPersonalLayout(organisations);
-
-  const hasManageableBillingOrgs = organisations.some((org) =>
-    canExecuteOrganisationAction('MANAGE_BILLING', org.currentOrganisationRole),
-  );
 
   return (
     <div className={cn('flex flex-wrap items-center justify-start gap-x-2 gap-y-4', className)} {...props}>
@@ -117,18 +111,6 @@ export const SettingsMobileNav = ({ className, ...props }: SettingsMobileNavProp
           <Trans>Organisations</Trans>
         </Button>
       </Link>
-
-      {IS_BILLING_ENABLED() && hasManageableBillingOrgs && (
-        <Link to={isPersonalLayoutMode ? '/settings/billing-personal' : `/settings/billing`}>
-          <Button
-            variant="ghost"
-            className={cn('w-full justify-start', pathname?.startsWith('/settings/billing') && 'bg-secondary')}
-          >
-            <CreditCardIcon className="mr-2 h-5 w-5" />
-            <Trans>Billing</Trans>
-          </Button>
-        </Link>
-      )}
 
       <Link to="/settings/security">
         <Button

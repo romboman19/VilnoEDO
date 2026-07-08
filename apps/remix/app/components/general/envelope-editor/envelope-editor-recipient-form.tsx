@@ -1,4 +1,3 @@
-import { useLimits } from '@documenso/ee/server-only/limits/provider/client';
 import { useDebouncedValue } from '@documenso/lib/client-only/hooks/use-debounced-value';
 import { ZEditorRecipientsFormSchema } from '@documenso/lib/client-only/hooks/use-editor-recipients';
 import { useCurrentEnvelopeEditor } from '@documenso/lib/client-only/providers/envelope-editor-provider';
@@ -50,7 +49,6 @@ export const EnvelopeEditorRecipientForm = () => {
 
   const { t } = useLingui();
   const { toast } = useToast();
-  const { remaining } = useLimits();
   const { sessionData } = useOptionalSession();
 
   const user = sessionData?.user;
@@ -621,7 +619,7 @@ export const EnvelopeEditorRecipientForm = () => {
             type="button"
             className="flex-1"
             size="sm"
-            disabled={isSubmitting || signers.length >= remaining.recipients}
+            disabled={isSubmitting}
             onClick={() => onAddSigner()}
           >
             <PlusIcon className="mr-1 -ml-1 h-5 w-5" />

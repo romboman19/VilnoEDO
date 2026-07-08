@@ -1,4 +1,3 @@
-import { getServerLimits } from '@documenso/ee/server-only/limits/server';
 import { AppError, AppErrorCode } from '@documenso/lib/errors/app-error';
 import { sendDocument } from '@documenso/lib/server-only/document/send-document';
 import { getEnvelopeById } from '@documenso/lib/server-only/envelope/get-envelope-by-id';
@@ -38,14 +37,6 @@ export const useEnvelopeRoute = authenticatedProcedure
         folderId,
       },
     });
-
-    const limits = await getServerLimits({ userId: user.id, teamId });
-
-    if (limits.remaining.documents === 0) {
-      throw new AppError(AppErrorCode.LIMIT_EXCEEDED, {
-        message: 'You have reached your document limit.',
-      });
-    }
 
     // Verify the template exists and get envelope items
     const envelope = await getEnvelopeById({

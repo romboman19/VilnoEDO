@@ -1,4 +1,3 @@
-import { getOrganisationAuthenticationPortalOptions } from '@documenso/auth/server/lib/utils/organisation-portal';
 import { IS_BILLING_ENABLED } from '@documenso/lib/constants/app';
 import {
   ORGANISATION_ACCOUNT_LINK_VERIFICATION_TOKEN_IDENTIFIER,
@@ -11,11 +10,20 @@ import type { RequestMetadata } from '@documenso/lib/universal/extract-request-m
 import { prisma } from '@documenso/prisma';
 import { UserSecurityAuditLogType } from '@prisma/client';
 
+import { getOrganisationAuthenticationPortalOptions } from './organisation-portal';
+
 export interface LinkOrganisationAccountOptions {
   token: string;
   requestMeta: RequestMetadata;
 }
 
+/**
+ * Complete an organisation SSO account link/creation flow.
+ *
+ * Consumes the one-time verification token, links the OIDC account onto the
+ * user (verifying their email and clearing any unverified password), and adds
+ * them to the organisation when they aren't already a member.
+ */
 export const linkOrganisationAccount = async ({ token, requestMeta }: LinkOrganisationAccountOptions) => {
   if (!IS_BILLING_ENABLED()) {
     throw new AppError(AppErrorCode.INVALID_REQUEST, {
@@ -23,7 +31,7 @@ export const linkOrganisationAccount = async ({ token, requestMeta }: LinkOrgani
     });
   }
 
-  // Delete the token since it contains unnecessary sensitive data.
+  // Consume the token immediately — it carries sensitive OAuth material.
   const verificationToken = await prisma.verificationToken.delete({
     where: {
       token,
@@ -72,22 +80,21 @@ export const linkOrganisationAccount = async ({ token, requestMeta }: LinkOrgani
   }
 
   const user = verificationToken.user;
+  const { organisationId, oauthConfig } = tokenMetadata.data;
 
   const { clientOptions, organisation } = await getOrganisationAuthenticationPortalOptions({
     type: 'id',
-    organisationId: tokenMetadata.data.organisationId,
+    organisationId,
   });
 
   const organisationMember = await prisma.organisationMember.findFirst({
     where: {
       userId: user.id,
-      organisationId: tokenMetadata.data.organisationId,
+      organisationId,
     },
   });
 
-  const oauthConfig = tokenMetadata.data.oauthConfig;
-
-  const userAlreadyLinked = user.accounts.find(
+  const userAlreadyLinked = user.accounts.some(
     (account) => account.provider === clientOptions.id && account.providerAccountId === oauthConfig.providerAccountId,
   );
 
@@ -95,7 +102,6 @@ export const linkOrganisationAccount = async ({ token, requestMeta }: LinkOrgani
     return;
   }
 
-  // Link the user if not linked yet.
   if (!userAlreadyLinked) {
     await prisma.$transaction(async (tx) => {
       await tx.account.create({
@@ -111,7 +117,6 @@ export const linkOrganisationAccount = async ({ token, requestMeta }: LinkOrgani
         },
       });
 
-      // Log link event.
       await tx.userSecurityAuditLog.create({
         data: {
           userId: user.id,
@@ -121,9 +126,9 @@ export const linkOrganisationAccount = async ({ token, requestMeta }: LinkOrgani
         },
       });
 
-      // If account already exists in an unverified state, remove the password to ensure
-      // they cannot sign in using that method since we cannot confirm the password
-      // was set by the user.
+      // An unverified account can't have a self-set password we trust; linking
+      // via verified SSO verifies the email and drops that password so it can't
+      // be used to sign in.
       if (!user.emailVerified) {
         await tx.user.update({
           where: {
@@ -132,20 +137,18 @@ export const linkOrganisationAccount = async ({ token, requestMeta }: LinkOrgani
           data: {
             emailVerified: new Date(),
             password: null,
-            // Todo: (RR7) Will need to update the "password" account after the migration.
           },
         });
       }
     });
   }
 
-  // Only add the user to the organisation if they are not already a member.
-  // Done outside the above transaction to avoid nested transactions and
-  // holding connections during the job trigger network I/O.
+  // Outside the transaction to avoid nesting and holding a connection across the
+  // membership job's network I/O.
   if (!organisationMember) {
     await addUserToOrganisation({
       userId: user.id,
-      organisationId: tokenMetadata.data.organisationId,
+      organisationId,
       organisationGroups: organisation.groups,
       organisationMemberRole: organisation.organisationAuthenticationPortal.defaultOrganisationRole,
     });

@@ -1,10 +1,14 @@
 import { GetEmailIdentityCommand } from '@aws-sdk/client-sesv2';
-import { AppError, AppErrorCode } from '@documenso/lib/errors/app-error';
 import { prisma } from '@documenso/prisma';
 import { EmailDomainStatus } from '@prisma/client';
 
-import { getSesClient } from './create-email-domain';
+import { AppError, AppErrorCode } from '../../errors/app-error';
+import { getSesClient } from './ses-client';
 
+/**
+ * Poll SES for the current verification status of a domain identity and mirror
+ * it onto the stored `EmailDomain` row (ACTIVE once SES reports SUCCESS).
+ */
 export const verifyEmailDomain = async (emailDomainId: string) => {
   const emailDomain = await prisma.emailDomain.findUnique({
     where: {
@@ -18,9 +22,7 @@ export const verifyEmailDomain = async (emailDomainId: string) => {
     });
   }
 
-  const sesClient = getSesClient();
-
-  const response = await sesClient.send(
+  const response = await getSesClient().send(
     new GetEmailIdentityCommand({
       EmailIdentity: emailDomain.domain,
     }),

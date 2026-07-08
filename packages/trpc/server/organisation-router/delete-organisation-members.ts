@@ -1,4 +1,3 @@
-import { syncMemberCountWithStripeSeatPlan } from '@documenso/ee/server-only/stripe/update-subscription-item-quantity';
 import {
   ORGANISATION_MEMBER_ROLE_HIERARCHY,
   ORGANISATION_MEMBER_ROLE_PERMISSIONS_MAP,
@@ -131,12 +130,6 @@ export const deleteOrganisationMembers = async ({
 
   const inviteCount = organisation.invites.length;
   const newMemberCount = organisation.members.length + inviteCount - membersToDelete.length;
-
-  // Removing members is a reducing operation, so we don't gate it on the
-  // subscription being present. Sync Stripe only when one exists.
-  if (organisation.subscription) {
-    await syncMemberCountWithStripeSeatPlan(organisation.subscription, organisationClaim, newMemberCount);
-  }
 
   const removedUserIds = membersToDelete.map((member) => member.userId);
   const teamIds = organisation.teams.map((team) => team.id);
