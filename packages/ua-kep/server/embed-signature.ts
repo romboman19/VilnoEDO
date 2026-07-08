@@ -1,6 +1,4 @@
 import { completeDocumentWithToken } from '@documenso/lib/server-only/document/complete-document-with-token';
-import { getFileServerSide } from '@documenso/lib/universal/upload/get-file.server';
-import { env } from '@documenso/lib/utils/env';
 import type { PrismaClient } from '@documenso/prisma/client';
 
 import { ZUaKepSessionItemsSchema } from '../types/session';
@@ -10,7 +8,6 @@ import { createUaKepEvidencePackage } from './evidence-package';
 import { markUaKepSessionSigned, verifyUaKepPreparedSession } from './session';
 import { collectRegistryIssuerCns, runUaKepStructuralValidation } from './structural-validation';
 import { createUaKepValidationReports } from './validation';
-import { resolveFullVerifier, type TFullVerificationResult } from './verification';
 
 export const completeUaKepSigning = async ({
   prisma,
@@ -120,79 +117,14 @@ export const completeUaKepSigning = async ({
     throw new Error(`UA KEP signature rejected by structural validation: ${failureCodes}`);
   }
 
-  // Second stage: full cryptographic verification (DSTU-4145, chain, trust
-  // material) through the pluggable "full" verification engine. Structural
-  // validation above is the always-on acceptance floor; this engine is dormant
-  // until an external authoritative validation service is configured.
-  //
-  // NEXT_PRIVATE_UA_KEP_VERIFY_MODE controls strictness:
-  // - required (production default): any invalid or unverifiable signature rejects.
-  // - optional: a cryptographic rejection still fails, but an engine outage
-  //   (service down/unreachable) degrades to structural validation so signing
-  //   keeps working while the verification service is offline.
-  // - off: skip full verification entirely.
-  // Development defaults to optional so a verification-service config issue does
-  // not block browser-key integration testing.
-  const defaultVerifyMode = env('NODE_ENV') === 'production' ? 'required' : 'optional';
-  const verifyMode = (env('NEXT_PRIVATE_UA_KEP_VERIFY_MODE') ?? defaultVerifyMode).trim().toLowerCase();
-  const cryptoResults = new Map<string, TFullVerificationResult>();
-  const fullVerifier = resolveFullVerifier();
-
-  if (fullVerifier && verifyMode !== 'off') {
-    const envelopeItems = await prisma.envelopeItem.findMany({
-      where: {
-        id: {
-          in: signatures.map((signature) => signature.envelopeItemId),
-        },
-      },
-      include: {
-        documentData: true,
-      },
-    });
-
-    const envelopeItemsById = new Map(envelopeItems.map((item) => [item.id, item]));
-
-    for (const signature of signatures) {
-      const envelopeItem = envelopeItemsById.get(signature.envelopeItemId);
-
-      if (!envelopeItem) {
-        throw new Error('UA KEP envelope item not found for cryptographic verification');
-      }
-
-      const documentBytes = await getFileServerSide({
-        type: envelopeItem.documentData.type,
-        data: envelopeItem.documentData.data,
-      });
-
-      const result = await fullVerifier.verify({
-        documentBytes,
-        signatureBase64: signature.signatureB64,
-      });
-
-      if (!result.valid) {
-        if (verifyMode === 'optional' && result.unavailable) {
-          // The engine could not run, not the signature — fall back to the
-          // structural verdict for this item instead of blocking signing.
-          continue;
-        }
-
-        throw new Error(
-          `UA KEP signature rejected by cryptographic verification: ${result.error ?? 'invalid signature'}`,
-        );
-      }
-
-      cryptoResults.set(signature.envelopeItemId, result);
-    }
-  }
-
-  // A structural pass alone is a technical pre-check, NOT confirmation of a
-  // valid КЕП — only full cryptographic verification earns that. Name the
-  // states accordingly so nothing downstream reads structural-only as "valid".
+  // Full cryptographic verification (DSTU-4145 signature math, certificate chain,
+  // revocation) requires a licensed server-side signing library and is out of
+  // scope for this instance — it will be built once the validation approach is
+  // decided. A structural pass alone is a technical pre-check, NOT confirmation
+  // of a valid КЕП, so nothing downstream may read it as "cryptographically
+  // valid".
   const verificationStatusByEnvelopeItemId = new Map(
-    verdicts.map((verdict) => [
-      verdict.envelopeItemId,
-      cryptoResults.has(verdict.envelopeItemId) ? 'cryptographically_verified' : 'technical_precheck_passed',
-    ]),
+    verdicts.map((verdict) => [verdict.envelopeItemId, 'technical_precheck_passed']),
   );
 
   const persistenceResult = await prisma.$transaction(async (tx) => {
@@ -222,7 +154,6 @@ export const completeUaKepSigning = async ({
         session: signedSession,
         artifacts: persistedArtifacts.artifacts.filter((artifact) => artifact.artifactType === 'CADES_DETACHED'),
         verdicts,
-        cryptoResults,
         validationTime,
       },
     });

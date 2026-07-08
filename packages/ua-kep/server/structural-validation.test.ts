@@ -176,7 +176,7 @@ describe('runUaKepStructuralValidation', () => {
     expect(verdict.certificateStatus).toBe('within_validity_window');
     expect(verdict.parsed?.isDetached).toBe(true);
     expect(verdict.parsed?.signerCertificate?.issuerCommonName).toBe('КНЕДП ДПС');
-    expect(verdict.warnings.map((warning) => warning.code)).toEqual(['CRYPTOGRAPHIC_VALIDATION_DELEGATED']);
+    expect(verdict.warnings.map((warning) => warning.code)).toEqual(['CRYPTOGRAPHIC_VALIDATION_NOT_PERFORMED']);
   });
 
   it('fails when the prepared hash does not match messageDigest', async () => {

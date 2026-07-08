@@ -4,11 +4,8 @@ import type { Prisma } from '@prisma/client';
 import type { TUaKepPersistedArtifact } from './artifacts';
 import type { TStructuralVerdict } from './structural-validation';
 import { UA_KEP_STRUCTURAL_VALIDATOR_ID } from './structural-validation';
-import type { TFullVerificationResult } from './verification';
 
 type TValidationPrismaClient = Pick<PrismaClient, 'uaKepTrustMaterialSnapshot' | 'uaKepValidationReport'>;
-
-const UA_KEP_CRYPTO_VALIDATOR_ID = 'external-verification-service';
 
 type TCreateReportsInput = {
   session: {
@@ -16,7 +13,6 @@ type TCreateReportsInput = {
   };
   artifacts: TUaKepPersistedArtifact[];
   verdicts: TStructuralVerdict[];
-  cryptoResults?: Map<string, TFullVerificationResult>;
   validationTime: Date;
 };
 
@@ -61,7 +57,7 @@ export const createUaKepValidationReports = async ({
       rawSnapshot: {
         caRegistryUrl: UA_KEP_CA_REGISTRY_URL,
         caBundleUrl: UA_KEP_CA_BUNDLE_URL,
-        note: 'Issuer CNs from the bundled registry were used for structural validation; chain and revocation checks are performed by the external verification service when configured.',
+        note: 'Issuer CNs from the bundled registry were used for structural validation; full cryptographic verification (DSTU-4145 signature math, certificate chain, revocation) is out of scope for this instance and will be added once the validation approach is decided.',
       },
     },
   });
@@ -70,7 +66,6 @@ export const createUaKepValidationReports = async ({
     data: input.artifacts.map((artifact) => {
       const verdict = verdictsByEnvelopeItemId.get(artifact.envelopeItemId);
       const parsed = verdict?.parsed ?? null;
-      const crypto = input.cryptoResults?.get(artifact.envelopeItemId) ?? null;
 
       const enrichedSignerInfo = {
         ...(toJsonObject(artifact.signerInfo) ?? {}),
@@ -83,35 +78,19 @@ export const createUaKepValidationReports = async ({
               certNotAfter: parsed.signerCertificate.notAfter.toISOString(),
             }
           : {}),
-        ...(crypto
-          ? {
-              legalClass: crypto.legalClass,
-              cryptoSignerCn: crypto.signerCN,
-              cryptoIssuerCn: crypto.issuer,
-              cryptoCertSerial: crypto.certSerial,
-            }
-          : {}),
       };
-
-      // The delegation warning only applies while crypto verification has not
-      // actually run for this artifact.
-      const warnings = (verdict?.warnings ?? []).filter(
-        (warning) => !(crypto && warning.code === 'CRYPTOGRAPHIC_VALIDATION_DELEGATED'),
-      );
-
-      const status = crypto ? (crypto.valid ? 'passed' : 'failed') : (verdict?.status ?? 'pending');
 
       return {
         artifactId: artifact.id,
         trustMaterialSnapshotId: trustMaterialSnapshot.id,
-        status,
-        validator: crypto ? UA_KEP_CRYPTO_VALIDATOR_ID : UA_KEP_STRUCTURAL_VALIDATOR_ID,
-        validationKind: crypto ? 'CADES_DETACHED_CRYPTO' : 'CADES_DETACHED_STRUCTURAL',
+        status: verdict?.status ?? 'pending',
+        validator: UA_KEP_STRUCTURAL_VALIDATOR_ID,
+        validationKind: 'CADES_DETACHED_STRUCTURAL',
         checkedAt: input.validationTime,
         certificateStatus: verdict?.certificateStatus ?? null,
         signerInfo: toJsonObject(enrichedSignerInfo),
         validationErrors: verdict ? toJsonArray(verdict.errors) : undefined,
-        validationWarnings: toJsonArray(warnings),
+        validationWarnings: toJsonArray(verdict?.warnings ?? []),
         rawReport: {
           envelopeId: artifact.envelopeId,
           recipientId: artifact.recipientId,
@@ -131,20 +110,6 @@ export const createUaKepValidationReports = async ({
                 signingTime: parsed.signingTime?.toISOString() ?? null,
                 certificateCount: parsed.certificateCount,
               }
-            : null,
-          crypto: crypto
-            ? JSON.parse(
-                JSON.stringify({
-                  valid: crypto.valid,
-                  unavailable: crypto.unavailable,
-                  legalClass: crypto.legalClass,
-                  signerCN: crypto.signerCN,
-                  signingTime: crypto.signingTime,
-                  certSerial: crypto.certSerial,
-                  issuer: crypto.issuer,
-                  validationReport: crypto.validationReport,
-                }),
-              )
             : null,
         },
       };
