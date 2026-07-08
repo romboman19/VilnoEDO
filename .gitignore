@@ -61,19 +61,9 @@ logs.json
 .claude
 CLAUDE.md
 
-# agents
-.specs
-
 # scripts
 scripts/output*
 scripts/bench-*
 
-# license
-.documenso-license.json
-.documenso-license-backup.json
-
 # tmp
 tmp/
-
-# opencode
-.opencode/package-lock.json
