@@ -46,10 +46,40 @@ services:
       - OLLAMA_BASE_URL=${OLLAMA_BASE_URL}
       - OLLAMA_MODEL=${OLLAMA_MODEL}
       - OLLAMA_API_KEY=${OLLAMA_API_KEY}
+      # UA KEP full verification. The structural fail-closed check inside the app
+      # is the acceptance floor; the verify-service provides the full crypto
+      # verdict. Mode `optional` degrades to structural while the IIT engine is a
+      # skeleton (unavailable) — switch to `required` once the IIT library is
+      # provisioned (Phase 2), which then hard-rejects any unverifiable signature.
+      - NEXT_PRIVATE_UA_KEP_VERIFY_SERVICE_URL=http://ua-kep-verifier:3017
+      - NEXT_PRIVATE_UA_KEP_VERIFY_SERVICE_SECRET=${UA_KEP_VERIFY_SERVICE_SECRET:?err}
+      - NEXT_PRIVATE_UA_KEP_VERIFY_MODE=${NEXT_PRIVATE_UA_KEP_VERIFY_MODE:-optional}
     ports:
       - 3100:3000
     volumes:
       - /opt/VilnoEDO/cert.p12:/opt/documenso/cert.p12:ro
 
+  ua-kep-verifier:
+    build:
+      context: ../apps/ua-kep-verify-service
+    image: ua-kep-verify-service:latest
+    restart: unless-stopped
+    environment:
+      - PORT=3017
+      - NODE_ENV=production
+      - UA_KEP_API_KEY=${UA_KEP_VERIFY_SERVICE_SECRET:?err}
+      - UA_KEP_VERIFY_ENGINE=${UA_KEP_VERIFY_ENGINE:-iit-native}
+      - UA_KEP_VERIFY_FAIL_CLOSED=${UA_KEP_VERIFY_FAIL_CLOSED:-true}
+      - UA_KEP_TRUST_LIST_PROFILE=${UA_KEP_TRUST_LIST_PROFILE:-TL-UA-DSTU}
+      # Phase 2: mount the licensed IIT library and point IIT_LIB_PATH at it.
+      - IIT_LIB_PATH=${IIT_LIB_PATH:-}
+      - IIT_LIB_MODE=${IIT_LIB_MODE:-ffi}
+      - UA_KEP_TRUST_CACHE_DIR=/data/trust-list
+    volumes:
+      - ua_kep_trust:/data/trust-list
+      # Phase 2: mount the IIT library directory here and set IIT_LIB_PATH above.
+      # - /opt/VilnoEDO/iit-lib:/opt/iit-lib:ro
+
 volumes:
   database:
+  ua_kep_trust:

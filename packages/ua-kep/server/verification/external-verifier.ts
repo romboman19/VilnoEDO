@@ -1,16 +1,24 @@
+import { createHash } from 'node:crypto';
+
 import { env } from '@documenso/lib/utils/env';
 
-import type { TDetachedSignatureVerifier, TFullVerificationResult, TVerifyDetachedInput } from './types';
+import {
+  asLegalClass,
+  type TDetachedSignatureVerifier,
+  type TFullVerificationResult,
+  type TVerifyDetachedInput,
+} from './types';
 
-/// Provider-agnostic external verification engine. Delegates the full
-/// cryptographic check (DSTU-4145 signature math, certificate chain, trust
-/// material) to an external authoritative validation service that Node cannot
-/// perform natively, and returns a reproducible validation report.
+/// Provider-agnostic client for the external UA KEP verification service
+/// (`ua-kep-verify-service`). Delegates the full cryptographic check (DSTU-4145
+/// signature math, certificate chain, trust material) to that adapter, which
+/// fronts a real server-side engine (IIT native library, or a qualified
+/// provider API), and returns a reproducible validation report.
 ///
-/// The service contract: `POST {baseUrl}/api/verify` with a JSON body
-/// `{ document: base64, signature: base64 }`, responding
-/// `{ ok: true, verification: { valid, skipped, signatureClass, signerCN,
-/// signingTime, certSerial, issuer, error }, validationReport }`.
+/// Request:  POST {baseUrl}/api/verify
+///   { documentBase64, signatureBase64, signatureFormat, policy, expectedDocumentSha256 }
+/// Response: the normalized verdict { valid, unavailable, legalClass, signer,
+///   certificate, signature, ... } — persisted verbatim as `validationReport`.
 
 const VERIFY_TIMEOUT_MS = 15_000;
 
@@ -34,10 +42,9 @@ const verify = async ({ documentBytes, signatureBase64 }: TVerifyDetachedInput):
   const failed = (error: string): TFullVerificationResult => ({
     engineId: EXTERNAL_VERIFIER_ID,
     valid: false,
-    skipped: false,
     error,
     unavailable: true,
-    signatureClass: 'unknown',
+    legalClass: 'UNKNOWN',
     signerCN: null,
     signingTime: null,
     certSerial: null,
@@ -61,8 +68,11 @@ const verify = async ({ documentBytes, signatureBase64 }: TVerifyDetachedInput):
         ...(apiKey ? { 'x-api-key': apiKey } : {}),
       },
       body: JSON.stringify({
-        document: Buffer.from(documentBytes).toString('base64'),
-        signature: signatureBase64,
+        documentBase64: Buffer.from(documentBytes).toString('base64'),
+        signatureBase64,
+        signatureFormat: 'CADES_DETACHED',
+        policy: 'UA_KEP_STRICT',
+        expectedDocumentSha256: createHash('sha256').update(documentBytes).digest('hex'),
       }),
       signal: AbortSignal.timeout(VERIFY_TIMEOUT_MS),
     });
@@ -73,38 +83,27 @@ const verify = async ({ documentBytes, signatureBase64 }: TVerifyDetachedInput):
 
     const data = await response.json();
 
-    if (!data || data.ok !== true || !data.verification) {
+    if (!data || typeof data !== 'object' || typeof data.valid !== 'boolean') {
       return failed('External verification returned a malformed response');
     }
 
-    const verification = data.verification;
-
-    // The service answered but reports it could not run verification at all
-    // (e.g. its crypto engine failed to initialise). That is an outage, not a
-    // signature verdict — flag it as unavailable so `optional` mode can degrade
-    // to structural validation instead of rejecting a signature that was never
-    // actually examined.
-    const errorText = typeof verification.error === 'string' ? verification.error : null;
-    const serviceUnavailable =
-      verification.valid !== true &&
-      verification.signatureClass !== 'QES' &&
-      verification.signatureClass !== 'AdES' &&
-      verification.signatureClass !== 'AdES_QC' &&
-      typeof errorText === 'string' &&
-      /unavailable|not initiali[sz]ed|initiali[sz]ation failed|internal error|failed to (start|load)/i.test(errorText);
+    const signer = (data.signer ?? {}) as Record<string, unknown>;
+    const certificate = (data.certificate ?? {}) as Record<string, unknown>;
+    const signature = (data.signature ?? {}) as Record<string, unknown>;
 
     return {
-      engineId: EXTERNAL_VERIFIER_ID,
-      valid: verification.valid === true,
-      skipped: verification.skipped === true,
-      error: errorText,
-      unavailable: serviceUnavailable,
-      signatureClass: typeof verification.signatureClass === 'string' ? verification.signatureClass : 'unknown',
-      signerCN: typeof verification.signerCN === 'string' ? verification.signerCN : null,
-      signingTime: typeof verification.signingTime === 'string' ? verification.signingTime : null,
-      certSerial: typeof verification.certSerial === 'string' ? verification.certSerial : null,
-      issuer: typeof verification.issuer === 'string' ? verification.issuer : null,
-      validationReport: data.validationReport ?? null,
+      engineId: typeof data.verifier?.engine === 'string' ? data.verifier.engine : EXTERNAL_VERIFIER_ID,
+      // The service is the source of truth for both the verdict and whether it
+      // could run at all — never re-derive "unavailable" from error strings.
+      valid: data.valid === true,
+      unavailable: data.unavailable === true,
+      error: typeof data.error === 'string' ? data.error : null,
+      legalClass: asLegalClass(data.legalClass),
+      signerCN: typeof signer.commonName === 'string' ? signer.commonName : null,
+      signingTime: typeof signature.signingTime === 'string' ? signature.signingTime : null,
+      certSerial: typeof certificate.serial === 'string' ? certificate.serial : null,
+      issuer: typeof certificate.issuerCn === 'string' ? certificate.issuerCn : null,
+      validationReport: data,
     };
   } catch (error) {
     return failed(

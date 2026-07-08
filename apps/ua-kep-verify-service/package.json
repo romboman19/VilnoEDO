@@ -1,0 +1,25 @@
+{
+  "name": "@vilnoedo/ua-kep-verify-service",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Adapter service for authoritative UA KEP signature verification. Exposes a stable POST /api/verify contract in front of pluggable engines (IIT native library, qualified-provider API).",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "start": "tsx src/server.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@hono/node-server": "^1.19.11",
+    "fast-xml-parser": "^4.5.0",
+    "hono": "^4.12.14",
+    "tsx": "^4.19.2",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@types/node": "^22",
+    "vitest": "^4.0.18"
+  }
+}

@@ -39,7 +39,7 @@ const buildPrismaMock = ({
           {
             envelopeItemId: 'item_1',
             artifactType: 'CADES_DETACHED',
-            verificationStatus: 'passed_structural',
+            verificationStatus: 'technical_precheck_passed',
             signatureSha256: 'abc123',
             structuredValidationReport: {
               status: 'passed',
@@ -110,7 +110,7 @@ describe('getUaKepSigningStatus', () => {
 
     expect(result?.sessionStatus).toBe('signed');
     expect(result?.items).toHaveLength(1);
-    expect(result?.items[0].verificationStatus).toBe('passed_structural');
+    expect(result?.items[0].verificationStatus).toBe('technical_precheck_passed');
     expect(result?.items[0].validationReport?.status).toBe('passed');
     expect(result?.evidencePackage?.id).toBe('evp_1');
 

@@ -185,10 +185,13 @@ export const completeUaKepSigning = async ({
     }
   }
 
+  // A structural pass alone is a technical pre-check, NOT confirmation of a
+  // valid КЕП — only full cryptographic verification earns that. Name the
+  // states accordingly so nothing downstream reads structural-only as "valid".
   const verificationStatusByEnvelopeItemId = new Map(
     verdicts.map((verdict) => [
       verdict.envelopeItemId,
-      cryptoResults.has(verdict.envelopeItemId) ? 'passed_cryptographic' : 'passed_structural',
+      cryptoResults.has(verdict.envelopeItemId) ? 'cryptographically_verified' : 'technical_precheck_passed',
     ]),
   );
 

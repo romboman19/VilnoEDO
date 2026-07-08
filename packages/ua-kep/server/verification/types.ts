@@ -7,21 +7,25 @@
 /// only engine is an external authoritative validation service; it is dormant
 /// until configured, in which case structural validation alone gates acceptance.
 
+/// Legal class from the technical specification (section 11.1.8), as returned
+/// by the external verification service.
+export type TUaKepLegalClass = 'KEP' | 'UEP_QC' | 'ADES' | 'UNKNOWN';
+
 export type TFullVerificationResult = {
-  /// Id of the engine that produced this verdict (for audit/report provenance).
+  /// Id of the engine/service that produced this verdict (for audit provenance).
   engineId: string;
   valid: boolean;
-  skipped: boolean;
   error: string | null;
   /// True when the engine could not run at all (service unreachable/uninitialised)
   /// — the signature was never cryptographically examined. Callers must not
   /// report an unavailable engine as a forged signature.
   unavailable: boolean;
-  signatureClass: string;
+  legalClass: TUaKepLegalClass;
   signerCN: string | null;
   signingTime: string | null;
   certSerial: string | null;
   issuer: string | null;
+  /// The full normalized service response, persisted verbatim as evidence.
   validationReport: unknown;
 };
 
@@ -40,17 +44,11 @@ export type TDetachedSignatureVerifier = {
   verify: (input: TVerifyDetachedInput) => Promise<TFullVerificationResult>;
 };
 
-/// Map an engine signature class onto the legal classes from the technical
-/// specification (section 11.1.8).
-export const toLegalClass = (signatureClass: string) => {
-  switch (signatureClass) {
-    case 'QES':
-      return 'KEP';
-    case 'AdES_QC':
-      return 'UEP_QC';
-    case 'AdES':
-      return 'ADES';
-    default:
-      return 'UNKNOWN';
-  }
+const LEGAL_CLASSES: readonly TUaKepLegalClass[] = ['KEP', 'UEP_QC', 'ADES', 'UNKNOWN'];
+
+/// Coerce an arbitrary value from the service response into a known legal class.
+export const asLegalClass = (value: unknown): TUaKepLegalClass => {
+  return typeof value === 'string' && (LEGAL_CLASSES as readonly string[]).includes(value)
+    ? (value as TUaKepLegalClass)
+    : 'UNKNOWN';
 };

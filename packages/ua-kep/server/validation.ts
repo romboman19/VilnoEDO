@@ -5,7 +5,6 @@ import type { TUaKepPersistedArtifact } from './artifacts';
 import type { TStructuralVerdict } from './structural-validation';
 import { UA_KEP_STRUCTURAL_VALIDATOR_ID } from './structural-validation';
 import type { TFullVerificationResult } from './verification';
-import { toLegalClass } from './verification';
 
 type TValidationPrismaClient = Pick<PrismaClient, 'uaKepTrustMaterialSnapshot' | 'uaKepValidationReport'>;
 
@@ -86,7 +85,7 @@ export const createUaKepValidationReports = async ({
           : {}),
         ...(crypto
           ? {
-              legalClass: toLegalClass(crypto.signatureClass),
+              legalClass: crypto.legalClass,
               cryptoSignerCn: crypto.signerCN,
               cryptoIssuerCn: crypto.issuer,
               cryptoCertSerial: crypto.certSerial,
@@ -137,9 +136,8 @@ export const createUaKepValidationReports = async ({
             ? JSON.parse(
                 JSON.stringify({
                   valid: crypto.valid,
-                  skipped: crypto.skipped,
-                  signatureClass: crypto.signatureClass,
-                  legalClass: toLegalClass(crypto.signatureClass),
+                  unavailable: crypto.unavailable,
+                  legalClass: crypto.legalClass,
                   signerCN: crypto.signerCN,
                   signingTime: crypto.signingTime,
                   certSerial: crypto.certSerial,

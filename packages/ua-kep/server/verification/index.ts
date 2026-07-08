@@ -7,8 +7,13 @@ export {
   getExternalVerifierUrl,
   isExternalVerificationConfigured,
 } from './external-verifier';
-export type { TDetachedSignatureVerifier, TFullVerificationResult, TVerifyDetachedInput } from './types';
-export { toLegalClass } from './types';
+export type {
+  TDetachedSignatureVerifier,
+  TFullVerificationResult,
+  TUaKepLegalClass,
+  TVerifyDetachedInput,
+} from './types';
+export { asLegalClass } from './types';
 
 /// Resolve the configured "full" verification engine, or `null` when none is
 /// configured (the seam is dormant and structural validation alone gates

@@ -56,20 +56,17 @@ describe('external verifier verify()', () => {
     expect(result.engineId).toBe('external-verification-service');
   });
 
-  it('returns a valid verdict with mapped fields on success', async () => {
+  it('maps a valid normalized verdict', async () => {
     vi.stubEnv('NEXT_PRIVATE_UA_KEP_VERIFY_SERVICE_URL', 'https://verify.example.test');
     mockFetch(() =>
       jsonResponse({
-        ok: true,
-        verification: {
-          valid: true,
-          signatureClass: 'QES',
-          signerCN: 'ТЕСТ Тест Тестович',
-          signingTime: '2026-07-08T10:00:00Z',
-          certSerial: 'ABCD',
-          issuer: 'КНЕДП ДПС',
-        },
-        validationReport: { some: 'report' },
+        valid: true,
+        unavailable: false,
+        legalClass: 'KEP',
+        signer: { commonName: 'ТЕСТ Тест Тестович' },
+        certificate: { serial: 'ABCD', issuerCn: 'КНЕДП ДПС' },
+        signature: { signingTime: '2026-07-08T10:00:00Z' },
+        verifier: { engine: 'iit-native' },
       }),
     );
 
@@ -77,9 +74,12 @@ describe('external verifier verify()', () => {
 
     expect(result.valid).toBe(true);
     expect(result.unavailable).toBe(false);
-    expect(result.signatureClass).toBe('QES');
+    expect(result.legalClass).toBe('KEP');
     expect(result.signerCN).toBe('ТЕСТ Тест Тестович');
-    expect(result.validationReport).toEqual({ some: 'report' });
+    expect(result.certSerial).toBe('ABCD');
+    expect(result.issuer).toBe('КНЕДП ДПС');
+    expect(result.engineId).toBe('iit-native');
+    expect(result.validationReport).toMatchObject({ valid: true });
   });
 
   it('marks an HTTP error as unavailable', async () => {
@@ -93,13 +93,10 @@ describe('external verifier verify()', () => {
     expect(result.error).toContain('HTTP 500');
   });
 
-  it('treats a service-uninitialised error as unavailable, not a forged signature', async () => {
+  it('passes through a service-reported outage (unavailable) without calling it forged', async () => {
     vi.stubEnv('NEXT_PRIVATE_UA_KEP_VERIFY_SERVICE_URL', 'https://verify.example.test');
     mockFetch(() =>
-      jsonResponse({
-        ok: true,
-        verification: { valid: false, signatureClass: 'unknown', error: 'crypto engine initialization failed' },
-      }),
+      jsonResponse({ valid: false, unavailable: true, legalClass: 'UNKNOWN', error: 'engine not provisioned' }),
     );
 
     const result = await externalVerifier.verify({ documentBytes: DOC, signatureBase64: SIG });
@@ -112,8 +109,10 @@ describe('external verifier verify()', () => {
     vi.stubEnv('NEXT_PRIVATE_UA_KEP_VERIFY_SERVICE_URL', 'https://verify.example.test');
     mockFetch(() =>
       jsonResponse({
-        ok: true,
-        verification: { valid: false, signatureClass: 'unknown', error: 'signature does not match document' },
+        valid: false,
+        unavailable: false,
+        legalClass: 'UNKNOWN',
+        error: 'signature does not match document',
       }),
     );
 
