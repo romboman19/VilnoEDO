@@ -10,8 +10,8 @@ import type { TVerifyEngine, TVerifyEngineInput } from './types';
 /// the browser `@it-enterprise/digital-signature` SDK.
 ///
 /// PROVISIONING (Phase 2): mount the licensed IIT library into the image and
-/// point `IIT_LIB_PATH` at it. See ./iit-native.README.md for the exact file
-/// set (EUSignNIXes* native, or EUSignJava*). Until then this engine reports
+/// point `IIT_LIB_PATH` at it. See ../../PROVISIONING.md for the exact files,
+/// download links and binding steps. Until then this engine reports
 /// `unavailable` and, combined with the service's fail-closed policy, the
 /// caller degrades to structural validation or rejects — it never reports a
 /// signature as valid without real cryptographic verification.
