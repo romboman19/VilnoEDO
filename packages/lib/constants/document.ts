@@ -86,3 +86,10 @@ export const DOCUMENT_SIGNATURE_TYPES_WITH_UA_KEP = {
     value: DocumentSignatureType.UA_KEP,
   },
 } satisfies Record<DocumentSignatureType, DocumentSignatureTypeData>;
+
+/// VilnoEDO is UA-only: the only offered signature type is the Ukrainian
+/// КЕП/УЕП/electronic seal. The upstream Documenso visual signature types
+/// (draw/type/upload) are not exposed in document creation.
+export const DOCUMENT_SIGNATURE_TYPES_UA_ONLY = {
+  [DocumentSignatureType.UA_KEP]: DOCUMENT_SIGNATURE_TYPES_WITH_UA_KEP[DocumentSignatureType.UA_KEP],
+} satisfies Partial<Record<DocumentSignatureType, DocumentSignatureTypeData>>;

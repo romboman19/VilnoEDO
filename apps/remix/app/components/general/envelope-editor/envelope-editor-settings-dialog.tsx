@@ -1,7 +1,7 @@
 import { useCurrentEnvelopeEditor } from '@documenso/lib/client-only/providers/envelope-editor-provider';
 import { useCurrentOrganisation } from '@documenso/lib/client-only/providers/organisation';
 import { DATE_FORMATS, DEFAULT_DOCUMENT_DATE_FORMAT } from '@documenso/lib/constants/date-formats';
-import { DOCUMENT_DISTRIBUTION_METHODS, DOCUMENT_SIGNATURE_TYPES_WITH_UA_KEP } from '@documenso/lib/constants/document';
+import { DOCUMENT_DISTRIBUTION_METHODS, DOCUMENT_SIGNATURE_TYPES_UA_ONLY } from '@documenso/lib/constants/document';
 import { ZEnvelopeExpirationPeriod } from '@documenso/lib/constants/envelope-expiration';
 import { ZEnvelopeReminderSettings } from '@documenso/lib/constants/envelope-reminder';
 import {
@@ -330,7 +330,7 @@ export const EnvelopeEditorSettingsDialog = ({ trigger, ...props }: EnvelopeEdit
   }, [open, form]);
 
   const selectedTab = tabs.find((tab) => tab.id === activeTab);
-  const signatureTypeOptions = DOCUMENT_SIGNATURE_TYPES_WITH_UA_KEP;
+  const signatureTypeOptions = DOCUMENT_SIGNATURE_TYPES_UA_ONLY;
 
   if (!selectedTab || !settings) {
     return null;

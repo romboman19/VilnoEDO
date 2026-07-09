@@ -12,8 +12,9 @@ docker build -f docker/Dockerfile -t vilnoedo:latest .
 docker compose -f deploy/compose.yml --env-file deploy/.env up -d
 ```
 
-Сертифікат для підписання очікується на хості за шляхом `/opt/VilnoEDO/cert.p12`
-(монтується в контейнер як `/opt/documenso/cert.p12`).
+VilnoEDO працює в UA-only режимі: підпис — український КЕП/УЕП/електронна печатка
+на стороні клієнта через IIT. Documenso `.p12` server seal не використовується,
+жоден signing-сертифікат монтувати не потрібно.
 
 ## Розробка
 

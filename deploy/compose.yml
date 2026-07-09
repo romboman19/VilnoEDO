@@ -41,15 +41,14 @@ services:
       - NEXT_PRIVATE_SMTP_PASSWORD=${NEXT_PRIVATE_SMTP_PASSWORD:?err}
       - NEXT_PRIVATE_SMTP_FROM_NAME=${NEXT_PRIVATE_SMTP_FROM_NAME:?err}
       - NEXT_PRIVATE_SMTP_FROM_ADDRESS=${NEXT_PRIVATE_SMTP_FROM_ADDRESS:?err}
-      - NEXT_PRIVATE_SIGNING_LOCAL_FILE_PATH=/opt/documenso/cert.p12
+      # UA-only: no Documenso .p12 server seal — Ukrainian КЕП/УЕП/electronic seal
+      # is created client-side via IIT. No signing certificate is mounted.
       - AI_PROVIDER=${AI_PROVIDER}
       - OLLAMA_BASE_URL=${OLLAMA_BASE_URL}
       - OLLAMA_MODEL=${OLLAMA_MODEL}
       - OLLAMA_API_KEY=${OLLAMA_API_KEY}
     ports:
       - 3100:3000
-    volumes:
-      - /opt/VilnoEDO/cert.p12:/opt/documenso/cert.p12:ro
 
 volumes:
   database:

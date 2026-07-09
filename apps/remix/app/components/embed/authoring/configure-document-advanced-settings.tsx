@@ -1,5 +1,5 @@
 import { DATE_FORMATS } from '@documenso/lib/constants/date-formats';
-import { DOCUMENT_SIGNATURE_TYPES } from '@documenso/lib/constants/document';
+import { DOCUMENT_SIGNATURE_TYPES_UA_ONLY } from '@documenso/lib/constants/document';
 import { SUPPORTED_LANGUAGES } from '@documenso/lib/constants/i18n';
 import { TIME_ZONES } from '@documenso/lib/constants/time-zones';
 import { DocumentEmailCheckboxes } from '@documenso/ui/components/document/document-email-checkboxes';
@@ -87,7 +87,7 @@ export const ConfigureDocumentAdvancedSettings = ({
                     </FormLabel>
                     <FormControl>
                       <MultiSelectCombobox
-                        options={Object.values(DOCUMENT_SIGNATURE_TYPES).map((option) => ({
+                        options={Object.values(DOCUMENT_SIGNATURE_TYPES_UA_ONLY).map((option) => ({
                           label: _(option.label),
                           value: option.value,
                         }))}
