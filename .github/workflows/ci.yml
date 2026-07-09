@@ -21,6 +21,9 @@ jobs:
         with:
           fetch-depth: 2
 
+      - name: UA-only guard (no .p12 seal dependency)
+        run: sh scripts/guard-ua-only.sh
+
       - uses: ./.github/actions/node-install
 
       - name: Copy env
