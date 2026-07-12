@@ -9,6 +9,8 @@ export interface TemplateDocumentSelfSignedProps {
   assetBaseUrl: string;
 }
 
+const VILNOEDO_REPOSITORY_URL = 'https://github.com/romboman19/VilnoEDO';
+
 export const TemplateDocumentSelfSigned = ({ documentName, assetBaseUrl }: TemplateDocumentSelfSignedProps) => {
   const NEXT_PUBLIC_WEBAPP_URL = env('NEXT_PUBLIC_WEBAPP_URL');
 
@@ -65,10 +67,10 @@ export const TemplateDocumentSelfSigned = ({ documentName, assetBaseUrl }: Templ
 
           <Button
             className="rounded-lg border border-border border-solid px-4 py-2 text-center font-medium text-foreground text-sm no-underline"
-            href="https://documenso.com/pricing"
+            href={VILNOEDO_REPOSITORY_URL}
           >
             <Img src={getAssetUrl('/static/review.png')} className="mr-2 mb-0.5 inline h-5 w-5 align-middle" alt="" />
-            <Trans>View plans</Trans>
+            <Trans>Project repository</Trans>
           </Button>
         </Section>
       </Section>

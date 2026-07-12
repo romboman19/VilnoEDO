@@ -13,10 +13,11 @@ export type DocumentCompletedEmailTemplateProps = Partial<TemplateDocumentComple
 };
 
 export const DocumentCompletedEmailTemplate = ({
-  downloadLink = 'https://documenso.com',
+  downloadLink = 'https://vilnoedo.local',
   documentName = 'Open Source Pledge.pdf',
   assetBaseUrl = 'http://localhost:3002',
   customBody,
+  completedVariant,
   reportUrl,
 }: DocumentCompletedEmailTemplateProps) => {
   const { _ } = useLingui();
@@ -39,6 +40,7 @@ export const DocumentCompletedEmailTemplate = ({
                 documentName={documentName}
                 assetBaseUrl={assetBaseUrl}
                 customBody={customBody}
+                completedVariant={completedVariant}
               />
             </Section>
           </Container>

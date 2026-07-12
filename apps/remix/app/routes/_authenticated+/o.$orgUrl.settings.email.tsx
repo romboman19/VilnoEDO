@@ -27,12 +27,12 @@ export default function OrganisationSettingsGeneral() {
 
   const onEmailPreferencesSubmit = async (data: TEmailPreferencesFormSchema) => {
     try {
-      const { emailId, emailReplyTo, emailDocumentSettings } = data;
+      const { emailReplyTo, emailDocumentSettings } = data;
 
       await updateOrganisationSettings({
         organisationId: organisation.id,
         data: {
-          emailId,
+          emailId: null,
           emailReplyTo: emailReplyTo || null,
           // emailReplyToName,
           emailDocumentSettings,

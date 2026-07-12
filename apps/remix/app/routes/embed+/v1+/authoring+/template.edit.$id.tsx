@@ -89,16 +89,8 @@ export default function EmbeddingAuthoringTemplateEditPage() {
   const signatureTypes = useMemo(() => {
     const types: string[] = [];
 
-    if (template.templateMeta?.drawSignatureEnabled) {
-      types.push(DocumentSignatureType.DRAW);
-    }
-
-    if (template.templateMeta?.typedSignatureEnabled) {
-      types.push(DocumentSignatureType.TYPE);
-    }
-
-    if (template.templateMeta?.uploadSignatureEnabled) {
-      types.push(DocumentSignatureType.UPLOAD);
+    if (template.templateMeta?.uaKepSignatureEnabled !== false) {
+      types.push(DocumentSignatureType.UA_KEP);
     }
 
     return types;
@@ -203,18 +195,13 @@ export default function EmbeddingAuthoringTemplateEditPage() {
         externalId: templateExternalId,
         meta: {
           ...configuration.meta,
-          drawSignatureEnabled: configuration.meta.signatureTypes
+          drawSignatureEnabled: false,
+          typedSignatureEnabled: false,
+          uploadSignatureEnabled: false,
+          uaKepSignatureEnabled: configuration.meta.signatureTypes
             ? configuration.meta.signatureTypes.length === 0 ||
-              configuration.meta.signatureTypes.includes(DocumentSignatureType.DRAW)
-            : undefined,
-          typedSignatureEnabled: configuration.meta.signatureTypes
-            ? configuration.meta.signatureTypes.length === 0 ||
-              configuration.meta.signatureTypes.includes(DocumentSignatureType.TYPE)
-            : undefined,
-          uploadSignatureEnabled: configuration.meta.signatureTypes
-            ? configuration.meta.signatureTypes.length === 0 ||
-              configuration.meta.signatureTypes.includes(DocumentSignatureType.UPLOAD)
-            : undefined,
+              configuration.meta.signatureTypes.includes(DocumentSignatureType.UA_KEP)
+            : true,
         },
         recipients: configuration.signers.map((signer) => ({
           id: signer.nativeId,

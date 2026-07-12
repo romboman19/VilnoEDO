@@ -264,9 +264,9 @@ export const DocumentSigningForm = ({
                         fullName={fullName}
                         value={signature ?? ''}
                         onChange={(v) => setSignature(v ?? '')}
-                        typedSignatureEnabled={document.documentMeta?.typedSignatureEnabled}
-                        uploadSignatureEnabled={document.documentMeta?.uploadSignatureEnabled}
-                        drawSignatureEnabled={document.documentMeta?.drawSignatureEnabled}
+                        typedSignatureEnabled={false}
+                        uploadSignatureEnabled={false}
+                        drawSignatureEnabled={false}
                         externalTabs={externalSignatureTabs}
                       />
                     </div>

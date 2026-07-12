@@ -11,7 +11,6 @@ import {
   SUPPORTED_LANGUAGES,
 } from '@documenso/lib/constants/i18n';
 import { DEFAULT_DOCUMENT_TIME_ZONE, TIME_ZONES } from '@documenso/lib/constants/time-zones';
-import { DO_NOT_INVALIDATE_QUERY_ON_MUTATION } from '@documenso/lib/constants/trpc';
 import { AppError } from '@documenso/lib/errors/app-error';
 import { ZDocumentAccessAuthTypesSchema, ZDocumentActionAuthTypesSchema } from '@documenso/lib/types/document-auth';
 import { DocumentEmailEvents, ZDocumentEmailSettingsSchema } from '@documenso/lib/types/document-email';
@@ -24,7 +23,6 @@ import { extractDocumentAuthMethods } from '@documenso/lib/utils/document-auth';
 import { isValidRedirectUrl } from '@documenso/lib/utils/is-valid-redirect-url';
 import { canAccessTeamDocument, DocumentSignatureType, extractTeamSignatureSettings } from '@documenso/lib/utils/teams';
 import { zEmail } from '@documenso/lib/utils/zod';
-import { trpc } from '@documenso/trpc/react';
 import { DocumentEmailCheckboxes } from '@documenso/ui/components/document/document-email-checkboxes';
 import {
   DocumentGlobalAuthAccessSelect,
@@ -171,7 +169,7 @@ export const EnvelopeEditorSettingsDialog = ({ trigger, ...props }: EnvelopeEdit
   const { t } = useLingui();
   const { toast } = useToast();
 
-  const { envelope, updateEnvelopeAsync, editorConfig, isEmbedded, organisationEmails } = useCurrentEnvelopeEditor();
+  const { envelope, updateEnvelopeAsync, editorConfig, isEmbedded } = useCurrentEnvelopeEditor();
 
   const { settings } = editorConfig;
 
@@ -202,7 +200,7 @@ export const EnvelopeEditorSettingsDialog = ({ trigger, ...props }: EnvelopeEdit
         distributionMethod: envelope.documentMeta.distributionMethod || DocumentDistributionMethod.EMAIL,
         redirectUrl: envelope.documentMeta.redirectUrl ?? '',
         language: envelope.documentMeta.language ?? APP_I18N_OPTIONS.fallbackLang,
-        emailId: envelope.documentMeta.emailId ?? null,
+        emailId: null,
         emailReplyTo: envelope.documentMeta.emailReplyTo ?? undefined,
         emailSettings: ZDocumentEmailSettingsSchema.parse(envelope.documentMeta.emailSettings),
         signatureTypes,
@@ -227,19 +225,6 @@ export const EnvelopeEditorSettingsDialog = ({ trigger, ...props }: EnvelopeEdit
   const distributionMethod = form.watch('meta.distributionMethod');
   const isEmailDistribution = distributionMethod === DocumentDistributionMethod.EMAIL;
 
-  const { data: emailData, isLoading: isLoadingEmails } = trpc.enterprise.organisation.email.find.useQuery(
-    {
-      organisationId: organisation.id,
-      perPage: 100,
-    },
-    {
-      ...DO_NOT_INVALIDATE_QUERY_ON_MUTATION,
-      enabled: Boolean(organisationEmails !== undefined && organisation.id),
-    },
-  );
-
-  const emails = emailData?.data || organisationEmails || [];
-
   const canUpdateVisibility = canAccessTeamDocument(team.currentTeamRole, envelope.visibility);
 
   const onFormSubmit = async (data: TAddSettingsFormSchema) => {
@@ -250,7 +235,6 @@ export const EnvelopeEditorSettingsDialog = ({ trigger, ...props }: EnvelopeEdit
       language,
       signatureTypes,
       distributionMethod,
-      emailId,
       emailSettings,
       message,
       subject,
@@ -274,7 +258,7 @@ export const EnvelopeEditorSettingsDialog = ({ trigger, ...props }: EnvelopeEdit
           timezone,
           dateFormat,
           redirectUrl,
-          emailId,
+          emailId: null,
           message,
           subject,
           emailReplyTo,
@@ -755,45 +739,6 @@ export const EnvelopeEditorSettingsDialog = ({ trigger, ...props }: EnvelopeEdit
                   ))
                   .with({ activeTab: 'notifications', settings: { allowConfigureDistribution: true } }, () => (
                     <>
-                      {settings.allowConfigureEmailSender && organisation.organisationClaim.flags.emailDomains && (
-                        <FormField
-                          control={form.control}
-                          name="meta.emailId"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>
-                                <Trans>Email Sender</Trans>
-                              </FormLabel>
-
-                              <FormControl>
-                                <Select
-                                  {...field}
-                                  value={field.value === null ? '-1' : field.value}
-                                  onValueChange={(value) => field.onChange(value === '-1' ? null : value)}
-                                  disabled={!isEmailDistribution}
-                                >
-                                  <SelectTrigger loading={isLoadingEmails} className="bg-background">
-                                    <SelectValue />
-                                  </SelectTrigger>
-
-                                  <SelectContent>
-                                    {emails.map((email) => (
-                                      <SelectItem key={email.id} value={email.id}>
-                                        {email.email}
-                                      </SelectItem>
-                                    ))}
-
-                                    <SelectItem value={'-1'}>Documenso</SelectItem>
-                                  </SelectContent>
-                                </Select>
-                              </FormControl>
-
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      )}
-
                       {settings.allowConfigureEmailReplyTo && (
                         <FormField
                           control={form.control}

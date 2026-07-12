@@ -44,8 +44,6 @@ export const DocumentSigningSignatureField = ({
   onSignField,
   onUnsignField,
   typedSignatureEnabled,
-  uploadSignatureEnabled,
-  drawSignatureEnabled,
   uaKepSignatureEnabled,
   uaKepSigning,
 }: DocumentSigningSignatureFieldProps) => {
@@ -304,9 +302,9 @@ export const DocumentSigningSignatureField = ({
             fullName={fullName}
             value={localSignature ?? ''}
             onChange={({ value }) => setLocalSignature(value)}
-            typedSignatureEnabled={typedSignatureEnabled}
-            uploadSignatureEnabled={uploadSignatureEnabled}
-            drawSignatureEnabled={drawSignatureEnabled}
+            typedSignatureEnabled={false}
+            uploadSignatureEnabled={false}
+            drawSignatureEnabled={false}
             externalTabs={externalTabs}
           />
 

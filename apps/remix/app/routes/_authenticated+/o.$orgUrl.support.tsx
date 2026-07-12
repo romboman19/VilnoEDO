@@ -4,9 +4,9 @@ import { IS_BILLING_ENABLED } from '@documenso/lib/constants/app';
 import { Button } from '@documenso/ui/primitives/button';
 import { msg } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { BookIcon, HelpCircleIcon, Link2Icon } from 'lucide-react';
+import { HelpCircleIcon, MailIcon } from 'lucide-react';
 import { useState } from 'react';
-import { Link, useSearchParams } from 'react-router';
+import { useSearchParams } from 'react-router';
 
 import { SupportTicketForm } from '~/components/forms/support-ticket-form';
 import { appMetaTags } from '~/utils/meta';
@@ -49,56 +49,14 @@ export default function SupportPage() {
         <div className="mt-6 flex flex-col gap-4">
           <div className="rounded-lg border p-4">
             <h2 className="flex items-center gap-2 font-bold text-lg">
-              <BookIcon className="h-5 w-5 text-muted-foreground" />
-              <Link
-                to="https://docs.documenso.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:underline"
-              >
-                <Trans>Documentation</Trans>
-              </Link>
+              <MailIcon className="h-5 w-5 text-muted-foreground" />
+              <Trans>Contact us</Trans>
             </h2>
             <p className="mt-1 text-muted-foreground">
-              <Trans>Read our documentation to get started with Documenso.</Trans>
+              <Trans>We'll get back to you as soon as possible via email.</Trans>
             </p>
-          </div>
-          <div className="rounded-lg border p-4">
-            <h2 className="flex items-center gap-2 font-bold text-lg">
-              <Link2Icon className="h-5 w-5 text-muted-foreground" />
-              <Link
-                to="https://documen.so/discord"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:underline"
-              >
-                <Trans>Discord</Trans>
-              </Link>
-            </h2>
-            <p className="mt-1 text-muted-foreground">
-              <Trans>
-                Join our community on{' '}
-                <Link
-                  to="https://documen.so/discord"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:underline"
-                >
-                  Discord
-                </Link>{' '}
-                for community support and discussion.
-              </Trans>
-            </p>
-          </div>
-          {organisation && IS_BILLING_ENABLED() && subscriptionStatus && (
-            <div className="rounded-lg border p-4">
-              <h2 className="flex items-center gap-2 font-bold text-lg">
-                <Link2Icon className="h-5 w-5 text-muted-foreground" />
-                <Trans>Contact us</Trans>
-              </h2>
-              <p className="mt-1 text-muted-foreground">
-                <Trans>We'll get back to you as soon as possible via email.</Trans>
-              </p>
+
+            {organisation && (!IS_BILLING_ENABLED() || subscriptionStatus) && (
               <div className="mt-4">
                 {!showForm ? (
                   <Button variant="outline" size="sm" onClick={() => setShowForm(true)}>
@@ -113,8 +71,8 @@ export default function SupportPage() {
                   />
                 )}
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
     </div>

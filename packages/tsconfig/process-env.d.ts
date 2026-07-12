@@ -2,6 +2,7 @@ declare namespace NodeJS {
   export interface ProcessEnv {
     PORT?: string;
     NEXT_PUBLIC_WEBAPP_URL?: string;
+    NEXT_PUBLIC_SUPPORT_EMAIL?: string;
 
     NEXT_PRIVATE_GOOGLE_CLIENT_ID?: string;
     NEXT_PRIVATE_GOOGLE_CLIENT_SECRET?: string;
@@ -13,13 +14,25 @@ declare namespace NodeJS {
     NEXT_PRIVATE_OIDC_SKIP_VERIFY?: string;
 
     NEXT_PRIVATE_DATABASE_URL: string;
+    NEXT_PRIVATE_DIRECT_DATABASE_URL?: string;
+    NEXT_PRIVATE_DATABASE_REPLICA_URLS?: string;
+    DATABASE_URL_UNPOOLED?: string;
     NEXT_PRIVATE_ENCRYPTION_KEY: string;
     NEXT_PRIVATE_ENCRYPTION_SECONDARY_KEY: string;
 
     NEXT_PRIVATE_LOGGER_FILE_PATH?: string;
+    INTERNAL_FORCE_JSON_LOGGER?: string;
+
+    NEXT_PRIVATE_LEGACY_SERVICE_ACCOUNT_EMAIL?: string;
+    NEXT_PRIVATE_DELETED_SERVICE_ACCOUNT_EMAIL?: string;
 
     NEXT_PRIVATE_STRIPE_API_KEY: string;
     NEXT_PRIVATE_STRIPE_WEBHOOK_SECRET: string;
+    NEXT_PUBLIC_STRIPE_ENTERPRISE_PLAN_MONTHLY_PRICE_ID?: string;
+
+    NEXT_PRIVATE_SES_ACCESS_KEY_ID?: string;
+    NEXT_PRIVATE_SES_SECRET_ACCESS_KEY?: string;
+    NEXT_PRIVATE_SES_REGION?: string;
 
     NEXT_PUBLIC_UPLOAD_TRANSPORT?: 'database' | 's3' | 'azure-blob';
     NEXT_PRIVATE_UPLOAD_ENDPOINT?: string;
@@ -49,6 +62,7 @@ declare namespace NodeJS {
     NEXT_PRIVATE_SIGNING_GCLOUD_HSM_KEY_PATH?: string;
     NEXT_PRIVATE_SIGNING_GCLOUD_HSM_PUBLIC_CRT_FILE_PATH?: string;
     NEXT_PRIVATE_SIGNING_GCLOUD_HSM_PUBLIC_CRT_FILE_CONTENTS?: string;
+    GOOGLE_APPLICATION_CREDENTIALS?: string;
     NEXT_PRIVATE_SIGNING_GCLOUD_APPLICATION_CREDENTIALS_CONTENTS?: string;
     NEXT_PRIVATE_SIGNING_GCLOUD_HSM_CERT_CHAIN_FILE_PATH?: string;
     NEXT_PRIVATE_SIGNING_GCLOUD_HSM_CERT_CHAIN_CONTENTS?: string;
@@ -60,6 +74,7 @@ declare namespace NodeJS {
     NEXT_PRIVATE_SIGNING_TIMESTAMP_AUTHORITY?: string;
     NEXT_PUBLIC_SIGNING_CONTACT_INFO?: string;
     NEXT_PRIVATE_USE_LEGACY_SIGNING_SUBFILTER?: string;
+    NEXT_PRIVATE_USE_PLAYWRIGHT_PDF?: string;
 
     NEXT_PRIVATE_SMTP_TRANSPORT?: 'mailchannels' | 'resend' | 'smtp-auth' | 'smtp-api';
 
@@ -84,6 +99,7 @@ declare namespace NodeJS {
 
     NEXT_PRIVATE_SMTP_FROM_NAME?: string;
     NEXT_PRIVATE_SMTP_FROM_ADDRESS?: string;
+    NEXT_PRIVATE_SMTP_SERVICE?: string;
 
     NEXT_PUBLIC_DISABLE_SIGNUP?: string;
     NEXT_PUBLIC_DISABLE_EMAIL_PASSWORD_SIGNUP?: string;
@@ -98,8 +114,12 @@ declare namespace NodeJS {
     NEXT_PUBLIC_DISABLE_MICROSOFT_SIGNIN?: string;
     NEXT_PUBLIC_DISABLE_OIDC_SIGNIN?: string;
     NEXT_PUBLIC_DISABLE_OIDC_AUTO_REDIRECT?: string;
+    NEXT_PUBLIC_POSTHOG_KEY?: string;
+    NEXT_PUBLIC_FEATURE_BILLING_ENABLED?: string;
+    NEXT_PUBLIC_DOCUMENT_SIZE_UPLOAD_LIMIT?: string;
 
     NEXT_PRIVATE_BROWSERLESS_URL?: string;
+    PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH?: string;
 
     NEXT_PRIVATE_JOBS_PROVIDER?: 'inngest' | 'local' | 'bullmq';
 
@@ -124,6 +144,26 @@ declare namespace NodeJS {
     DATABASE_URL?: string;
     POSTGRES_PRISMA_URL?: string;
     POSTGRES_URL_NON_POOLING?: string;
+    NEXT_PRIVATE_TELEMETRY_KEY?: string;
+    NEXT_PRIVATE_TELEMETRY_HOST?: string;
+    DOCUMENSO_DISABLE_TELEMETRY?: string;
+
+    NEXT_PRIVATE_PLAIN_API_KEY?: string;
+
+    /**
+     * Document conversion environment variables
+     */
+    NEXT_PRIVATE_DOCUMENT_CONVERSION_URL?: string;
+    NEXT_PRIVATE_DOCUMENT_CONVERSION_TIMEOUT_MS?: string;
+    NEXT_PRIVATE_DOCUMENT_CONVERSION_USERNAME?: string;
+    NEXT_PRIVATE_DOCUMENT_CONVERSION_PASSWORD?: string;
+
+    /**
+     * UA KEP / VilnoCheck-SignService environment variables
+     */
+    NEXT_PRIVATE_SIGN_SERVICE_URL?: string;
+    NEXT_PRIVATE_SIGN_SERVICE_SECRET?: string;
+    NEXT_PRIVATE_UA_KEP_REMOTE_VERIFY?: 'required' | 'optional' | 'off';
 
     /**
      * Cloudflare Turnstile environment variables

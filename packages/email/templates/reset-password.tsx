@@ -12,7 +12,7 @@ export type ResetPasswordTemplateProps = Partial<TemplateResetPasswordProps>;
 
 export const ResetPasswordTemplate = ({
   userName = 'Lucas Smith',
-  userEmail = 'lucas@documenso.com',
+  userEmail = 'lucas@vilnoedo.local',
   assetBaseUrl = 'http://localhost:3002',
 }: ResetPasswordTemplateProps) => {
   const { _ } = useLingui();
@@ -50,13 +50,7 @@ export const ResetPasswordTemplate = ({
                 <Trans>We've changed your password as you asked. You can now sign in with your new password.</Trans>
               </Text>
               <Text className="mt-2 text-base text-muted-foreground">
-                <Trans>
-                  Didn't request a password change? We are here to help you secure your account, just{' '}
-                  <Link className="font-normal text-primary" href="mailto:hi@documenso.com">
-                    contact us
-                  </Link>
-                  .
-                </Trans>
+                <Trans>Didn't request a password change? Contact your VilnoEDO administrator.</Trans>
               </Text>
             </Section>
           </Container>

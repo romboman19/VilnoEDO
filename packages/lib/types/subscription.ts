@@ -88,21 +88,14 @@ export const ZClaimFlagsSchema = z.object({
 
 export type TClaimFlags = z.infer<typeof ZClaimFlagsSchema>;
 
-export const VILNOEDO_UNLOCKED_CLAIM_FLAGS = {
+export const VILNOEDO_DEFAULT_CLAIM_FLAGS = {
   unlimitedDocuments: true,
   allowCustomBranding: true,
   hidePoweredBy: true,
-  emailDomains: true,
-  embedAuthoring: true,
-  embedAuthoringWhiteLabel: true,
   embedSigning: true,
   embedSigningWhiteLabel: true,
-  cfr21: true,
-  hipaa: true,
-  authenticationPortal: true,
   allowLegacyEnvelopes: true,
   signingReminders: true,
-  cscQesSigning: true,
 } satisfies TClaimFlags;
 
 // When adding keys, update internal documentation with this.

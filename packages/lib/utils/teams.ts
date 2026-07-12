@@ -98,27 +98,10 @@ export const extractTeamSignatureSettings = (
   } | null,
 ) => {
   if (!settings) {
-    return [
-      DocumentSignatureType.TYPE,
-      DocumentSignatureType.UPLOAD,
-      DocumentSignatureType.DRAW,
-      DocumentSignatureType.UA_KEP,
-    ];
+    return [DocumentSignatureType.UA_KEP];
   }
 
   const signatureTypes: DocumentSignatureType[] = [];
-
-  if (settings.typedSignatureEnabled) {
-    signatureTypes.push(DocumentSignatureType.TYPE);
-  }
-
-  if (settings.drawSignatureEnabled) {
-    signatureTypes.push(DocumentSignatureType.DRAW);
-  }
-
-  if (settings.uploadSignatureEnabled) {
-    signatureTypes.push(DocumentSignatureType.UPLOAD);
-  }
 
   if (settings.uaKepSignatureEnabled === true) {
     signatureTypes.push(DocumentSignatureType.UA_KEP);

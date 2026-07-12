@@ -1,7 +1,8 @@
-import { SUPPORT_EMAIL } from '@documenso/lib/constants/app';
 import { Button } from '@documenso/ui/primitives/button';
 import { Trans } from '@lingui/react/macro';
 import { Link } from 'react-router';
+
+const VILNOEDO_REPOSITORY_URL = 'https://github.com/romboman19/VilnoEDO';
 
 export default function SignatureDisclosure() {
   return (
@@ -104,8 +105,7 @@ export default function SignatureDisclosure() {
         <p>
           <Trans>
             Ви можете відмовитися від електронного підписання до завершення процесу. Для цього зверніться до відправника
-            документа. Якщо зв’язатися з відправником неможливо, напишіть нам на{' '}
-            <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>.
+            документа.
           </Trans>
         </p>
 
@@ -226,12 +226,15 @@ export default function SignatureDisclosure() {
         </p>
 
         <h2>
-          <Trans>Контакти</Trans>
+          <Trans>Репозиторій</Trans>
         </h2>
         <p>
           <Trans>
-            Якщо у вас є питання щодо цього розкриття, електронного підпису або процесу підписання, напишіть нам на{' '}
-            <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>.
+            Відкритий код VilnoEDO, історію змін і технічний контекст проєкту можна переглянути у{' '}
+            <a href={VILNOEDO_REPOSITORY_URL} target="_blank" rel="noreferrer">
+              репозиторії VilnoEDO на GitHub
+            </a>
+            .
           </Trans>
         </p>
       </article>

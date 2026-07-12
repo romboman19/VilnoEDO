@@ -90,7 +90,11 @@ export class TelemetryClient {
   }
 
   private async initialize(): Promise<void> {
-    this.client = new PostHog(TELEMETRY_KEY!, {
+    if (!TELEMETRY_KEY || !TELEMETRY_HOST) {
+      return;
+    }
+
+    this.client = new PostHog(TELEMETRY_KEY, {
       host: TELEMETRY_HOST,
       disableGeoip: false,
     });
@@ -100,7 +104,7 @@ export class TelemetryClient {
     this.nodeId = await this.getOrCreateNodeId();
 
     console.log(
-      '[Telemetry] Telemetry is enabled. Documenso collects anonymous usage data to help improve the product.',
+      '[Telemetry] Telemetry is enabled. VilnoEDO collects anonymous usage data to help improve the product.',
     );
     console.log(
       '[Telemetry] We collect: app version, installation ID, and node ID. No personal data, document contents, or user information is collected.',
@@ -108,7 +112,9 @@ export class TelemetryClient {
     console.log(
       '[Telemetry] To disable telemetry, set DOCUMENSO_DISABLE_TELEMETRY=true in your environment variables.',
     );
-    console.log('[Telemetry] Learn more: https://documenso.com/docs/developers/self-hosting/telemetry');
+    console.log(
+      '[Telemetry] Learn more: apps/docs/content/docs/self-hosting/configuration/telemetry.mdx in this repository.',
+    );
 
     // Capture startup event
     this.captureEvent('telemetry_selfhoster_startup');

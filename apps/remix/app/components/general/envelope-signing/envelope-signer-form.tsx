@@ -133,9 +133,9 @@ export default function EnvelopeSignerForm() {
               fullName={fullName}
               value={signature ?? ''}
               onChange={(v) => setSignature(v ?? '')}
-              typedSignatureEnabled={envelope.documentMeta.typedSignatureEnabled}
-              uploadSignatureEnabled={envelope.documentMeta.uploadSignatureEnabled}
-              drawSignatureEnabled={envelope.documentMeta.drawSignatureEnabled}
+              typedSignatureEnabled={false}
+              uploadSignatureEnabled={false}
+              drawSignatureEnabled={false}
               externalTabs={externalSignatureTabs}
             />
           </div>

@@ -1,4 +1,3 @@
-import { SUPPORT_EMAIL } from '@documenso/lib/constants/app';
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react';
 import { Trans } from '@lingui/react/macro';
@@ -20,7 +19,6 @@ export const OrganisationLimitAlertEmailTemplate = ({
   organisationName = 'Organisation Name',
   counter = 'email',
   kind = 'quota',
-  period = '2026-05',
 }: OrganisationLimitAlertEmailProps) => {
   const { _ } = useLingui();
 
@@ -127,12 +125,9 @@ export const OrganisationLimitAlertEmailTemplate = ({
 
               <Text className="text-center text-base">
                 {kind === 'quotaNearing' ? (
-                  <Trans>
-                    If you expect to need higher limits, please contact support at {SUPPORT_EMAIL} and we will review
-                    your account.
-                  </Trans>
+                  <Trans>If you expect to need higher limits, contact your VilnoEDO administrator.</Trans>
                 ) : (
-                  <Trans>Please contact support at {SUPPORT_EMAIL} and we will review your account.</Trans>
+                  <Trans>Please contact your VilnoEDO administrator to review this account.</Trans>
                 )}
               </Text>
             </Section>

@@ -80,9 +80,10 @@ export default function EmbeddingAuthoringDocumentCreatePage() {
         externalId: documentExternalId,
         meta: {
           ...configuration.meta,
-          drawSignatureEnabled: signatureTypes.length === 0 || signatureTypes.includes(DocumentSignatureType.DRAW),
-          typedSignatureEnabled: signatureTypes.length === 0 || signatureTypes.includes(DocumentSignatureType.TYPE),
-          uploadSignatureEnabled: signatureTypes.length === 0 || signatureTypes.includes(DocumentSignatureType.UPLOAD),
+          drawSignatureEnabled: false,
+          typedSignatureEnabled: false,
+          uploadSignatureEnabled: false,
+          uaKepSignatureEnabled: signatureTypes.length === 0 || signatureTypes.includes(DocumentSignatureType.UA_KEP),
         },
         recipients: configuration.signers.map((signer) => ({
           name: signer.name,

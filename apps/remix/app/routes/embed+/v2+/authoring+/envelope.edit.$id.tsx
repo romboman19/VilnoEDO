@@ -236,10 +236,10 @@ const EnvelopeEditPage = ({ embedAuthoringOptions }: EnvelopeEditPageProps) => {
         signingOrder: envelope.documentMeta.signingOrder ?? undefined,
         allowDictateNextSigner: envelope.documentMeta.allowDictateNextSigner ?? undefined,
         redirectUrl: envelope.documentMeta.redirectUrl ?? undefined,
-        typedSignatureEnabled: envelope.documentMeta.typedSignatureEnabled, //
-        uploadSignatureEnabled: envelope.documentMeta.uploadSignatureEnabled, //
-        drawSignatureEnabled: envelope.documentMeta.drawSignatureEnabled, //
-        uaKepSignatureEnabled: envelope.documentMeta.uaKepSignatureEnabled, //
+        typedSignatureEnabled: false,
+        uploadSignatureEnabled: false,
+        drawSignatureEnabled: false,
+        uaKepSignatureEnabled: envelope.documentMeta.uaKepSignatureEnabled ?? true,
         dateFormat: (envelope.documentMeta.dateFormat as TDocumentMetaDateFormat) ?? undefined,
         language: envelope.documentMeta.language as SupportedLanguageCodes,
       },

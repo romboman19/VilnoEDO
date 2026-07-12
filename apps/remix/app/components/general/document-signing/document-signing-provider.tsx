@@ -41,9 +41,9 @@ export const DocumentSigningProvider = ({
   fullName: initialFullName,
   email: initialEmail,
   signature: initialSignature,
-  typedSignatureEnabled = true,
-  uploadSignatureEnabled = true,
-  drawSignatureEnabled = true,
+  typedSignatureEnabled = false,
+  uploadSignatureEnabled = false,
+  drawSignatureEnabled = false,
   uaKepSignatureEnabled = true,
   children,
 }: DocumentSigningProviderProps) => {

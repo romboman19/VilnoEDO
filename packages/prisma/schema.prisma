@@ -570,9 +570,9 @@ model DocumentMeta {
   signingOrder           DocumentSigningOrder @default(PARALLEL)
   allowDictateNextSigner Boolean              @default(false)
 
-  typedSignatureEnabled  Boolean @default(true)
-  uploadSignatureEnabled Boolean @default(true)
-  drawSignatureEnabled   Boolean @default(true)
+  typedSignatureEnabled  Boolean @default(false)
+  uploadSignatureEnabled Boolean @default(false)
+  drawSignatureEnabled   Boolean @default(false)
   uaKepSignatureEnabled  Boolean @default(true)
 
   language           String                     @default("uk")
@@ -1149,9 +1149,9 @@ model OrganisationGlobalSettings {
   documentDateFormat        String             @default("yyyy-MM-dd hh:mm a")
   delegateDocumentOwnership Boolean            @default(false)
 
-  typedSignatureEnabled  Boolean @default(true)
-  uploadSignatureEnabled Boolean @default(true)
-  drawSignatureEnabled   Boolean @default(true)
+  typedSignatureEnabled  Boolean @default(false)
+  uploadSignatureEnabled Boolean @default(false)
+  drawSignatureEnabled   Boolean @default(false)
   uaKepSignatureEnabled  Boolean @default(true)
 
   defaultRecipients Json? /// [DefaultRecipient[]] @zod.custom.use(ZDefaultRecipientsSchema)

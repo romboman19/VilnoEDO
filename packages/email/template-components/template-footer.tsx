@@ -5,6 +5,8 @@ import { Link, Section, Text } from '../components';
 import { useBranding } from '../providers/branding';
 import { getSafeBrandingUrl } from '../utils/branding-url';
 
+const VILNOEDO_REPOSITORY_URL = 'https://github.com/romboman19/VilnoEDO';
+
 export type TemplateFooterProps = {
   isDocument?: boolean;
   reportUrl?: string;
@@ -33,8 +35,8 @@ export const TemplateFooter = ({ isDocument = true, reportUrl }: TemplateFooterP
         <Text className="my-4 text-base text-muted-foreground">
           <Trans>
             This document was sent using{' '}
-            <Link className="text-primary" href="https://documen.so/mail-footer">
-              Documenso
+            <Link className="text-primary" href={VILNOEDO_REPOSITORY_URL}>
+              VilnoEDO
             </Link>
             .
           </Trans>
@@ -64,9 +66,11 @@ export const TemplateFooter = ({ isDocument = true, reportUrl }: TemplateFooterP
 
       {!branding.brandingEnabled && (
         <Text className="my-8 text-muted-foreground text-sm">
-          Documenso, Inc.
+          VilnoEDO
           <br />
-          2261 Market Street, #5211, San Francisco, CA 94114, USA
+          <Link href={VILNOEDO_REPOSITORY_URL} target="_blank">
+            {VILNOEDO_REPOSITORY_URL}
+          </Link>
         </Text>
       )}
     </Section>

@@ -9,7 +9,7 @@ import { viteStaticCopy } from 'vite-plugin-static-copy';
 import tsconfigPaths from 'vite-tsconfig-paths';
 
 /**
- * Standalone Vite app for previewing Documenso emails.
+ * Standalone Vite app for previewing VilnoEDO emails.
  *
  * Emails render server-side through the real `renderEmailWithI18N` pipeline
  * (see `app/routes/preview.tsx`), so the SSR config mirrors the main Remix app:
@@ -32,7 +32,7 @@ export default defineConfig({
     viteStaticCopy({
       targets: [
         {
-          src: path.join(__dirname, '../static') + '/*',
+          src: `${path.join(__dirname, '../static')}/*`,
           dest: 'static',
         },
       ],

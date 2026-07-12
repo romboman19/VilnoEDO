@@ -19,16 +19,7 @@ export type SignFieldSignatureDialogProps = {
 };
 
 export const SignFieldSignatureDialog = createCallable<SignFieldSignatureDialogProps, string | null>(
-  ({
-    call,
-    fullName,
-    typedSignatureEnabled,
-    uploadSignatureEnabled,
-    drawSignatureEnabled,
-    uaKepSignatureEnabled,
-    initialSignature,
-    uaKepSigning,
-  }) => {
+  ({ call, fullName, uaKepSignatureEnabled, initialSignature, uaKepSigning }) => {
     const [localSignature, setLocalSignature] = useState(initialSignature);
     const externalTabs =
       uaKepSigning && uaKepSignatureEnabled !== false
@@ -59,9 +50,9 @@ export const SignFieldSignatureDialog = createCallable<SignFieldSignatureDialogP
               fullName={fullName}
               value={localSignature ?? ''}
               onChange={({ value }) => setLocalSignature(value)}
-              typedSignatureEnabled={typedSignatureEnabled}
-              uploadSignatureEnabled={uploadSignatureEnabled}
-              drawSignatureEnabled={drawSignatureEnabled}
+              typedSignatureEnabled={false}
+              uploadSignatureEnabled={false}
+              drawSignatureEnabled={false}
               externalTabs={externalTabs}
             />
           </div>

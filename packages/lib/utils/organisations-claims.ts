@@ -1,4 +1,4 @@
-import { VILNOEDO_UNLOCKED_CLAIM_FLAGS } from '@documenso/lib/types/subscription';
+import { VILNOEDO_DEFAULT_CLAIM_FLAGS } from '@documenso/lib/types/subscription';
 import type { SubscriptionClaim } from '@prisma/client';
 
 export const generateDefaultSubscriptionClaim = (): Omit<
@@ -12,7 +12,7 @@ export const generateDefaultSubscriptionClaim = (): Omit<
     envelopeItemCount: 0,
     recipientCount: 0,
     locked: false,
-    flags: VILNOEDO_UNLOCKED_CLAIM_FLAGS,
+    flags: VILNOEDO_DEFAULT_CLAIM_FLAGS,
 
     documentRateLimits: [],
     documentQuota: null,

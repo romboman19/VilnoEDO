@@ -20,6 +20,23 @@ import { formatDocumentsPath } from '../../../utils/teams';
 import type { JobRunIO } from '../../client/_internal/job';
 import type { TSendDocumentCompletedEmailsJobDefinition } from './send-document-completed-emails';
 
+type TCompletedDocumentEmailAttachment = {
+  filename: string;
+  content: Buffer;
+  contentType: 'application/pdf';
+};
+
+const sanitizeDownloadName = (name: string) => {
+  const sanitized = Array.from(name, (char) => (char.charCodeAt(0) < 32 ? '_' : char))
+    .join('')
+    .replace(/[\\/:*?"<>|]+/g, '_')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .slice(0, 100);
+
+  return sanitized || 'document';
+};
+
 export const run = async ({ payload, io }: { payload: TSendDocumentCompletedEmailsJobDefinition; io: JobRunIO }) => {
   const { envelopeId, requestMetadata } = payload;
 
@@ -83,20 +100,121 @@ export const run = async ({ payload, io }: { payload: TSendDocumentCompletedEmai
 
   const { user: owner } = envelope;
 
-  const completedDocumentEmailAttachments = await Promise.all(
+  const standardCompletedDocumentEmailAttachments = await Promise.all(
     envelope.envelopeItems.map(async (envelopeItem) => {
       const file = await getFileServerSide(envelopeItem.documentData);
 
       // Use the envelope title for version 1, and the envelope item title for version 2.
-      const fileNameToUse = envelope.internalVersion === 1 ? envelope.title : envelopeItem.title + '.pdf';
+      const fileNameToUse = envelope.internalVersion === 1 ? envelope.title : `${envelopeItem.title}.pdf`;
 
       return {
-        filename: fileNameToUse.endsWith('.pdf') ? fileNameToUse : fileNameToUse + '.pdf',
+        filename: fileNameToUse.endsWith('.pdf') ? fileNameToUse : `${fileNameToUse}.pdf`,
         content: Buffer.from(file),
         contentType: 'application/pdf',
-      };
+      } satisfies TCompletedDocumentEmailAttachment;
     }),
   );
+
+  const standardAttachmentsByEnvelopeItemId = new Map(
+    envelope.envelopeItems.map((envelopeItem, index) => [
+      envelopeItem.id,
+      standardCompletedDocumentEmailAttachments[index],
+    ]),
+  );
+
+  const uaKepEvidencePackages = await prisma.uaKepEvidencePackage.findMany({
+    where: {
+      envelopeId: envelope.id,
+    },
+    select: {
+      id: true,
+      recipientId: true,
+      uaKepSessionId: true,
+    },
+    orderBy: {
+      createdAt: 'desc',
+    },
+  });
+
+  const uaKepPadesArtifacts =
+    uaKepEvidencePackages.length > 0
+      ? await prisma.uaKepSignatureArtifact.findMany({
+          where: {
+            uaKepSessionId: {
+              in: uaKepEvidencePackages.map((evidencePackage) => evidencePackage.uaKepSessionId),
+            },
+            artifactType: { startsWith: 'PADES' },
+          },
+          select: {
+            uaKepSessionId: true,
+            envelopeItemId: true,
+            signatureBase64: true,
+            envelopeItem: {
+              select: {
+                title: true,
+              },
+            },
+          },
+          orderBy: [{ envelopeItemId: 'asc' }, { artifactType: 'asc' }],
+        })
+      : [];
+
+  const uaKepPadesArtifactsBySessionId = new Map<string, typeof uaKepPadesArtifacts>();
+
+  for (const artifact of uaKepPadesArtifacts) {
+    const artifacts = uaKepPadesArtifactsBySessionId.get(artifact.uaKepSessionId) ?? [];
+
+    artifacts.push(artifact);
+    uaKepPadesArtifactsBySessionId.set(artifact.uaKepSessionId, artifacts);
+  }
+
+  const getCompletedDocumentEmailContent = ({ recipientId }: { recipientId?: number }) => {
+    const evidencePackage =
+      uaKepEvidencePackages.find((evidencePackage) => evidencePackage.recipientId === recipientId) ??
+      uaKepEvidencePackages[0];
+
+    if (!evidencePackage) {
+      return {
+        attachments: standardCompletedDocumentEmailAttachments,
+        completedVariant: 'standard' as const,
+      };
+    }
+
+    const padesArtifacts = uaKepPadesArtifactsBySessionId.get(evidencePackage.uaKepSessionId) ?? [];
+
+    if (padesArtifacts.length === 0) {
+      return {
+        attachments: standardCompletedDocumentEmailAttachments,
+        completedVariant: 'ua-kep-evidence' as const,
+      };
+    }
+
+    const padesArtifactsByEnvelopeItemId = new Map(
+      padesArtifacts.map((artifact) => [artifact.envelopeItemId, artifact]),
+    );
+
+    return {
+      attachments: envelope.envelopeItems.map((envelopeItem) => {
+        const padesArtifact = padesArtifactsByEnvelopeItemId.get(envelopeItem.id);
+        const standardAttachment = standardAttachmentsByEnvelopeItemId.get(envelopeItem.id);
+
+        if (!padesArtifact) {
+          if (!standardAttachment) {
+            throw new Error(`Missing completed document attachment for envelope item ${envelopeItem.id}`);
+          }
+
+          return standardAttachment;
+        }
+
+        return {
+          filename: `${sanitizeDownloadName(padesArtifact.envelopeItem.title)}-pades.pdf`,
+          content: Buffer.from(padesArtifact.signatureBase64.replace(/\s/g, ''), 'base64'),
+          contentType: 'application/pdf',
+        } satisfies TCompletedDocumentEmailAttachment;
+      }),
+      completedVariant: 'ua-kep-pades' as const,
+    };
+  };
 
   const assetBaseUrl = NEXT_PUBLIC_WEBAPP_URL() || 'http://localhost:3000';
 
@@ -121,10 +239,16 @@ export const run = async ({ payload, io }: { payload: TSendDocumentCompletedEmai
     isOwnerDocumentCompletedEmailEnabled &&
     (!envelope.recipients.find((recipient) => recipient.email === owner.email) || !isDocumentCompletedEmailEnabled)
   ) {
+    const ownerRecipient = envelope.recipients.find((recipient) => recipient.email === owner.email);
+    const completedDocumentEmailContent = getCompletedDocumentEmailContent({
+      recipientId: ownerRecipient?.id,
+    });
+
     const template = createElement(DocumentCompletedEmailTemplate, {
       documentName: envelope.title,
       assetBaseUrl,
       downloadLink: documentOwnerDownloadLink,
+      completedVariant: completedDocumentEmailContent.completedVariant,
     });
 
     const [html, text] = await Promise.all([
@@ -150,7 +274,7 @@ export const run = async ({ payload, io }: { payload: TSendDocumentCompletedEmai
       subject: i18n._(msg`Signing Complete!`),
       html,
       text,
-      attachments: completedDocumentEmailAttachments,
+      attachments: completedDocumentEmailContent.attachments,
     });
 
     await prisma.documentAuditLog.create({
@@ -212,11 +336,15 @@ export const run = async ({ payload, io }: { payload: TSendDocumentCompletedEmai
       const downloadLink = `${NEXT_PUBLIC_WEBAPP_URL()}/sign/${recipient.token}/complete`;
       const reportUrl =
         recipient.role === RecipientRole.CC ? `${NEXT_PUBLIC_WEBAPP_URL()}/report/${recipient.token}` : undefined;
+      const completedDocumentEmailContent = getCompletedDocumentEmailContent({
+        recipientId: recipient.id,
+      });
 
       const template = createElement(DocumentCompletedEmailTemplate, {
         documentName: envelope.title,
         assetBaseUrl,
         downloadLink: recipient.email === owner.email ? documentOwnerDownloadLink : downloadLink,
+        completedVariant: completedDocumentEmailContent.completedVariant,
         customBody:
           isDirectTemplate && envelope.documentMeta?.message
             ? renderCustomEmailTemplate(envelope.documentMeta.message, customEmailTemplate)
@@ -250,7 +378,7 @@ export const run = async ({ payload, io }: { payload: TSendDocumentCompletedEmai
             : i18n._(msg`Signing Complete!`),
         html,
         text,
-        attachments: completedDocumentEmailAttachments,
+        attachments: completedDocumentEmailContent.attachments,
       });
 
       await prisma.documentAuditLog.create({
