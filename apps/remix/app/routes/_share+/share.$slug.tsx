@@ -16,7 +16,7 @@ export function meta({ params: { slug } }: Route.MetaArgs) {
     { description: 'I just signed a document in style with VilnoEDO!' },
     {
       property: 'og:title',
-      content: 'VilnoEDO - Join the open source signing revolution',
+      content: 'VilnoEDO - Signed document',
     },
     {
       property: 'og:description',
@@ -32,7 +32,7 @@ export function meta({ params: { slug } }: Route.MetaArgs) {
     },
     {
       name: 'twitter:site',
-      content: '@documenso',
+      content: '@vilnoedo',
     },
     {
       name: 'twitter:card',

@@ -3,6 +3,7 @@ import { i18n, type MessageDescriptor } from '@lingui/core';
 
 export const appMetaTags = (title?: MessageDescriptor) => {
   const description = 'VilnoEDO is a modern document signing platform for Ukrainian electronic document workflows.';
+  const socialImage = `${NEXT_PUBLIC_WEBAPP_URL()}/opengraph-image-vilnoedo.png`;
 
   return [
     {
@@ -14,7 +15,7 @@ export const appMetaTags = (title?: MessageDescriptor) => {
     },
     {
       name: 'keywords',
-      content: 'VilnoEDO, electronic document signing, КЕП, УЕП, document workflow',
+      content: 'VilnoEDO, electronic document signing, KEP, UEP, document workflow',
     },
     {
       name: 'author',
@@ -34,7 +35,19 @@ export const appMetaTags = (title?: MessageDescriptor) => {
     },
     {
       property: 'og:image',
-      content: `${NEXT_PUBLIC_WEBAPP_URL()}/opengraph-image.jpg`,
+      content: socialImage,
+    },
+    {
+      property: 'og:image:width',
+      content: '1200',
+    },
+    {
+      property: 'og:image:height',
+      content: '630',
+    },
+    {
+      property: 'og:site_name',
+      content: 'VilnoEDO',
     },
     {
       property: 'og:type',
@@ -53,8 +66,12 @@ export const appMetaTags = (title?: MessageDescriptor) => {
       content: description,
     },
     {
+      name: 'twitter:title',
+      content: 'VilnoEDO',
+    },
+    {
       name: 'twitter:image',
-      content: `${NEXT_PUBLIC_WEBAPP_URL()}/opengraph-image.jpg`,
+      content: socialImage,
     },
   ];
 };
