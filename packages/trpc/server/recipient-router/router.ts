@@ -590,18 +590,33 @@ export const recipientRouter = router({
         });
       }
 
-      await completeDocumentWithToken({
-        token,
-        id: {
-          type: 'documentId',
-          id: documentId,
-        },
-        accessAuthOptions,
-        nextSigner,
-        recipientOverride,
-        userId: ctx.user?.id,
-        requestMetadata: ctx.metadata.requestMetadata,
-      });
+      try {
+        await completeDocumentWithToken({
+          token,
+          id: {
+            type: 'documentId',
+            id: documentId,
+          },
+          accessAuthOptions,
+          nextSigner,
+          recipientOverride,
+          userId: ctx.user?.id,
+          requestMetadata: ctx.metadata.requestMetadata,
+        });
+      } catch (err) {
+        // Resolve retried, stale or concurrent duplicate completion requests
+        // idempotently so the client routes the user to the completed page
+        // instead of surfacing an error for a document that is signed.
+        if (err instanceof AppError && err.code === AppErrorCode.RECIPIENT_ALREADY_SIGNED) {
+          ctx.logger.info({
+            message: 'Recipient attempted to complete a document they have already signed',
+          });
+
+          return { status: 'ALREADY_SIGNED' as const };
+        }
+
+        throw err;
+      }
 
       return { status: 'SIGNED' as const };
     }),
