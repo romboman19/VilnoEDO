@@ -178,7 +178,15 @@ export const ZCompleteDocumentWithTokenMutationSchema = z.object({
 
 export type TCompleteDocumentWithTokenMutationSchema = z.infer<typeof ZCompleteDocumentWithTokenMutationSchema>;
 
-export const ZCompleteDocumentWithTokenResponseSchema = z.object({ status: z.literal('SIGNED') });
+/**
+ * `{ status: 'ALREADY_SIGNED' }` is returned when the recipient had already
+ * signed prior to this request (retries, stale tabs, concurrent submissions)
+ * so callers can notify the user instead of erroring.
+ */
+export const ZCompleteDocumentWithTokenResponseSchema = z.discriminatedUnion('status', [
+  z.object({ status: z.literal('SIGNED') }),
+  z.object({ status: z.literal('ALREADY_SIGNED') }),
+]);
 
 export type TCompleteDocumentWithTokenResponseSchema = z.infer<typeof ZCompleteDocumentWithTokenResponseSchema>;
 
