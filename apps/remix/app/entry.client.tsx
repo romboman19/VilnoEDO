@@ -27,6 +27,26 @@ function PosthogInit() {
   return null;
 }
 
+/**
+ * Surfaces hydration recoveries (React 19 discards the server HTML and
+ * re-renders on the client instead of dying) so we can track how often
+ * extensions/early clicks interfere with hydration in the wild.
+ */
+function onRecoverableError(error: unknown, errorInfo: { componentStack?: string }) {
+  console.error('[hydration] recovered from error', error, errorInfo.componentStack);
+
+  if (extractPostHogConfig()) {
+    void import('posthog-js').then(({ default: posthog }) => {
+      if (posthog.__loaded) {
+        posthog.capture('$hydration_recoverable_error', {
+          message: error instanceof Error ? error.message : String(error),
+          componentStack: errorInfo.componentStack,
+        });
+      }
+    });
+  }
+}
+
 async function main() {
   const locale = detect(fromHtmlTag('lang')) || APP_I18N_OPTIONS.fallbackLang;
 
@@ -42,6 +62,7 @@ async function main() {
 
         <PosthogInit />
       </StrictMode>,
+      { onRecoverableError },
     );
   });
 }
