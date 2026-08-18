@@ -576,13 +576,23 @@ export const recipientRouter = router({
 
       // TSP (AES/QES) envelopes can't complete via this route — CSC TSP
       // signing was removed along with the commercial @documenso/ee package.
-      const envelope = await prisma.envelope.findFirstOrThrow({
+      const envelope = await prisma.envelope.findFirst({
         where: {
           ...unsafeBuildEnvelopeIdQuery({ type: 'documentId', id: documentId }, EnvelopeType.DOCUMENT),
           recipients: { some: { token } },
         },
         select: { signatureLevel: true, internalVersion: true },
       });
+
+      // The most common cause is a stale signing page: the document was
+      // deleted, or the recipient was removed, after the link was opened.
+      // Surface a NOT_FOUND instead of leaking a Prisma P2025 as a 500.
+      if (!envelope) {
+        throw new AppError(AppErrorCode.NOT_FOUND, {
+          message: 'Document not found for the provided signing token',
+          statusCode: 404,
+        });
+      }
 
       if (isTspEnvelope(envelope)) {
         throw new AppError(AppErrorCode.NOT_SETUP, {
