@@ -120,7 +120,7 @@ ua-kep-evidence-<id>.zip
 
 ### Вимоги
 
-- Node.js 22+
+- Node.js 24+
 - npm 11+
 - PostgreSQL
 - Docker / Docker Compose
