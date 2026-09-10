@@ -62,6 +62,12 @@ export type AddSignersFormProps = {
   onSubmit: (_data: TAddSignersFormSchema) => void;
   onAutoSave: (_data: TAddSignersFormSchema) => Promise<AutoSaveResponse>;
   isDocumentPdfLoaded: boolean;
+  /**
+   * CSP nonce forwarded to `@hello-pangea/dnd`, which injects its drag styles
+   * as runtime `<style>` elements that would otherwise be blocked by the
+   * strict `style-src-elem` policy.
+   */
+  nonce?: string;
 };
 
 export const AddSignersFormPartial = ({
@@ -73,6 +79,7 @@ export const AddSignersFormPartial = ({
   onSubmit,
   onAutoSave,
   isDocumentPdfLoaded,
+  nonce,
 }: AddSignersFormProps) => {
   const { _ } = useLingui();
   const { toast } = useToast();
@@ -622,6 +629,7 @@ export const AddSignersFormPartial = ({
             />
 
             <DragDropContext
+              nonce={nonce}
               onDragEnd={onDragEnd}
               sensors={[
                 (api: SensorAPI) => {
