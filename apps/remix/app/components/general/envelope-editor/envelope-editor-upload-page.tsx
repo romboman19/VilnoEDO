@@ -24,6 +24,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { type FileRejection, useDropzone } from 'react-dropzone';
 
 import { EnvelopeItemDeleteDialog } from '~/components/dialogs/envelope-item-delete-dialog';
+import { useCspNonce } from '~/utils/nonce';
 
 import { EnvelopeEditorRecipientForm } from './envelope-editor-recipient-form';
 import { EnvelopeItemTitleInput } from './envelope-editor-title-input';
@@ -39,6 +40,7 @@ type LocalFile = {
 
 export const EnvelopeEditorUploadPage = () => {
   const organisation = useCurrentOrganisation();
+  const cspNonce = useCspNonce();
 
   const { t, i18n } = useLingui();
   const { toast } = useToast();
@@ -443,7 +445,7 @@ export const EnvelopeEditorUploadPage = () => {
 
           {/* Uploaded Files List */}
           <div className="mt-4">
-            <DragDropContext onDragEnd={onDragEnd}>
+            <DragDropContext nonce={cspNonce} onDragEnd={onDragEnd}>
               <Droppable droppableId="files">
                 {(provided) => (
                   <div

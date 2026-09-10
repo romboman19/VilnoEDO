@@ -39,6 +39,7 @@ import { isDeepEqual } from 'remeda';
 import { AiFeaturesEnableDialog } from '~/components/dialogs/ai-features-enable-dialog';
 import { AiRecipientDetectionDialog } from '~/components/dialogs/ai-recipient-detection-dialog';
 import { useCurrentTeam } from '~/providers/team';
+import { useCspNonce } from '~/utils/nonce';
 
 export const EnvelopeEditorRecipientForm = () => {
   const { envelope, setRecipientsDebounced, updateEnvelope, editorRecipients, isEmbedded, editorConfig } =
@@ -46,6 +47,7 @@ export const EnvelopeEditorRecipientForm = () => {
 
   const organisation = useCurrentOrganisation();
   const team = useCurrentTeam();
+  const cspNonce = useCspNonce();
 
   const { t } = useLingui();
   const { toast } = useToast();
@@ -770,6 +772,7 @@ export const EnvelopeEditorRecipientForm = () => {
           </div>
 
           <DragDropContext
+            nonce={cspNonce}
             onDragEnd={onDragEnd}
             sensors={[
               (api: SensorAPI) => {
