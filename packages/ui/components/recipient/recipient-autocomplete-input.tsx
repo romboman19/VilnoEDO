@@ -5,7 +5,7 @@ import { PopoverAnchor } from '@radix-ui/react-popover';
 import type React from 'react';
 import { useRef, useState } from 'react';
 
-import { Command, CommandGroup, CommandItem } from '../../primitives/command';
+import { Command, CommandGroup, CommandItem, CommandList } from '../../primitives/command';
 import { Input } from '../../primitives/input';
 
 export type RecipientAutoCompleteOption = {
@@ -82,18 +82,20 @@ export const RecipientAutoCompleteInput = ({
           )}
 
           {options.length > 0 && (
-            <CommandGroup className="max-h-[250px] overflow-y-auto">
-              {options.map((option, index) => (
-                <CommandItem
-                  key={`${index}-${option.email}`}
-                  value={`${option.email}`}
-                  className="cursor-pointer"
-                  onSelect={() => handleSelectItem(option)}
-                >
-                  {option.name} ({option.email})
-                </CommandItem>
-              ))}
-            </CommandGroup>
+            <CommandList>
+              <CommandGroup className="max-h-[250px] overflow-y-auto">
+                {options.map((option, index) => (
+                  <CommandItem
+                    key={`${index}-${option.email}`}
+                    value={`${option.email}`}
+                    className="cursor-pointer"
+                    onSelect={() => handleSelectItem(option)}
+                  >
+                    {option.name} ({option.email})
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            </CommandList>
           )}
         </PopoverContent>
       </Popover>
