@@ -1,6 +1,13 @@
 import { cn } from '@documenso/ui/lib/utils';
 import { Button } from '@documenso/ui/primitives/button';
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from '@documenso/ui/primitives/command';
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from '@documenso/ui/primitives/command';
 import { Popover, PopoverContent, PopoverTrigger } from '@documenso/ui/primitives/popover';
 import { Trans } from '@lingui/react/macro';
 import { Role } from '@prisma/client';
@@ -47,17 +54,19 @@ const MultiSelectRoleCombobox = ({ listValues, onChange }: ComboboxProps) => {
       <PopoverContent className="w-[200px] p-0">
         <Command>
           <CommandInput placeholder={selectedValues.join(', ')} />
-          <CommandEmpty>
-            <Trans>No value found.</Trans>
-          </CommandEmpty>
-          <CommandGroup>
-            {allRoles.map((value: string, i: number) => (
-              <CommandItem key={i} onSelect={() => handleSelect(value)}>
-                <Check className={cn('mr-2 h-4 w-4', selectedValues.includes(value) ? 'opacity-100' : 'opacity-0')} />
-                {value}
-              </CommandItem>
-            ))}
-          </CommandGroup>
+          <CommandList>
+            <CommandEmpty>
+              <Trans>No value found.</Trans>
+            </CommandEmpty>
+            <CommandGroup>
+              {allRoles.map((value: string, i: number) => (
+                <CommandItem key={i} onSelect={() => handleSelect(value)}>
+                  <Check className={cn('mr-2 h-4 w-4', selectedValues.includes(value) ? 'opacity-100' : 'opacity-0')} />
+                  {value}
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          </CommandList>
         </Command>
       </PopoverContent>
     </Popover>

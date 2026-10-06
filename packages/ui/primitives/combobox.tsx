@@ -6,7 +6,7 @@ import * as React from 'react';
 
 import { cn } from '../lib/utils';
 import { Button } from './button';
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from './command';
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from './command';
 import { Popover, PopoverContent, PopoverTrigger } from './popover';
 
 type ComboboxProps = {
@@ -60,20 +60,21 @@ const Combobox = ({
       <PopoverContent className="z-[1001] p-0" side="bottom" align="start">
         <Command>
           <CommandInput placeholder={value || placeholderValue} />
+          <CommandList>
+            <CommandEmpty>
+              <Trans>No value found.</Trans>
+            </CommandEmpty>
 
-          <CommandEmpty>
-            <Trans>No value found.</Trans>
-          </CommandEmpty>
+            <CommandGroup className="max-h-[250px] overflow-y-auto">
+              {options.map((option, index) => (
+                <CommandItem key={index} onSelect={() => onOptionSelected(option)}>
+                  <Check className={cn('mr-2 h-4 w-4', option === value ? 'opacity-100' : 'opacity-0')} />
 
-          <CommandGroup className="max-h-[250px] overflow-y-auto">
-            {options.map((option, index) => (
-              <CommandItem key={index} onSelect={() => onOptionSelected(option)}>
-                <Check className={cn('mr-2 h-4 w-4', option === value ? 'opacity-100' : 'opacity-0')} />
-
-                {option}
-              </CommandItem>
-            ))}
-          </CommandGroup>
+                  {option}
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          </CommandList>
         </Command>
       </PopoverContent>
     </Popover>

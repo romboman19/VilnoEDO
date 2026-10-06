@@ -10,7 +10,7 @@ import * as React from 'react';
 
 import { cn } from '../lib/utils';
 import { Button } from './button';
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from './command';
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from './command';
 import { Popover, PopoverContent, PopoverTrigger } from './popover';
 
 type OptionValue = string | number | boolean | null;
@@ -154,19 +154,21 @@ export function MultiSelectCombobox<T = OptionValue>({
       <PopoverContent className={cn('z-[50000000] w-full p-0', contentClassName)}>
         <Command>
           {enableSearch && <CommandInput placeholder={inputPlaceholder && _(inputPlaceholder)} />}
-          <CommandEmpty>
-            <Trans>No value found.</Trans>
-          </CommandEmpty>
-          <CommandGroup>
-            {options.map((option, i) => (
-              <CommandItem key={i} onSelect={() => handleSelect(option.value)}>
-                <Check
-                  className={cn('mr-2 h-4 w-4', selectedValues.includes(option.value) ? 'opacity-100' : 'opacity-0')}
-                />
-                {option.label}
-              </CommandItem>
-            ))}
-          </CommandGroup>
+          <CommandList>
+            <CommandEmpty>
+              <Trans>No value found.</Trans>
+            </CommandEmpty>
+            <CommandGroup>
+              {options.map((option, i) => (
+                <CommandItem key={i} onSelect={() => handleSelect(option.value)}>
+                  <Check
+                    className={cn('mr-2 h-4 w-4', selectedValues.includes(option.value) ? 'opacity-100' : 'opacity-0')}
+                  />
+                  {option.label}
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          </CommandList>
         </Command>
       </PopoverContent>
     </Popover>
