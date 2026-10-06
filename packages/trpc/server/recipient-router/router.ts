@@ -576,7 +576,7 @@ export const recipientRouter = router({
 
       // TSP (AES/QES) envelopes can't complete via this route — CSC TSP
       // signing was removed along with the commercial @documenso/ee package.
-      const envelope = await prisma.envelope.findFirstOrThrow({
+      const envelope = await prisma.envelope.findFirst({
         where: {
           ...unsafeBuildEnvelopeIdQuery({ type: 'documentId', id: documentId }, EnvelopeType.DOCUMENT),
           recipients: { some: { token } },
@@ -584,24 +584,49 @@ export const recipientRouter = router({
         select: { signatureLevel: true, internalVersion: true },
       });
 
+      // The most common cause is a stale signing page: the document was
+      // deleted, or the recipient was removed, after the link was opened.
+      // Surface a NOT_FOUND instead of leaking a Prisma P2025 as a 500.
+      if (!envelope) {
+        throw new AppError(AppErrorCode.NOT_FOUND, {
+          message: 'Document not found for the provided signing token',
+          statusCode: 404,
+        });
+      }
+
       if (isTspEnvelope(envelope)) {
         throw new AppError(AppErrorCode.NOT_SETUP, {
           message: `Completing '${envelope.signatureLevel}' envelopes is not supported — CSC TSP signing is not available on this instance.`,
         });
       }
 
-      await completeDocumentWithToken({
-        token,
-        id: {
-          type: 'documentId',
-          id: documentId,
-        },
-        accessAuthOptions,
-        nextSigner,
-        recipientOverride,
-        userId: ctx.user?.id,
-        requestMetadata: ctx.metadata.requestMetadata,
-      });
+      try {
+        await completeDocumentWithToken({
+          token,
+          id: {
+            type: 'documentId',
+            id: documentId,
+          },
+          accessAuthOptions,
+          nextSigner,
+          recipientOverride,
+          userId: ctx.user?.id,
+          requestMetadata: ctx.metadata.requestMetadata,
+        });
+      } catch (err) {
+        // Resolve retried, stale or concurrent duplicate completion requests
+        // idempotently so the client routes the user to the completed page
+        // instead of surfacing an error for a document that is signed.
+        if (err instanceof AppError && err.code === AppErrorCode.RECIPIENT_ALREADY_SIGNED) {
+          ctx.logger.info({
+            message: 'Recipient attempted to complete a document they have already signed',
+          });
+
+          return { status: 'ALREADY_SIGNED' as const };
+        }
+
+        throw err;
+      }
 
       return { status: 'SIGNED' as const };
     }),
