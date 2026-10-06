@@ -917,6 +917,10 @@ msgstr "6 місяців"
 msgid "7 days"
 msgstr "7 днів"
 
+#: apps/remix/app/components/forms/password.tsx
+msgid "A code is required"
+msgstr "Потрібно ввести код"
+
 #: apps/remix/app/components/forms/send-confirmation-email.tsx
 msgid "A confirmation email has been sent, and it should arrive in your inbox shortly."
 msgstr "Підтвердження надіслано на вашу електронну пошту, воно має надійти в папку «Вхідні» найближчим часом."
@@ -1594,6 +1598,8 @@ msgstr "Обліковий запис із такою електронною а�
 #: apps/remix/app/components/dialogs/admin-user-create-dialog.tsx
 #: apps/remix/app/components/dialogs/organisation-email-create-dialog.tsx
 #: apps/remix/app/components/forms/avatar-image.tsx
+#: apps/remix/app/components/forms/password-setup-request-button.tsx
+#: apps/remix/app/components/forms/password-setup-request.tsx
 #: apps/remix/app/components/forms/password.tsx
 #: apps/remix/app/components/forms/reset-password.tsx
 #: apps/remix/app/components/forms/signup.tsx
@@ -1653,10 +1659,6 @@ msgstr "Сталася помилка під час автоматичного �
 #: apps/remix/app/components/dialogs/envelopes-bulk-cancel-dialog.tsx
 msgid "An error occurred while cancelling the documents."
 msgstr "Сталася помилка під час скасування документів."
-
-#: apps/remix/app/components/general/document-signing/document-signing-form.tsx
-msgid "An error occurred while completing the document. Please try again."
-msgstr "Сталася помилка під час завершення документа. Будь ласка, спробуйте ще раз."
 
 #: apps/remix/app/utils/toast-error-messages.ts
 msgid "An error occurred while creating document from template."
@@ -2190,6 +2192,7 @@ msgid "Background Jobs"
 msgstr "Фонові завдання"
 
 #: apps/remix/app/components/forms/2fa/disable-authenticator-app-dialog.tsx
+#: apps/remix/app/components/forms/2fa/two-factor-code-dialog.tsx
 #: apps/remix/app/components/forms/signin.tsx
 msgid "Backup Code"
 msgstr "Резервний код"
@@ -2581,6 +2584,11 @@ msgstr "Ліміт символів"
 msgid "Charts"
 msgstr "Діаграми"
 
+#: apps/remix/app/components/forms/password-setup-request-button.tsx
+#: apps/remix/app/components/forms/password-setup-request.tsx
+msgid "Check your email"
+msgstr "Перевірте пошту"
+
 #: apps/remix/app/components/dialogs/ai-field-detection-dialog.tsx
 #: apps/remix/app/components/general/envelope-editor/envelope-editor-fields-drag-drop.tsx
 #: packages/lib/utils/fields.ts
@@ -2696,6 +2704,7 @@ msgstr "Натисніть, щоб додати поле"
 #: apps/remix/app/components/forms/support-ticket-form.tsx
 #: apps/remix/app/components/general/document-signing/document-signing-auth-2fa.tsx
 #: apps/remix/app/components/general/document-signing/document-signing-auth-passkey.tsx
+#: apps/remix/app/components/general/document-signing/document-signing-auth-set-password.tsx
 #: apps/remix/app/components/general/document/document-recipient-link-copy-dialog.tsx
 #: apps/remix/app/components/general/organisations/organisation-quota-banner.tsx
 #: packages/ui/primitives/dialog.tsx
@@ -3733,7 +3742,7 @@ msgstr "Не очікували цього листа? <0>Натисніть т�
 
 #: packages/email/templates/reset-password.tsx
 msgid "Didn't request a password change? Contact your VilnoEDO administrator."
-msgstr ""
+msgstr "Не запитували зміну пароля? Зверніться до адміністратора VilnoEDO."
 
 #: apps/remix/app/components/general/template/template-direct-link-badge.tsx
 #: apps/remix/app/components/tables/templates-table.tsx
@@ -3906,12 +3915,21 @@ msgstr "Авторизація доступу до документа оновл
 msgid "Document All"
 msgstr "Усі документи"
 
+#: apps/remix/app/utils/toast-error-messages.ts
+msgid "Document already completed"
+msgstr "Документ уже завершено"
+
+#: apps/remix/app/components/general/envelope-signing/envelope-signing-complete-dialog.tsx
+msgid "Document already signed"
+msgstr "Документ уже підписано"
+
 #: apps/remix/app/routes/_recipient+/sign.$token+/complete.tsx
 msgid "Document Approved"
 msgstr "Документ затверджено"
 
 #: apps/remix/app/components/dialogs/envelope-cancel-dialog.tsx
 #: apps/remix/app/components/general/document/document-status.tsx
+#: apps/remix/app/utils/toast-error-messages.ts
 msgid "Document cancelled"
 msgstr "Документ скасовано"
 
@@ -4078,9 +4096,17 @@ msgctxt "Audit log format"
 msgid "Document moved to team"
 msgstr "Документ перенесено в команду"
 
+#: apps/remix/app/utils/toast-error-messages.ts
+msgid "Document no longer available"
+msgstr "Документ більше недоступний"
+
 #: apps/remix/app/routes/_recipient+/sign.$token+/complete.tsx
 msgid "Document no longer available to sign"
 msgstr "Документ більше недоступний для підпису"
+
+#: apps/remix/app/utils/toast-error-messages.ts
+msgid "Document not ready"
+msgstr "Документ ще не готовий"
 
 #: packages/lib/utils/document-audit-logs.ts
 msgctxt "Audit log format"
@@ -4111,6 +4137,7 @@ msgstr "Налаштування документа оновлено"
 
 #: apps/remix/app/components/general/document-signing/document-signing-reject-dialog.tsx
 #: apps/remix/app/components/general/document/document-status.tsx
+#: apps/remix/app/utils/toast-error-messages.ts
 msgid "Document rejected"
 msgstr "Документ відхилено"
 
@@ -4913,9 +4940,17 @@ msgstr "Введіть ім'я"
 msgid "Enter Number"
 msgstr "Введіть номер"
 
+#: apps/remix/app/components/forms/2fa/two-factor-code-dialog.tsx
+msgid "Enter one of your backup codes to continue."
+msgstr "Щоб продовжити, введіть один із резервних кодів."
+
 #: apps/remix/app/components/dialogs/sign-field-text-dialog.tsx
 msgid "Enter Text"
 msgstr "Введіть текст"
+
+#: apps/remix/app/components/forms/2fa/two-factor-code-dialog.tsx
+msgid "Enter the code from your authenticator app to continue."
+msgstr "Щоб продовжити, введіть код із застосунку-автентифікатора."
 
 #: apps/remix/app/components/dialogs/organisation-email-domain-create-dialog.tsx
 msgid "Enter the domain you want to use for sending emails (without http:// or www)"
@@ -5030,7 +5065,6 @@ msgstr "Конверт оновлено"
 #: apps/remix/app/components/dialogs/template-bulk-send-dialog.tsx
 #: apps/remix/app/components/dialogs/webhook-create-dialog.tsx
 #: apps/remix/app/components/embed/multisign/multi-sign-document-signing-view.tsx
-#: apps/remix/app/components/embed/multisign/multi-sign-document-signing-view.tsx
 #: apps/remix/app/components/general/document-signing/document-signing-auto-sign.tsx
 #: apps/remix/app/components/general/document-signing/document-signing-checkbox-field.tsx
 #: apps/remix/app/components/general/document-signing/document-signing-checkbox-field.tsx
@@ -5041,7 +5075,6 @@ msgstr "Конверт оновлено"
 #: apps/remix/app/components/general/document-signing/document-signing-dropdown-field.tsx
 #: apps/remix/app/components/general/document-signing/document-signing-email-field.tsx
 #: apps/remix/app/components/general/document-signing/document-signing-email-field.tsx
-#: apps/remix/app/components/general/document-signing/document-signing-form.tsx
 #: apps/remix/app/components/general/document-signing/document-signing-initials-field.tsx
 #: apps/remix/app/components/general/document-signing/document-signing-initials-field.tsx
 #: apps/remix/app/components/general/document-signing/document-signing-name-field.tsx
@@ -5193,10 +5226,6 @@ msgstr "Вилучення контактних даних"
 #: apps/remix/app/routes/_authenticated+/t.$teamUrl+/settings.webhooks.$id._index.tsx
 msgid "Failed"
 msgstr "Помилка"
-
-#: apps/remix/app/components/embed/multisign/multi-sign-document-signing-view.tsx
-msgid "Failed to complete the document. Please try again."
-msgstr "Не вдалося завершити підписання документа. Будь ласка, спробуйте ще раз."
 
 #: apps/remix/app/routes/embed+/v2+/authoring+/envelope.create._index.tsx
 msgid "Failed to create document. Please try again."
@@ -5812,6 +5841,10 @@ msgstr "Визначення полів введення"
 msgid "Identifying recipients"
 msgstr "Визначення отримувачів"
 
+#: packages/email/templates/reset-password.tsx
+msgid "If this was you, no action is needed. If it wasn't, reset your password immediately and contact your VilnoEDO administrator."
+msgstr "Якщо це були ви, нічого робити не потрібно. Якщо ні — негайно скиньте пароль і зверніться до адміністратора VilnoEDO."
+
 #: apps/remix/app/routes/embed+/v2+/authoring+/_layout.tsx
 msgid "If you are using staging, ensure that you have set the host prop on the embedding component to the staging domain for this VilnoEDO instance"
 msgstr ""
@@ -6084,6 +6117,10 @@ msgstr "Зараз не ваша черга підписувати. Будь л�
 msgid "It's currently not your turn to sign. You will receive an email with instructions once it's your turn to sign the document."
 msgstr "Зараз не ваша черга підписувати. Ви отримаєте електронний лист із інструкціями, коли настане ваша черга підписати документ."
 
+#: apps/remix/app/utils/toast-error-messages.ts
+msgid "It's not your turn to sign yet"
+msgstr "Ваша черга підписувати ще не настала"
+
 #: apps/remix/app/components/general/document-signing/ua-kep-signature-tab.tsx
 msgid "JKS key file"
 msgstr "Файл ключа JKS"
@@ -6270,6 +6307,10 @@ msgstr "Посилання діє протягом 1 години."
 #: packages/email/templates/organisation-account-link-confirmation.tsx
 msgid "Link expires in 30 minutes."
 msgstr "Посилання діє протягом 30 хвилин."
+
+#: apps/remix/app/components/forms/password-setup-request-button.tsx
+msgid "Link sent"
+msgstr "Посилання надіслано"
 
 #: apps/remix/app/routes/_authenticated+/t.$teamUrl+/settings.public-profile.tsx
 msgctxt "Action button to link template to public profile"
@@ -6876,6 +6917,10 @@ msgstr "Шаблони організації ще не доступні для 
 msgid "No organisations found"
 msgstr "Організацій не знайдено"
 
+#: apps/remix/app/components/general/document-signing/document-signing-auth-set-password.tsx
+msgid "No password set"
+msgstr "Пароль не встановлено"
+
 #: apps/remix/app/components/tables/settings-public-profile-templates-table.tsx
 msgid "No public profile templates found"
 msgstr "Публічних шаблонів профілів не знайдено"
@@ -7086,6 +7131,10 @@ msgstr "Після налаштування шаблону поділіться 
 #: apps/remix/app/components/embed/multisign/multi-sign-document-list.tsx
 msgid "One of the documents in the current bundle has a signing role that is not compatible with the current signing experience."
 msgstr "Один із документів у поточному пакеті має роль підписувача, яка не сумісна з поточним процесом підписання."
+
+#: apps/remix/app/utils/toast-error-messages.ts
+msgid "One or more of your required fields have not been saved. Please refresh the page, complete any empty required fields, and try again."
+msgstr "Одне або кілька обов’язкових полів не збережено. Оновіть сторінку, заповніть порожні обов’язкові поля та спробуйте ще раз."
 
 #: apps/remix/app/components/forms/document-preferences-form.tsx
 msgid "Only admins can access and view the document"
@@ -7454,6 +7503,10 @@ msgstr "Ключі доступу не підтримуються цим бра�
 msgid "Password"
 msgstr "Пароль"
 
+#: apps/remix/app/components/general/document-signing/document-signing-auth-set-password.tsx
+msgid "Password authentication unavailable"
+msgstr "Автентифікація паролем недоступна"
+
 #: apps/remix/app/routes/_internal+/[__htmltopdf]+/certificate.tsx
 #: packages/lib/server-only/pdf/generate-certificate-pdf.ts
 msgid "Password Re-Authentication"
@@ -7463,6 +7516,10 @@ msgstr "Повторна автентифікація за допомогою п
 msgid "Password Reset Requested"
 msgstr "Запит на скидання пароля"
 
+#: packages/lib/server-only/auth/send-reset-password.ts
+msgid "Password Reset Success!"
+msgstr "Пароль успішно змінено!"
+
 #: packages/email/templates/reset-password.tsx
 msgid "Password Reset Successful"
 msgstr "Пароль успішно скинуто"
@@ -7471,6 +7528,14 @@ msgstr "Пароль успішно скинуто"
 #: apps/remix/app/components/general/claim-account.tsx
 msgid "Password should not be common or based on personal information"
 msgstr "Пароль не повинен бути поширеним або базуватися на особистій інформації"
+
+#: apps/remix/app/components/forms/password-setup-request-button.tsx
+msgid "Password sign in is disabled for this instance."
+msgstr "Вхід за паролем вимкнено на цьому сервері."
+
+#: apps/remix/app/components/forms/password-setup-request.tsx
+msgid "Password sign in is disabled for this instance. Please contact support."
+msgstr "Вхід за паролем вимкнено на цьому сервері. Зверніться до адміністратора."
 
 #: apps/remix/app/components/forms/password.tsx
 #: apps/remix/app/components/forms/reset-password.tsx
@@ -9088,6 +9153,11 @@ msgstr "Надіслати нагадування"
 msgid "Send reminders to the following recipients"
 msgstr "Надіслати нагадування наступним отримувачам"
 
+#: apps/remix/app/components/forms/password-setup-request-button.tsx
+#: apps/remix/app/components/forms/password-setup-request.tsx
+msgid "Send setup link"
+msgstr "Надіслати посилання"
+
 #: apps/remix/app/routes/_authenticated+/admin+/documents.$id.tsx
 msgid "Send Status"
 msgstr "Надіслати статус"
@@ -9142,6 +9212,7 @@ msgid "Sessions have been revoked"
 msgstr "Сесії було відкликано"
 
 #: apps/remix/app/components/general/claim-account.tsx
+#: apps/remix/app/routes/_authenticated+/settings+/security._index.tsx
 msgid "Set a password"
 msgstr "Встановіть пароль"
 
@@ -9480,6 +9551,10 @@ msgstr "Підписання для"
 msgid "Signing in..."
 msgstr "Вхід..."
 
+#: apps/remix/app/utils/toast-error-messages.ts
+msgid "Signing link expired"
+msgstr "Термін дії посилання для підписання минув"
+
 #: apps/remix/app/components/general/document/document-page-view-dropdown.tsx
 #: apps/remix/app/components/tables/documents-table-action-dropdown.tsx
 msgid "Signing Links"
@@ -9502,6 +9577,10 @@ msgstr "Нагадування про підписання"
 #: apps/remix/app/routes/_authenticated+/admin+/documents.$id.tsx
 msgid "Signing Status"
 msgstr "Статус підписання"
+
+#: apps/remix/app/components/general/document-signing/document-signing-auth-set-password.tsx
+msgid "Signing this field requires a password, but your account does not have one. We can email you a link to set one. Once done, sign in again and return to this document to continue."
+msgstr "Для підписання цього поля потрібен пароль, але у вашому обліковому записі його немає. Ми можемо надіслати на пошту посилання для встановлення пароля. Після цього увійдіть знову й поверніться до документа, щоб продовжити."
 
 #: apps/remix/app/components/embed/embed-recipient-expired.tsx
 msgid "Signing Window Expired"
@@ -9551,6 +9630,10 @@ msgstr "Пропустити"
 msgid "Some fields are placed on top of each other. This may complicate the signing process or cause fields to not work as expected."
 msgstr "Деякі поля розташовані одне над одним. Це може ускладнити процес підписання або призвести до некоректної роботи полів."
 
+#: apps/remix/app/utils/toast-error-messages.ts
+msgid "Some fields were not saved"
+msgstr "Деякі поля не збережено"
+
 #: packages/ui/primitives/document-flow/missing-signature-field-dialog.tsx
 msgid "Some signers have not been assigned a signature field. Please assign at least 1 signature field to each signer before proceeding."
 msgstr "Деяким підписувачам не призначено поле підпису. Будь ласка, призначте принаймні 1 поле підпису кожному підписувачу перед продовженням."
@@ -9568,15 +9651,12 @@ msgstr "Деяким підписувачам не призначено поле
 #: apps/remix/app/components/dialogs/template-direct-link-dialog.tsx
 #: apps/remix/app/components/dialogs/template-direct-link-dialog.tsx
 #: apps/remix/app/components/dialogs/template-direct-link-dialog.tsx
-#: apps/remix/app/components/embed/embed-document-signing-page-v1.tsx
 #: apps/remix/app/components/forms/signin.tsx
 #: apps/remix/app/components/general/direct-template/direct-template-signing-auth-page.tsx
 #: apps/remix/app/components/general/document-signing/document-signing-auth-account.tsx
 #: apps/remix/app/components/general/document-signing/document-signing-auth-page.tsx
 #: apps/remix/app/components/general/document/document-audit-log-download-button.tsx
 #: apps/remix/app/components/general/document/document-certificate-download-button.tsx
-#: apps/remix/app/components/general/envelope-signing/envelope-signing-complete-dialog.tsx
-#: apps/remix/app/components/general/envelope-signing/envelope-signing-complete-dialog.tsx
 #: apps/remix/app/components/general/organisations/organisation-invitations.tsx
 #: apps/remix/app/components/general/organisations/organisation-invitations.tsx
 #: apps/remix/app/components/general/teams/team-email-dropdown.tsx
@@ -9593,6 +9673,7 @@ msgstr "Деяким підписувачам не призначено поле
 #: apps/remix/app/routes/_recipient+/report.$token.tsx
 #: apps/remix/app/routes/_unauthenticated+/verify-email.$token.tsx
 #: apps/remix/app/routes/_unauthenticated+/verify-email.$token.tsx
+#: apps/remix/app/utils/toast-error-messages.ts
 #: apps/remix/app/utils/toast-error-messages.ts
 #: apps/remix/app/utils/toast-error-messages.ts
 #: packages/ui/components/document/document-share-button.tsx
@@ -10388,8 +10469,9 @@ msgid "The fields have been updated to the new field insertion method successful
 msgstr "Поля були успішно оновлено згідно з новим методом вставки полів"
 
 #: apps/remix/app/components/dialogs/envelope-item-edit-dialog.tsx
-msgid "The file is not a valid PDF."
-msgstr "Файл не є коректним PDF-документом."
+#: apps/remix/app/utils/toast-error-messages.ts
+msgid "The file is not a valid PDF or is password protected."
+msgstr "Файл не є коректним PDF або захищений паролем."
 
 #: apps/remix/app/components/dialogs/folder-delete-dialog.tsx
 msgid "The folder you are trying to delete does not exist."
@@ -10605,6 +10687,10 @@ msgstr "Токен успішно видалено."
 msgid "The token you have used to reset your password is either expired or it never existed. If you have still forgotten your password, please request a new reset link."
 msgstr "Токен, який ви використали для скидання пароля, або застарів, або не існував. Якщо ви все ще не пам'ятаєте пароль, будь ласка, запитайте нове посилання для скидання."
 
+#: apps/remix/app/components/forms/password.tsx
+msgid "The two factor code you provided is invalid. Please try again."
+msgstr "Введений код двофакторної автентифікації недійсний. Спробуйте ще раз."
+
 #: apps/remix/app/components/forms/signin.tsx
 msgid "The two-factor authentication code provided is incorrect."
 msgstr "Наданий код двофакторної автентифікації некоректний."
@@ -10719,6 +10805,10 @@ msgstr "Цю дію можна скасувати, але будьте обер�
 msgid "This can take a minute or two depending on the size of your document."
 msgstr "Це може зайняти хвилину або дві, залежно від розміру вашого документа."
 
+#: apps/remix/app/utils/toast-error-messages.ts
+msgid "This document can no longer be signed. It may have been removed by the sender, or your signing access may have been revoked. Please contact the sender for a new signing link."
+msgstr "Цей документ більше не можна підписати. Можливо, відправник його видалив або відкликав ваш доступ. Зверніться до відправника по нове посилання для підписання."
+
 #: packages/email/template-components/template-document-super-delete.tsx
 msgid "This document can not be recovered, if you would like to dispute the reason for future documents please contact support."
 msgstr "Цей документ неможливо відновити. Якщо ви хочете оскаржити причину для майбутніх документів, будь ласка, зверніться до служби підтримки."
@@ -10747,6 +10837,10 @@ msgstr "Цей документ не вдалося дублювати. Будь
 msgid "This document could not be saved as a template at this time. Please try again."
 msgstr "Цей документ не вдалося зберегти як шаблон. Будь ласка, спробуйте ще раз."
 
+#: apps/remix/app/utils/toast-error-messages.ts
+msgid "This document has already been completed and no further signatures can be added."
+msgstr "Цей документ уже завершено, додати нові підписи неможливо."
+
 #: apps/remix/app/components/general/envelope-editor/envelope-recipient-selector.tsx
 #: packages/ui/primitives/recipient-selector.tsx
 msgid "This document has already been sent to this recipient. You can no longer edit this recipient."
@@ -10765,13 +10859,25 @@ msgstr "Цей документ було скасовано власником, 
 msgid "This document has been cancelled by the owner."
 msgstr "Цей документ було скасовано власником."
 
+#: apps/remix/app/utils/toast-error-messages.ts
+msgid "This document has been cancelled by the sender and can no longer be signed. Please contact the sender if you believe this is a mistake."
+msgstr "Відправник скасував цей документ, і його більше не можна підписати. Якщо вважаєте це помилкою, зверніться до відправника."
+
 #: apps/remix/app/routes/_authenticated+/t.$teamUrl+/documents.$id._index.tsx
 msgid "This document has been rejected by a recipient"
 msgstr "Цей документ був відхилений отримувачем"
 
+#: apps/remix/app/utils/toast-error-messages.ts
+msgid "This document has been rejected by a recipient and can no longer be signed."
+msgstr "Один з отримувачів відхилив цей документ, і його більше не можна підписати."
+
 #: apps/remix/app/routes/_authenticated+/t.$teamUrl+/documents.$id._index.tsx
 msgid "This document has been signed by all recipients"
 msgstr "Цей документ підписано всіма отримувачами"
+
+#: apps/remix/app/utils/toast-error-messages.ts
+msgid "This document has not been sent for signing yet. Please wait for the sender to send it before signing."
+msgstr "Цей документ ще не надіслано на підписання. Зачекайте, доки відправник його надішле."
 
 #: apps/remix/app/utils/toast-error-messages.ts
 msgid "This document has too many recipients. Please remove some recipients or contact support if you need more."
@@ -10785,9 +10891,17 @@ msgstr "Цей документ доступний у вашому обліко�
 msgid "This document is currently a draft and has not been sent"
 msgstr "Цей документ зараз є чернеткою і не був надісланий"
 
+#: apps/remix/app/utils/toast-error-messages.ts
+msgid "This document is signed in a set order and other recipients must sign before you. You will receive an email when it is your turn."
+msgstr "Цей документ підписується у визначеному порядку, і інші отримувачі мають підписати його перед вами. Ви отримаєте лист, коли настане ваша черга."
+
 #: apps/remix/app/components/general/legacy-field-warning-popover.tsx
 msgid "This document is using legacy field insertion, we recommend using the new field insertion method for more accurate results."
 msgstr "У цьому документі використовується застарілий метод вставки полів. Для точніших результатів ми рекомендуємо використовувати новий метод вставки полів."
+
+#: apps/remix/app/components/general/envelope-signing/envelope-signing-complete-dialog.tsx
+msgid "This document was already signed and no further action was taken."
+msgstr "Цей документ уже підписано, жодних додаткових дій не виконано."
 
 #: apps/remix/app/components/general/template/template-page-view-documents-table.tsx
 msgid "This document was created by you or a team member using the template above."
@@ -11267,6 +11381,7 @@ msgstr "Двофакторна автентифікація"
 msgid "Two factor authentication recovery codes are used to access your account in the event that you lose access to your authenticator app."
 msgstr "Коди відновлення двофакторної автентифікації використовуються для доступу до вашого облікового запису у випадку, якщо ви втратите доступ до програми-автентифікатора."
 
+#: apps/remix/app/components/forms/2fa/two-factor-code-dialog.tsx
 #: apps/remix/app/components/forms/signin.tsx
 #: apps/remix/app/routes/_internal+/[__htmltopdf]+/certificate.tsx
 #: packages/lib/server-only/pdf/generate-certificate-pdf.ts
@@ -11532,6 +11647,7 @@ msgid "Update passkey"
 msgstr "Оновити ключ доступу"
 
 #: apps/remix/app/components/forms/password.tsx
+#: apps/remix/app/components/forms/password.tsx
 msgid "Update password"
 msgstr "Оновити пароль"
 
@@ -11720,11 +11836,13 @@ msgid "Use a unique window for each rate limit"
 msgstr "Використовуйте унікальне вікно для кожного ліміту запитів"
 
 #: apps/remix/app/components/forms/2fa/disable-authenticator-app-dialog.tsx
+#: apps/remix/app/components/forms/2fa/two-factor-code-dialog.tsx
 #: apps/remix/app/components/forms/signin.tsx
 msgid "Use Authenticator"
 msgstr "Використати Authenticator"
 
 #: apps/remix/app/components/forms/2fa/disable-authenticator-app-dialog.tsx
+#: apps/remix/app/components/forms/2fa/two-factor-code-dialog.tsx
 #: apps/remix/app/components/forms/signin.tsx
 msgid "Use Backup Code"
 msgstr "Використати резервний код"
@@ -12374,6 +12492,14 @@ msgstr "Нам не вдалося вийти з вашого обліковог
 msgid "We were unable to report this sender at this time. Please try again later."
 msgstr "Нам не вдалося поскаржитися на цього відправника. Будь ласка, спробуйте пізніше."
 
+#: apps/remix/app/components/forms/password-setup-request-button.tsx
+msgid "We were unable to send the email. Please try again later."
+msgstr "Не вдалося надіслати лист. Спробуйте пізніше."
+
+#: apps/remix/app/components/forms/password-setup-request.tsx
+msgid "We were unable to send the email. Please try again or contact support."
+msgstr "Не вдалося надіслати лист. Спробуйте ще раз або зверніться до адміністратора."
+
 #: apps/remix/app/routes/_authenticated+/t.$teamUrl+/settings.public-profile.tsx
 msgid "We were unable to set your public profile to public. Please try again."
 msgstr "Нам не вдалося зробити ваш публічний профіль відкритим. Будь ласка, спробуйте ще раз."
@@ -12383,9 +12509,7 @@ msgstr "Нам не вдалося зробити ваш публічний пр
 msgid "We were unable to setup two-factor authentication for your account. Please ensure that you have entered your code correctly and try again."
 msgstr "Нам не вдалося налаштувати двофакторну автентифікацію для вашого облікового запису. Переконайтеся, що ви правильно ввели код, і спробуйте ще раз."
 
-#: apps/remix/app/components/embed/embed-document-signing-page-v1.tsx
-#: apps/remix/app/components/general/envelope-signing/envelope-signing-complete-dialog.tsx
-#: apps/remix/app/components/general/envelope-signing/envelope-signing-complete-dialog.tsx
+#: apps/remix/app/utils/toast-error-messages.ts
 #: apps/remix/app/utils/toast-error-messages.ts
 msgid "We were unable to submit this document at this time. Please try again later."
 msgstr "Нам не вдалося надіслати цей документ. Будь ласка, спробуйте пізніше."
@@ -12483,6 +12607,16 @@ msgstr "Ми надіслали 6-значний код підтвердженн
 #: apps/remix/app/components/general/verify-email-banner.tsx
 msgid "We've sent a confirmation email to <0>{email}</0>. Please check your inbox and click the link in the email to verify your account."
 msgstr "Ми надіслали лист підтвердження на <0>{email}</0>. Будь ласка, перевірте вхідні повідомлення та перейдіть за посиланням у листі, щоб підтвердити свій обліковий запис."
+
+#. placeholder {0}: user.email
+#: apps/remix/app/components/forms/password-setup-request.tsx
+msgid "We've sent a link to {0}. Follow it to set your password, then sign in again to continue."
+msgstr "Ми надіслали посилання на {0}. Перейдіть за ним, щоб встановити пароль, а потім увійдіть знову, щоб продовжити."
+
+#. placeholder {0}: user.email
+#: apps/remix/app/components/forms/password-setup-request-button.tsx
+msgid "We've sent a link to {0}. Follow it to set your password."
+msgstr "Ми надіслали посилання на {0}. Перейдіть за ним, щоб встановити пароль."
 
 #: apps/remix/app/routes/_authenticated+/t.$teamUrl+/settings.webhooks._index.tsx
 #: apps/remix/app/routes/_authenticated+/t.$teamUrl+/settings.webhooks.$id._index.tsx
@@ -12894,10 +13028,6 @@ msgstr "Ви не можете видалити власника організ�
 #: packages/ui/primitives/document-upload-button.tsx
 msgid "You cannot upload documents at this time."
 msgstr "Наразі ви не можете завантажувати документи."
-
-#: apps/remix/app/utils/toast-error-messages.ts
-msgid "You cannot upload encrypted PDFs."
-msgstr "Ви не можете завантажувати зашифровані PDF-файли."
 
 #: packages/lib/utils/document-audit-logs.ts
 msgid "You CC'd the document"
@@ -13332,9 +13462,17 @@ msgstr "Ви надіслали занадто багато запитів на 
 msgid "Your Account"
 msgstr "Ваш обліковий запис"
 
+#: apps/remix/app/components/general/document-signing/document-signing-auth-set-password.tsx
+msgid "Your account does not have a password and password sign in is disabled for this instance. Please contact the document sender to use a different authentication method."
+msgstr "У вашому обліковому записі немає пароля, а вхід за паролем на цьому сервері вимкнено. Зверніться до відправника документа, щоб використати інший спосіб автентифікації."
+
 #: apps/remix/app/components/dialogs/account-delete-dialog.tsx
 msgid "Your account has been deleted successfully."
 msgstr "Ваш обліковий запис було успішно видалено."
+
+#: apps/remix/app/routes/_authenticated+/settings+/security._index.tsx
+msgid "Your account has no password. Add one to sign in with your email and to sign documents that require it. We'll email you a link."
+msgstr "У вашому обліковому записі немає пароля. Додайте його, щоб входити за email і підписувати документи, які цього вимагають. Ми надішлемо посилання на пошту."
 
 #: apps/remix/app/components/forms/avatar-image.tsx
 msgid "Your avatar has been updated successfully."
@@ -13590,6 +13728,15 @@ msgstr "Ваш пароль було успішно оновлено."
 msgid "Your password has been updated."
 msgstr "Ваш пароль оновлено."
 
+#: packages/email/templates/reset-password.tsx
+#: packages/lib/server-only/auth/send-reset-password.ts
+msgid "Your password was changed"
+msgstr "Ваш пароль змінено"
+
+#: packages/email/templates/reset-password.tsx
+msgid "Your password was just changed from your account security settings."
+msgstr "Ваш пароль щойно змінено в налаштуваннях безпеки облікового запису."
+
 #: apps/remix/app/components/tables/user-organisations-table.tsx
 msgid "Your personal organisation"
 msgstr "Ваша особиста організація"
@@ -13622,6 +13769,10 @@ msgstr "Ваші коди відновлення наведені нижче. Б
 #: packages/lib/utils/document-audit-logs.ts
 msgid "Your remote signature was applied"
 msgstr "Ваш дистанційний підпис було застосовано"
+
+#: apps/remix/app/utils/toast-error-messages.ts
+msgid "Your signing link has expired. Please contact the sender to request a new one."
+msgstr "Термін дії вашого посилання для підписання минув. Зверніться до відправника по нове."
 
 #: packages/lib/utils/document-audit-logs.ts
 msgid "Your signing provider authentication failed"
